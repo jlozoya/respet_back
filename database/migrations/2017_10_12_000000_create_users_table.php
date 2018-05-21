@@ -27,6 +27,7 @@ class CreateUsersTable extends Migration
             $table->string('phone', 15)->nullable();
             $table->string('extern_id')->nullable();
             $table->date('birthday')->nullable();
+            $table->boolean('confirmed')->default(false);
             $table->boolean('is_admin')->default(false);
             $table->integer('direction_id')->unsigned()->nullable();
             $table->timestamps();
