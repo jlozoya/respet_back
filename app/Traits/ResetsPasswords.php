@@ -107,9 +107,9 @@ trait ResetsPasswords
         });
         switch ($response) {
             case Password::PASSWORD_RESET:
-                return $this->getResetSuccessResponse($response);
+                return response()->json('SERVER.EMAIL_READY', 200);
             default:
-                return $this->getResetFailureResponse($request, $response);
+                return response()->json('SERVER.EMAIL_NOT_FOUND', 404);
         }
     }
     /**
@@ -137,27 +137,6 @@ trait ResetsPasswords
         $user->password = Hash::make($password);
         $user->save();
         return response()->json(['success' => true], 200);
-    }
-    /**
-     * Obtiene la respuesta después de un reinicio de contraseña exitoso.
-     *
-     * @param  string  $response
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    protected function getResetSuccessResponse($response)
-    {
-        return response()->json(['success' => true], 200);
-    }
-    /**
-     * Obtiene la respuesta después de un restablecimiento de contraseña fallido.
-     *
-     * @param  Request  $request
-     * @param  string  $response
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    protected function getResetFailureResponse(Request $request, $response)
-    {
-        return response()->json(['success' => false], 400);
     }
     /**
      * Usa el intermediario 'broker' restablecimiento de contraseña.
