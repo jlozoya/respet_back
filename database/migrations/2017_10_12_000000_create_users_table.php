@@ -18,12 +18,13 @@ class CreateUsersTable extends Migration
             $table->string('name', 60)->index();
             $table->string('first_name', 60);
             $table->string('last_name', 60);
-            $table->string('gender', 6);
+            $table->enum('gender', ['male', 'female', 'other']);
             $table->string('email', 60)->index();
             $table->string('password', 60);
             $table->string('Authorization', 60)->unique()->index();
             $table->text('img_url')->nullable();
             $table->string('source', 8);
+            $table->enum('source', ['app', 'facebook', 'google', 'other']);
             $table->integer('phone')->nullable();
             $table->string('extern_id')->nullable();
             $table->date('birthday')->nullable();
