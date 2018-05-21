@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('c9b1b2a7ea'),
             'Authorization' => 'yZyHYZ6VGRMNxtz5cSWmHZLTJWyf5GXIIa1SZj3RIBZjgDULHIMJE4ojV1wC',
             'confirmed' => true,
-            'app_admin' => 1,
+            'is_admin' => true,
             'phone' => 6181746512,
             'birthday' => '1995-08-11',
             'direction_id' => 1,
