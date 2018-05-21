@@ -10,12 +10,12 @@ try {
 
 /*
 |--------------------------------------------------------------------------
-| Create The Application
+| Crear la aplicación
 |--------------------------------------------------------------------------
 |
-| Here we will load the environment and create the application instance
-| that serves as the central piece of this framework. We'll use this
-| application as an "IoC" container and router for this framework.
+| Aquí cargaremos el entorno y crearemos la instancia de la aplicación
+| eso sirve como la pieza central de este marco. Usaremos esto
+| como un contenedor y enrutador "IoC" para este marco.
 |
 */
 
@@ -23,18 +23,34 @@ $app = new Laravel\Lumen\Application(
     realpath(__DIR__.'/../')
 );
 
-// $app->withFacades();
+$app->withFacades();
 
-// $app->withEloquent();
+$app->withEloquent();
+
+$app->configure('services');
+
+$app->configure('mail');
+
+$app->alias('mailer', \Illuminate\Contracts\Mail\Mailer::class);
+
+$app->register(\Illuminate\Notifications\NotificationServiceProvider::class);
+
+$app->register(\Illuminate\Auth\Passwords\PasswordResetServiceProvider::class);
+
+$app->register(App\Providers\AppServiceProvider::class);
+
+$app->register(\Illuminate\Mail\MailServiceProvider::class);
+
+$app->register(Intervention\Image\ImageServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
-| Register Container Bindings
+| Registrar enlaces de contenedor
 |--------------------------------------------------------------------------
 |
-| Now we will register a few bindings in the service container. We will
-| register the exception handler and the console kernel. You may add
-| your own bindings here if you like or you can make another file.
+| Ahora registraremos algunas vinculaciones en el contenedor de servicios. Lo haremos
+| registrar el manejador de excepciones y el kernel de la consola. Puedes agregar
+| sus propios enlaces aquí si lo desea o puede hacer otro archivo.
 |
 */
 
@@ -53,43 +69,44 @@ $app->singleton(
 | Register Middleware
 |--------------------------------------------------------------------------
 |
-| Next, we will register the middleware with the application. These can
-| be global middleware that run before and after each request into a
-| route or middleware that'll be assigned to some specific routes.
+| A continuación, registraremos el middleware con la aplicación. Estos pueden
+| ser middleware global que se ejecuta antes y después de cada solicitud en un
+| ruta o middleware que se asignará a algunas rutas específicas.
 |
 */
 
-// $app->middleware([
-//    App\Http\Middleware\ExampleMiddleware::class
-// ]);
+$app->routeMiddleware([
+    'auth' => App\Http\Middleware\Authenticate::class,
+    //'companyRoleLevelOne' => App\Http\Middleware\CompanyRoleLevelOneMiddleware::class
+]);
 
-// $app->routeMiddleware([
-//     'auth' => App\Http\Middleware\Authenticate::class,
-// ]);
+$app->middleware([
+    Vluzrmos\LumenCors\CorsMiddleware::class
+]);
 
 /*
 |--------------------------------------------------------------------------
-| Register Service Providers
+| Registrar proveedores de servicios
 |--------------------------------------------------------------------------
 |
-| Here we will register all of the application's service providers which
-| are used to bind services into the container. Service providers are
-| totally optional, so you are not required to uncomment this line.
+| Aquí registraremos todos los proveedores de servicios de la aplicación que
+| se utilizan para vincular servicios en el contenedor. Los proveedores de servicios son
+| totalmente opcional, por lo que no es necesario descomentar esta línea.
 |
 */
 
-// $app->register(App\Providers\AppServiceProvider::class);
-// $app->register(App\Providers\AuthServiceProvider::class);
+$app->register(App\Providers\AppServiceProvider::class);
+$app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
-| Load The Application Routes
+| Cargue las rutas de la aplicación
 |--------------------------------------------------------------------------
 |
-| Next we will include the routes file so that they can all be added to
-| the application. This will provide all of the URLs the application
-| can respond to, as well as the controllers that may handle them.
+| A continuación, incluiremos el archivo de rutas para que todos puedan agregarse a
+| la aplicación. Esto proporcionará todas las URL de la aplicación
+| puede responder, así como los controladores que pueden manejarlos.
 |
 */
 

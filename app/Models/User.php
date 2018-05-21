@@ -34,11 +34,7 @@ class User extends Model implements CanResetPasswordContract, AuthenticatableCon
         'extern_id',
         'confirmed',
         'birthday',
-        'contry',
-        'administrative_area_level_1',
-        'administrative_area_level_2',
-        'route',
-        'street_number',
+        'direction_id',
     ];
     /**
      * Los atributos excluidos del formulario JSON del modelo.

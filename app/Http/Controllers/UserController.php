@@ -6,6 +6,8 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 
 use App\Models\User;
 use App\Models\EmailConfirm;
+use App\Models\Direction;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
@@ -32,33 +34,32 @@ class UserController extends BaseController
         ]);
         if ($request->isJson()) {
             try {
-                $data = $request->json()->all();
-                if ($data['source'] == 'app') {
+                if ($request->get('source') == 'app') {
                     $this->validate($request, [
                         'password' => 'required|min:6|max:60'
                     ]);
                     $user = User::create([
-                        'name' => $data['name'],
-                        'first_name' => $data['first_name'],
-                        'last_name' => $data['last_name'],
-                        'gender' => $data['gender'],
-                        'email' => $data['email'],
-                        'password' => Hash::make($data['password']),
+                        'name' => $request->get('name'),
+                        'first_name' => $request->get('first_name'),
+                        'last_name' => $request->get('last_name'),
+                        'gender' => $request->get('gender'),
+                        'email' => $request->get('email'),
+                        'password' => Hash::make($request->get('password')),
                         'Authorization' => str_random(60),
-                        'img_url' => $data['img_url'],
-                        'source' => $data['source']
+                        'img_url' => $request->get('img_url'),
+                        'source' => $request->get('source')
                     ]);
-                } else if ($data['source'] == 'facebook') {
+                } else {
                     $user = User::create([
-                        'name' => $data['name'],
-                        'first_name' => $data['first_name'],
-                        'last_name' => $data['last_name'],
-                        'gender' => $data['gender'],
-                        'email' => $data['email'],
+                        'name' => $request->get('name'),
+                        'first_name' => $request->get('first_name'),
+                        'last_name' => $request->get('last_name'),
+                        'gender' => $request->get('gender'),
+                        'email' => $request->get('email'),
                         'Authorization' => str_random(60),
-                        'img_url' => $data['img_url'],
-                        'source' => $data['source'],
-                        'extern_id' => $data['extern_id']
+                        'img_url' => $request->get('img_url'),
+                        'source' => $request->get('source'),
+                        'extern_id' => $request->get('extern_id')
                     ]);
                 }
                 $this->sendConfirmEmail($user);
@@ -104,7 +105,26 @@ class UserController extends BaseController
                     } catch (\GuzzleHttp\Exception\ClientException $error) {
                         return response()->json('SERVER.WRONG_TOKEN', 406);
                     }
+                } else if ($data['source'] == 'google') {
+                    $client = new \GuzzleHttp\Client();
+                    try {
+                        $response = $client->get('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=' . $data['accessToken'])->getBody()->getContents();
+                        $response_decoded = json_decode($response, true);
+                        if ($response_decoded['user_id'] == $data['extern_id']) {
+                            $user = User::where('extern_id', $data['extern_id'])->first();
+                            if ($user) {
+                                return response()->json($user, 200);
+                            } else {
+                                return response()->json('SERVER.USER_NOT_REGISTRED', 200);
+                            }
+                        } else {
+                            return response()->json('SERVER.WRONG_USER', 406);
+                        }
+                    } catch (\GuzzleHttp\Exception\ClientException $error) {
+                        return response()->json('SERVER.WRONG_TOKEN', 406);
+                    }
                 }
+                
             } catch (ModelNotFoundException $error) {
                 return response()->json('SERVER.WRONG_USER', 406);
             }
@@ -204,6 +224,136 @@ class UserController extends BaseController
         }
     }
     /**
+     * Actualizar la dirección del usuario.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function updateUserDirection(Request $request) {
+        try {
+            $user = User::where('Authorization', $request->header('Authorization'))->first();
+            $userDirection = Direction::find($user['direction_id']);
+            if ($userDirection) {
+                if ($request->get('contry')) {
+                    $this->validate($request, ['contry' => 'required|max:60',]);
+                    $userDirection['contry'] = $request->get('contry');
+                }
+                if ($request->get('administrative_area_level_1')) {
+                    $this->validate($request, ['administrative_area_level_1' => 'required|max:60',]);
+                    $userDirection['administrative_area_level_1'] = $request->get('administrative_area_level_1');
+                }
+                if ($request->get('administrative_area_level_2')) {
+                    $this->validate($request, ['administrative_area_level_2' => 'required|max:60',]);
+                    $userDirection['administrative_area_level_2'] = $request->get('administrative_area_level_2');
+                }
+                if ($request->get('route')) {
+                    $this->validate($request, ['route' => 'required|max:60',]);
+                    $userDirection['route'] = $request->get('route');
+                }
+                if ($request->get('street_number')) {
+                    $this->validate($request, ['street_number' => 'required',]);
+                    $userDirection['street_number'] = $request->get('street_number');
+                }
+                if ($request->get('postal_code')) {
+                    $this->validate($request, ['postal_code' => 'required|numeric',]);
+                    $userDirection['postal_code'] = $request->get('postal_code');
+                }
+                if ($request->get('lat')) {
+                    $this->validate($request, ['lat' => 'required|numeric',]);
+                    $userDirection['lat'] = $request->get('lat');
+                }
+                if ($request->get('lng')) {
+                    $this->validate($request, ['lng' => 'required|numeric',]);
+                    $userDirection['lng'] = $request->get('lng');
+                }
+                $userDirection->save();
+            } else {
+                $userDirection = Direction::create([
+                    'contry' => $request->get('contry'),
+                    'administrative_area_level_1' => $request->get('administrative_area_level_1'),
+                    'administrative_area_level_2' => $request->get('administrative_area_level_2'),
+                    'route' => $request->get('route'),
+                    'street_number' => $request->get('street_number'),
+                    'postal_code' => $request->get('postal_code'),
+                    'lat' => $request->get('lat'),
+                    'lng' => $request->get('lng'),
+                ]);
+            }
+            return response()->json($userDirection, 201);
+        } catch (Illuminate\Database\QueryException $error) {
+            return response()->json($error, 406);
+        }
+    }
+    /**
+     * Actualiza la información básica de usuario.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function updateUser(Request $request) {
+        try {
+            $user = Usuario::where('Authorization', $request->header('Authorization'))->first();
+            if ($request->get('name')) {
+                $this->validate($request, ['name' => 'required|min:4|max:60',]);
+                $user->name = $request->get('name');
+            }
+            if ($request->get('first_name')) {
+                $this->validate($request, ['first_name' => 'required|max:60',]);
+                $user->first_name = $request->get('first_name');
+            }
+            if ($request->get('last_name')) {
+                $this->validate($request, ['last_name' => 'required|max:60',]);
+                $user->last_name = $request->get('last_name');
+            }
+            if ($request->get('gender')) {
+                $this->validate($request, ['gender' => 'required|string',]);
+                $user->gender = $request->get('gender');
+            }
+            if ($request->get('phone_number')) {
+                $this->validate($request, ['phone_number' => 'required|numeric',]);
+                $user->phone_number = $request->get('phone_number');
+            }
+            if ($request->get('birthday')) {
+                $user->birthday = $request->get('birthday');
+            }
+            $user->save();
+            return response()->json($user, 201);
+        } catch (Illuminate\Database\QueryException $error) {
+            return response()->json($error, 406);
+        }
+    }
+    /**
+     * Llama la función para enviar un correo de confirmación.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function updateUserEmail(Request $request) {
+        try {
+            $user = Usuario::where('Authorization', $request->header('Authorization'))->first();
+            if ($request->get('email')) {
+                $this->validate($request, [
+                    'email' => 'required|email',
+                    'source' => 'required',
+                ]);
+                // VALIDAMOS QUE NO EXISTA EL USUARIO DEL MISMO SOURCE
+                $validate = Usuario::where([
+                    'email' => $request->get('email'),
+                    'source' => $request->get('source')
+                ])->first();
+                if ($validate) {
+                    return response()->json('SERVER.USER_EMAIL_ALREADY_EXISTS', 406);
+                } else {
+                    $user->email = $request->get('email');
+                    $user->save();
+                }
+            }
+            return response()->json($user, 201);
+        } catch (Illuminate\Database\QueryException $error) {
+            return response()->json($error, 406);
+        }
+    }
+    /**
      * guarda un archivo en nuestro directorio local.
      * 
      * @param \Illuminate\Http\Request $request
@@ -221,7 +371,7 @@ class UserController extends BaseController
         } else {
             $file = $request->file('file');
         }
-        $path = $_SERVER['DOCUMENT_ROOT'] . '/perrosdelagua_back/img/users_avatars/';
+        $path = $_SERVER['DOCUMENT_ROOT'] . '/big_thinks_back/img/users_avatars/';
         $file_url = URL::to('/') . '/img/users_avatars/' . $file_name;
         if (!File::exists($path)) {
             File::makeDirectory($path, 0775, true);

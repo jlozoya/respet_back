@@ -45,7 +45,7 @@ return [
     | utilizado globalmente para todos los correos electrónicos que envía su aplicación.
     |
     */
-    'from' => ['address' => 'jlozoya1995@gmail.com', 'name' => 'El club'],
+    'from' => ['address' => 'jlozoya1995@gmail.com', 'name' => 'Big Thinks'],
     /*
     |--------------------------------------------------------------------------
     | Global Stream

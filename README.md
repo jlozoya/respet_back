@@ -62,14 +62,13 @@ composer update
 
 ```bash
 composer require illuminate/notifications
-composer require guzzlehttp/guzzle
-composer require symfony/psr-http-message-bridge
-composer require zendframework/zend-diactoros
 composer require illuminate/mail
+composer require guzzlehttp/guzzle
 composer require illuminate/support
 composer require laravelcollective/html
 composer require intervention/image
 composer require vluzrmos/lumen-cors
+composer require brozot/laravel-fcm
 ```
 
 ## Credenciales

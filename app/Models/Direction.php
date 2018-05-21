@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Archivement extends Model 
+class Direction extends Model 
 {
     /**
      * Los atributos que son asignados en masa.
@@ -13,9 +13,14 @@ class Archivement extends Model
      */
     protected $fillable = [
         'id',
-        'value',
-        'goal',
-        'about',
+        'contry',
+        'administrative_area_level_1',
+        'administrative_area_level_2',
+        'route',
+        'street_number',
+        'postal_code',
+        'lat',
+        'lng',
     ];
     /**
      * Los atributos excluidos del formulario JSON del modelo.

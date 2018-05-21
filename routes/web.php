@@ -14,3 +14,24 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+
+$router->get('/key', function () use ($router) {
+    return str_random(32);
+});
+
+$router->post('/user/login', ['uses' => 'UserController@login']);
+$router->post('/user/signup', ['uses' => 'UserController@signup']);
+
+$router->post('/password/email', 'PasswordController@postEmail');
+$router->get('/password/reset/{token}', ['uses' => 'PasswordController@showResetForm']);
+$router->post('/password/reset', ['as' => 'password.reset', 'uses' => 'PasswordController@postReset']);
+
+$router->get('/user/confirm/email', ['as' => 'user.confirm.email', 'uses' => 'UserController@confirmEmail']);
+
+$router->group(['middleware' => ['auth']], function () use ($router) {
+    $router->get('/user/companies', ['uses' => 'UserController@getUserCompanies']);
+    
+    $router->post('/user/confirm/email', ['uses' => 'UserController@reSendConfirmEmail']);
+
+    $router->post('/user/set/avatar', ['uses' => 'UserController@saveAvatar']);
+});

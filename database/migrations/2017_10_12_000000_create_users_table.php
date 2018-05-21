@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('first_name', 60);
             $table->string('last_name', 60);
             $table->string('gender', 6);
-            $table->string('email');
+            $table->string('email', 60);
             $table->string('password', 60);
             $table->string('Authorization', 60)->unique();
             $table->text('img_url')->nullable();
@@ -27,14 +27,12 @@ class CreateUsersTable extends Migration
             $table->integer('phone_number')->nullable();
             $table->string('extern_id')->nullable();
             $table->date('birthday')->nullable();
-            $table->string('contry', 60)->nullable();
-            $table->string('administrative_area_level_1', 60)->nullable();
-            $table->string('administrative_area_level_2', 60)->nullable();
-            $table->string('route', 60)->nullable();
-            $table->integer('street_number')->nullable();
-            $table->boolean('confirmed')->default(false);
             $table->boolean('app_admin')->default(false);
+            $table->integer('direction_id')->unsigned()->nullable();
             $table->timestamps();
+
+            $table->foreign('direction_id')->references('id')->on('directions')->onDelete('cascade')->onUpdate('cascade');
+            $table->index('email');
         });
     }
     /**
