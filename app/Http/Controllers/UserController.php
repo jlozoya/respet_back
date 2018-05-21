@@ -35,6 +35,10 @@ class UserController extends BaseController
         if ($request->isJson()) {
             try {
                 if ($request->get('source') == 'app') {
+                    $user = User::where(['source' => $request->get('source'), 'email' => $request->get('email')])->first();
+                    if ($user) {
+                        return response()->json('SERVER.USER_ALREADY_EXISTS', 401);
+                    }
                     $this->validate($request, [
                         'password' => 'required|min:6|max:60'
                     ]);
@@ -50,6 +54,10 @@ class UserController extends BaseController
                         'source' => $request->get('source')
                     ]);
                 } else {
+                    $user = User::where(['source' => $request->get('source'), 'extern_id' => $request->get('extern_id')])->first();
+                    if ($user) {
+                        return response()->json('SERVER.USER_ALREADY_EXISTS', 401);
+                    }
                     $user = User::create([
                         'name' => $request->get('name'),
                         'first_name' => $request->get('first_name'),
