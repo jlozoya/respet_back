@@ -21,8 +21,8 @@ class CreateDirectionsTable extends Migration
             $table->string('route', 60)->nullable();
             $table->integer('street_number')->nullable();
             $table->integer('postal_code')->nullable();
-            $table->string('lat')->nullable();
-            $table->string('lng')->nullable();
+            $table->float('lat')->nullable();
+            $table->float('lng')->nullable();
             $table->timestamps();
         });
     }

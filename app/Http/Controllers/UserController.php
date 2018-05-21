@@ -19,12 +19,28 @@ use Carbon\Carbon;
 class UserController extends BaseController
 {
     /**
+     * Recupera la información básica de un usuario.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getUserById($id) {
+        $user = User::find($id);
+        if ($user) {
+            $userDirection = Direction::find($user['direction_id']);
+            $user['direction'] = $userDirection;
+            return response()->json($user, 200);
+        } else {
+            return response()->json('SERVER.USER_NOT_REGISTRED', 404);
+        }
+    }
+    /**
      * Valida e inserta los datos del usuario.
      *
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    function signup(Request $request) {
+    public function signup(Request $request) {
         $this->validate($request, [
             'name' => 'required|min:4|max:60',
             'first_name' => 'required|max:60',
@@ -84,7 +100,7 @@ class UserController extends BaseController
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    function login(Request $request) {
+    public function login(Request $request) {
         if ($request->isJson()) {
             try {
                 $data = $request->json()->all();
@@ -109,7 +125,7 @@ class UserController extends BaseController
                                 $user['direction'] = $userDirection;
                                 return response()->json($user, 200);
                             } else {
-                                return response()->json('SERVER.USER_NOT_REGISTRED', 200);
+                                return response()->json('SERVER.USER_NOT_REGISTRED', 404);
                             }
                         } else {
                             return response()->json('SERVER.WRONG_USER', 406);
@@ -129,7 +145,7 @@ class UserController extends BaseController
                                 $user['direction'] = $userDirection;
                                 return response()->json($user, 200);
                             } else {
-                                return response()->json('SERVER.USER_NOT_REGISTRED', 200);
+                                return response()->json('SERVER.USER_NOT_REGISTRED', 404);
                             }
                         } else {
                             return response()->json('SERVER.WRONG_USER', 406);
@@ -151,7 +167,7 @@ class UserController extends BaseController
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    function reSendConfirmEmail(Request $request) {
+    public function reSendConfirmEmail(Request $request) {
         $this->validate($request, [
             'id' => 'required'
         ]);
@@ -175,7 +191,7 @@ class UserController extends BaseController
      * @param $user
      * @return \Illuminate\Http\Response
      */
-    function sendConfirmEmail($user) {
+    public function sendConfirmEmail($user) {
         $emailConfirmData = EmailConfirm::where('user_id', $user['id'])->first();
         if ($emailConfirmData == "") {
             $emailConfirmData = EmailConfirm::create([
@@ -201,7 +217,7 @@ class UserController extends BaseController
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    function confirmEmail(Request $request) {
+    public function confirmEmail(Request $request) {
         $this->validate($request, [
             'token' => 'required'
         ]);
@@ -278,6 +294,8 @@ class UserController extends BaseController
                     'lat' => $request->get('lat'),
                     'lng' => $request->get('lng'),
                 ]);
+                $user['direction_id'] = $userDirection['id'];
+                $user->save();
             }
             return response()->json($userDirection, 201);
         } catch (Illuminate\Database\QueryException $error) {
@@ -292,7 +310,7 @@ class UserController extends BaseController
      */
     public function updateUser(Request $request) {
         try {
-            $user = Usuario::where('Authorization', $request->header('Authorization'))->first();
+            $user = User::where('Authorization', $request->header('Authorization'))->first();
             if ($request->get('name')) {
                 $this->validate($request, ['name' => 'required|min:4|max:60',]);
                 $user->name = $request->get('name');
@@ -330,14 +348,14 @@ class UserController extends BaseController
      */
     public function updateUserEmail(Request $request) {
         try {
-            $user = Usuario::where('Authorization', $request->header('Authorization'))->first();
+            $user = User::where('Authorization', $request->header('Authorization'))->first();
             if ($request->get('email')) {
                 $this->validate($request, [
                     'email' => 'required|email',
                     'source' => 'required',
                 ]);
                 // VALIDAMOS QUE NO EXISTA EL USUARIO DEL MISMO SOURCE
-                $validate = Usuario::where([
+                $validate = User::where([
                     'email' => $request->get('email'),
                     'source' => $request->get('source')
                 ])->first();
