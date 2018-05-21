@@ -107,9 +107,9 @@ trait ResetsPasswords
         });
         switch ($response) {
             case Password::PASSWORD_RESET:
-                return response()->json($this->getResetSuccessResponse($response), 200);
+                return $this->getResetSuccessResponse($response);
             default:
-                return response()->json($this->getResetFailureResponse($request, $response), 400);
+                return $this->getResetFailureResponse($request, $response);
         }
     }
     /**
@@ -136,7 +136,7 @@ trait ResetsPasswords
     {
         $user->password = Hash::make($password);
         $user->save();
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true], 200);
     }
     /**
      * Obtiene la respuesta después de un reinicio de contraseña exitoso.
@@ -146,7 +146,7 @@ trait ResetsPasswords
      */
     protected function getResetSuccessResponse($response)
     {
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true], 200);
     }
     /**
      * Obtiene la respuesta después de un restablecimiento de contraseña fallido.
@@ -157,7 +157,7 @@ trait ResetsPasswords
      */
     protected function getResetFailureResponse(Request $request, $response)
     {
-        return response()->json(['success' => false]);
+        return response()->json(['success' => false], 400);
     }
     /**
      * Usa el intermediario 'broker' restablecimiento de contraseña.
