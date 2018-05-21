@@ -14,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind('patch.public', function () {
-            return base_path().'/public_html/perrosdelagua_back';
+            return base_path().'/public_html/big_thinks_back';
         });
     }
 }

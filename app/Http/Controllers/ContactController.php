@@ -7,6 +7,8 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 use App\Models\User;
 use App\Models\Contact;
 
+use Illuminate\Http\Request;
+
 use App\Notifications\ContactMessage;
 use App\Notifications\ContactConfirmation;
 
