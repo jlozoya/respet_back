@@ -379,7 +379,7 @@ class UserController extends BaseController
         $user = User::where('Authorization', $request->header('Authorization'))->first();
         Image::make($file)->save($path . $file_name);
         // Evalúa si hay un archivo registrado en el servidor con el mismo nombre para eliminarlo.
-        if (parse_url($user->img_url)['host'] == parse_url(URL::to('/'))['host']) {
+        if ($user->img_url && parse_url($user->img_url)['host'] == parse_url(URL::to('/'))['host']) {
             File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($user->img_url)['path']);
         }
         $user->img_url = $file_url;
