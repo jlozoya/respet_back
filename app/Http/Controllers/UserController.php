@@ -83,6 +83,8 @@ class UserController extends BaseController
                 if ($data['source'] == 'app') {
                     $user = User::where('email', $data['email'])->first();
                     if ($user && Hash::check($data['password'], $user->password)) {
+                        $userDirection = Direction::find($user['direction_id']);
+                        $user['direction'] = $userDirection;
                         return response()->json($user, 200);
                     } else {
                         return response()->json('SERVER.INCORRECT_USER', 406);
@@ -95,6 +97,8 @@ class UserController extends BaseController
                         if ($response_decoded['id'] == $data['extern_id']) {
                             $user = User::where('extern_id', $data['extern_id'])->first();
                             if ($user) {
+                                $userDirection = Direction::find($user['direction_id']);
+                                $user['direction'] = $userDirection;
                                 return response()->json($user, 200);
                             } else {
                                 return response()->json('SERVER.USER_NOT_REGISTRED', 200);
@@ -113,6 +117,8 @@ class UserController extends BaseController
                         if ($response_decoded['user_id'] == $data['extern_id']) {
                             $user = User::where('extern_id', $data['extern_id'])->first();
                             if ($user) {
+                                $userDirection = Direction::find($user['direction_id']);
+                                $user['direction'] = $userDirection;
                                 return response()->json($user, 200);
                             } else {
                                 return response()->json('SERVER.USER_NOT_REGISTRED', 200);
