@@ -33,7 +33,7 @@ $router->post('/contact/send', ['uses' => 'ContactController@sendContact']);
 $router->group(['middleware' => ['auth']], function () use ($router) {
     $router->post('/user/confirm/email', ['uses' => 'UserController@reSendConfirmEmail']);
     $router->post('/user/set/avatar', ['uses' => 'UserController@saveAvatar']);
-    $router->put('/user/update', ['uses' => 'UsuarioController@updateUser']);
-    $router->put('/user/update/email', ['uses' => 'UsuarioController@updateUserEmail']);
-    $router->put('/user/update/direction', ['uses' => 'UsuarioController@updateUserDirection']);
+    $router->put('/user/update', ['uses' => 'UserController@updateUser']);
+    $router->put('/user/update/email', ['uses' => 'UserController@updateUserEmail']);
+    $router->put('/user/update/direction', ['uses' => 'UserController@updateUserDirection']);
 });
