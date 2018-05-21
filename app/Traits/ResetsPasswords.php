@@ -107,9 +107,9 @@ trait ResetsPasswords
         });
         switch ($response) {
             case Password::PASSWORD_RESET:
-                return $this->getResetSuccessResponse($response);
+                return response()->json($this->getResetSuccessResponse($response), 200);
             default:
-                return $this->getResetFailureResponse($request, $response);
+                return response()->json($this->getResetFailureResponse($request, $response), 400);
         }
     }
     /**
