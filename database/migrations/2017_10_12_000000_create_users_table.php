@@ -24,7 +24,7 @@ class CreateUsersTable extends Migration
             $table->string('Authorization', 60)->unique()->index();
             $table->text('img_url')->nullable();
             $table->enum('source', ['app', 'facebook', 'google', 'other']);
-            $table->integer('phone')->nullable();
+            $table->string('phone', 15)->nullable();
             $table->string('extern_id')->nullable();
             $table->date('birthday')->nullable();
             $table->boolean('is_admin')->default(false);
