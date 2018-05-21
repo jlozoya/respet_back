@@ -64,7 +64,7 @@ trait ResetsPasswords
      */
     protected function getSendResetLinkEmailSuccessResponse()
     {
-        return response()->json(['success' => true]);
+        return response()->json('SERVER.EMAIL_READY', 200);
     }
     /**
      * Obtiene la respuesta después de que no se haya podido enviar el enlace de restablecimiento.
@@ -74,7 +74,7 @@ trait ResetsPasswords
      */
     protected function getSendResetLinkEmailFailureResponse()
     {
-      return response()->json(['success' => false]);
+        return response()->json('SERVER.WRONG_USER', 404);
     }
     /**
      * Muestra la vista de restablecimiento de contraseña para el token dado.
@@ -107,9 +107,9 @@ trait ResetsPasswords
         });
         switch ($response) {
             case Password::PASSWORD_RESET:
-                return response()->json('SERVER.EMAIL_READY', 200);
+                return $this->getResetSuccessResponse($response);
             default:
-                return response()->json('SERVER.EMAIL_NOT_FOUND', 404);
+                return $this->getResetFailureResponse($request, $response);
         }
     }
     /**
@@ -136,7 +136,28 @@ trait ResetsPasswords
     {
         $user->password = Hash::make($password);
         $user->save();
-        return response()->json(['success' => true], 200);
+        return response()->json('SERVER.SUCCESS', 200);
+    }
+    /**
+     * Obtiene la respuesta después de un reinicio de contraseña exitoso.
+     *
+     * @param  string  $response
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    protected function getResetSuccessResponse($response)
+    {
+        return response()->json('SERVER.RESET_SUCCESS', 200);
+    }
+    /**
+     * Obtiene la respuesta después de un restablecimiento de contraseña fallido.
+     *
+     * @param  Request  $request
+     * @param  string  $response
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    protected function getResetFailureResponse(Request $request, $response)
+    {
+        return response()->json('SERVER.RESET_FAIL', 400);
     }
     /**
      * Usa el intermediario 'broker' restablecimiento de contraseña.
