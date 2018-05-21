@@ -26,7 +26,7 @@ class UserController extends BaseController
      */
     function signup(Request $request) {
         $this->validate($request, [
-            'name' => 'required|min:5|max:60',
+            'name' => 'required|min:4|max:60',
             'first_name' => 'required|max:60',
             'last_name' => 'required|max:60',
             'email' => 'required|email',
