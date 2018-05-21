@@ -28,10 +28,12 @@ $router->post('/password/reset', ['as' => 'password.reset', 'uses' => 'PasswordC
 
 $router->get('/user/confirm/email', ['as' => 'user.confirm.email', 'uses' => 'UserController@confirmEmail']);
 
-$router->group(['middleware' => ['auth']], function () use ($router) {
-    $router->get('/user/companies', ['uses' => 'UserController@getUserCompanies']);
-    
-    $router->post('/user/confirm/email', ['uses' => 'UserController@reSendConfirmEmail']);
+$router->post('/contact/send', ['uses' => 'ContactController@sendContact']);
 
+$router->group(['middleware' => ['auth']], function () use ($router) {
+    $router->post('/user/confirm/email', ['uses' => 'UserController@reSendConfirmEmail']);
     $router->post('/user/set/avatar', ['uses' => 'UserController@saveAvatar']);
+    $router->put('/user/update', ['uses' => 'UsuarioController@updateUser']);
+    $router->put('/user/update/email', ['uses' => 'UsuarioController@updateUserEmail']);
+    $router->put('/user/update/direction', ['uses' => 'UsuarioController@updateUserDirection']);
 });

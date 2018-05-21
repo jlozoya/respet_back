@@ -15,7 +15,7 @@ class ResetPasswordNotification extends Notification implements ShouldQueue
      *
      * @var string
      */
-    public $resetLink;
+    private $resetLink;
 
     /**
      * Crea una instancia de notificación.

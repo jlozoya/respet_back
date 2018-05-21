@@ -7,15 +7,9 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class RegistrationConfirmation extends Notification implements ShouldQueue
+class ContactConfirmation extends Notification implements ShouldQueue
 {
     use Queueable;
-    /**
-     * La url de confirmación para el nuevo usuario.
-     *
-     * @var string
-     */
-    private $confirmationLink;
 
     /**
      * Crea una instancia de notificación.
@@ -23,9 +17,9 @@ class RegistrationConfirmation extends Notification implements ShouldQueue
      * @param  string  $confirmationLink
      * @return void
      */
-    public function __construct($confirmationLink)
+    public function __construct()
     {
-        $this->confirmationLink = $confirmationLink;
+        
     }
 
     /**
@@ -48,11 +42,10 @@ class RegistrationConfirmation extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Confirmación de correo')
+            ->subject('Confirmación de contacto')
             ->greeting('Hola!')
-            ->line('Usted está recibiendo este correo porque se registró exitosamente su cuenta y queremos confirmar su correo. Haga clic en el botón a continuación para confirmar:')
-            ->action('Confirmar correo', $this->confirmationLink)
-            ->line('Si no solicitó registrarse, no se requieren mas acciones.')
+            ->line('Muchas gracias por ponerse en contacto con nosotros.')
+            ->line('Si no fue usted, no se requieren mas acciones.')
             ->salutation('Saludos');
     }
 }

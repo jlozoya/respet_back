@@ -86,5 +86,5 @@ Ftp hostinger
 * Usuario FTP: u736574120
 
 ```bash
-git clone ssh://u736574120@quesidogo.com:65002/home/u736574120/develop/perrosdelagua_back/
+git clone ssh://u736574120@quesidogo.com:65002/home/u736574120/develop/big_thinks_back/
 ```

@@ -7,15 +7,21 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class RegistrationConfirmation extends Notification implements ShouldQueue
+class ContactMessage extends Notification implements ShouldQueue
 {
     use Queueable;
     /**
-     * La url de confirmación para el nuevo usuario.
+     * Es la información a enviar.
      *
-     * @var string
+     * @var object
      */
-    private $confirmationLink;
+    private $contact;
+    /**
+     * Es el usuario al que se le envia el mensaje.
+     *
+     * @var object
+     */
+    private $user;
 
     /**
      * Crea una instancia de notificación.
@@ -23,9 +29,9 @@ class RegistrationConfirmation extends Notification implements ShouldQueue
      * @param  string  $confirmationLink
      * @return void
      */
-    public function __construct($confirmationLink)
+    public function __construct($contact, $user)
     {
-        $this->confirmationLink = $confirmationLink;
+        $this->contact = $contact;
     }
 
     /**
@@ -48,11 +54,13 @@ class RegistrationConfirmation extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Confirmación de correo')
-            ->greeting('Hola!')
-            ->line('Usted está recibiendo este correo porque se registró exitosamente su cuenta y queremos confirmar su correo. Haga clic en el botón a continuación para confirmar:')
-            ->action('Confirmar correo', $this->confirmationLink)
-            ->line('Si no solicitó registrarse, no se requieren mas acciones.')
+            ->subject('Nuevo mensaje de contacto')
+            ->greeting('Hola ' . $this->user['name'] . '!')
+            ->line('Un usuario envió un mensaje de contacto')
+            ->line('Nombre: ' . $this->contact['name'])
+            ->line('Teléfono: ' . $this->contact['phone'])
+            ->line('Email: ' . $this->contact['email'])
+            ->line('Mensaje: ' . $this->contact['message'])
             ->salutation('Saludos');
     }
 }

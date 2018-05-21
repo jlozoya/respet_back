@@ -188,20 +188,6 @@ class UserController extends BaseController
         }
     }
     /**
-     * Recupera los datos de las compañías del usuario.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    function getUserCompanies(Request $request) {
-        $user_role_companies = User::select('companies.*', 'user_roles.*')
-            ->where('Authorization', $request->header('Authorization'))
-            ->join('user_roles', 'users.id', '=', 'user_roles.user_id')
-            ->join('companies', 'user_roles.company_id', '=', 'companies.id')
-            ->get();
-        return $user_role_companies;
-    }
-    /**
      * Actualiza la información del usuario para confirmar el correo electrónico.
      *
      * @param  \Illuminate\Http\Request $request
@@ -315,9 +301,9 @@ class UserController extends BaseController
                 $this->validate($request, ['gender' => 'required|string',]);
                 $user->gender = $request->get('gender');
             }
-            if ($request->get('phone_number')) {
-                $this->validate($request, ['phone_number' => 'required|numeric',]);
-                $user->phone_number = $request->get('phone_number');
+            if ($request->get('phone')) {
+                $this->validate($request, ['phone' => 'required|numeric',]);
+                $user->phone = $request->get('phone');
             }
             if ($request->get('birthday')) {
                 $user->birthday = $request->get('birthday');

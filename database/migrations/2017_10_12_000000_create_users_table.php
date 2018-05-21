@@ -24,10 +24,10 @@ class CreateUsersTable extends Migration
             $table->string('Authorization', 60)->unique();
             $table->text('img_url')->nullable();
             $table->string('source', 8);
-            $table->integer('phone_number')->nullable();
+            $table->integer('phone')->nullable();
             $table->string('extern_id')->nullable();
             $table->date('birthday')->nullable();
-            $table->boolean('app_admin')->default(false);
+            $table->boolean('is_admin')->default(false);
             $table->integer('direction_id')->unsigned()->nullable();
             $table->timestamps();
 
