@@ -15,13 +15,13 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id')->unique();
-            $table->string('name', 60);
+            $table->string('name', 60)->index();
             $table->string('first_name', 60);
             $table->string('last_name', 60);
             $table->string('gender', 6);
-            $table->string('email', 60);
+            $table->string('email', 60)->index();
             $table->string('password', 60);
-            $table->string('Authorization', 60)->unique();
+            $table->string('Authorization', 60)->unique()->index();
             $table->text('img_url')->nullable();
             $table->string('source', 8);
             $table->integer('phone')->nullable();
@@ -32,7 +32,6 @@ class CreateUsersTable extends Migration
             $table->timestamps();
 
             $table->foreign('direction_id')->references('id')->on('directions')->onDelete('cascade')->onUpdate('cascade');
-            $table->index('email');
         });
     }
     /**

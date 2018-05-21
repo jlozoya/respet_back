@@ -12,7 +12,7 @@ class CreatePasswordsResetsTable extends Migration
     {
         Schema::create('passwords_resets', function (Blueprint $table) {
             $table->string('email');
-            $table->string('token')->index();
+            $table->string('token', 120)->index();
             $table->timestamp('created_at');
         });
     }
