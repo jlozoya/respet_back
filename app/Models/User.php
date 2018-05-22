@@ -35,6 +35,8 @@ class User extends Model implements CanResetPasswordContract, AuthenticatableCon
         'confirmed',
         'birthday',
         'direction_id',
+        'is_admin',
+        'confirmed',
     ];
     /**
      * Los atributos excluidos del formulario JSON del modelo.
@@ -45,7 +47,5 @@ class User extends Model implements CanResetPasswordContract, AuthenticatableCon
         'created_at',
         'updated_at',
         'password',
-        'confirmed',
-        'is_admin',
     ];
 }

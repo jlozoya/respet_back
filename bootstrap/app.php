@@ -77,7 +77,7 @@ $app->singleton(
 
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
-    //'companyRoleLevelOne' => App\Http\Middleware\CompanyRoleLevelOneMiddleware::class
+    'isAdmin' => App\Http\Middleware\IsAdmin::class,
 ]);
 
 $app->middleware([

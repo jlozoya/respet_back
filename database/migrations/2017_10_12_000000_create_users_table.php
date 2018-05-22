@@ -28,7 +28,7 @@ class CreateUsersTable extends Migration
             $table->string('extern_id')->nullable();
             $table->date('birthday')->nullable();
             $table->boolean('confirmed')->default(false);
-            $table->boolean('is_admin')->default(false);
+            $table->enum('role', ['visitor', 'parent', 'student', 'school', 'teacher', 'admin', 'other'])->default('visitor');
             $table->integer('direction_id')->unsigned()->nullable();
             $table->timestamps();
 
