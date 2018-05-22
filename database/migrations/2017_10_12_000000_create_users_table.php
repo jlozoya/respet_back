@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('name', 60)->index();
             $table->string('first_name', 60);
             $table->string('last_name', 60);
-            $table->enum('gender', ['male', 'female', 'other']);
+            $table->enum('gender', ['male', 'female', 'other'])->nullable();
             $table->string('email', 60)->index();
             $table->string('password', 60);
             $table->string('Authorization', 60)->unique()->index();
