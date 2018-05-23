@@ -69,6 +69,7 @@ composer require laravelcollective/html
 composer require intervention/image
 composer require vluzrmos/lumen-cors
 composer require brozot/laravel-fcm
+composer require nesbot/carbon
 ```
 
 ## Credenciales
