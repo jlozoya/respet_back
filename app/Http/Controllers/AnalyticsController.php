@@ -8,22 +8,17 @@ use App\Models\User;
 use App\Models\Contact;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\File;
-use Intervention\Image\ImageManagerStatic as Image;
-use App\Notifications\RegistrationConfirmation;
 use Carbon\Carbon;
+use DB;
 
 class AnalyticsController extends BaseController
 {
     /**
      * Recupera la información básica del estado del servidor.
      *
-     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function getAnalytics() {
+    public function getBasicAnalytics() {
         $userNumber = User::count();
         // Genero
         $userMaleNumber = User::where('gender', 1)->count();
@@ -52,5 +47,32 @@ class AnalyticsController extends BaseController
                 'unknown' => $unknown_age,
             ]
         ], 200);
+    }
+    /**
+     * Recupera la información básica del estado del servidor.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getUsersRegistration(Request $request) {
+        $this->validate($request, ['interval' => 'required',]);
+        switch ($request->get('interval')) {
+            case 'lastWeek': {
+                $users = DB::select('SELECT usr.created_at, count(*) AS users FROM (SELECT date(created_at) AS created_at FROM users WHERE created_at BETWEEN "' . Carbon::now()->subWeek() . '" AND "' . Carbon::now() . '" GROUP BY created_at) AS usr GROUP BY usr.created_at');
+                return response()->json($users, 200);
+            }
+            break;
+            case 'lastMonth': {
+                $users = DB::select('SELECT usr.created_at, count(*) AS users FROM (SELECT date(created_at) AS created_at FROM users WHERE created_at BETWEEN "' . Carbon::now()->subMonth() . '" AND "' . Carbon::now() . '" GROUP BY created_at) AS usr GROUP BY usr.created_at');
+                return response()->json($users, 200);
+            }
+            break;
+            case 'lastYear': {
+                $users = DB::select('SELECT usr.created_at, count(*) AS users FROM (SELECT date(created_at) AS created_at FROM users WHERE created_at BETWEEN "' . Carbon::now()->subYear() . '" AND "' . Carbon::now() . '" GROUP BY created_at) AS usr GROUP BY usr.created_at');
+                return response()->json($users, 200);
+            }
+            break;
+        };
+        return response()->json([], 200);
     }
 }

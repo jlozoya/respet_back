@@ -40,6 +40,7 @@ $router->group(['middleware' => ['auth']], function () use ($router) {
     $router->put('/user/update/direction', ['uses' => 'UserController@updateUserDirection']);
 
     $router->group(['middleware' => ['isAdmin']], function () use ($router) {
-        $router->get('/analytics', ['uses' => 'AnalyticsController@getAnalytics']);
+        $router->get('/analytics', ['uses' => 'AnalyticsController@getBasicAnalytics']);
+        $router->post('/analytics/users/registration', ['uses' => 'AnalyticsController@getUsersRegistration']);
     });
 });

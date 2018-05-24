@@ -37,6 +37,7 @@ class User extends Model implements CanResetPasswordContract, AuthenticatableCon
         'direction_id',
         'is_admin',
         'confirmed',
+        'created_at',
     ];
     /**
      * Los atributos excluidos del formulario JSON del modelo.
@@ -44,7 +45,6 @@ class User extends Model implements CanResetPasswordContract, AuthenticatableCon
      * @var array
      */
     protected $hidden = [
-        'created_at',
         'updated_at',
         'password',
     ];
