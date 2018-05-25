@@ -25,6 +25,7 @@ class ContactController extends BaseController
             'name' => 'required|min:4|max:60',
             'email' => 'required|max:60',
             'message' => 'required|max:255',
+            'lang' => 'required',
         ]);
         $contact = Contact::create([
             'name' => $request->get('name'),
@@ -32,7 +33,7 @@ class ContactController extends BaseController
             'email' => $request->get('email'),
             'message' => $request->get('message'),
         ]);
-        $contact->notify(new ContactConfirmation());
+        $contact->notify(new ContactConfirmation($contact['lang']));
         $users = User::where('is_admin', true)->get();
         foreach ($users as $user) {
             $user->notify(new ContactConfirmation($contact, $user));

@@ -36,7 +36,7 @@ trait ResetsPasswords
                 $user
             );
             $resetLink = URL::to('/') . '/password/reset/' . $token . '?email=' . $request->get('email') . '&source=' . $request->get('source');
-            $response = $user->notify(new ResetPasswordNotification($resetLink));
+            $response = $user->notify(new ResetPasswordNotification($resetLink, $user['lang']));
             if ($response == '') {
                 return $this->getSendResetLinkEmailSuccessResponse($response);
             } else {

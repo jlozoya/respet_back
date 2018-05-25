@@ -46,6 +46,7 @@ class UserController extends BaseController
             'first_name' => 'required|max:60',
             'last_name' => 'required|max:60',
             'email' => 'required|email',
+            'lang' => 'required',
             'source' => 'required'
         ]);
         if ($request->isJson()) {
@@ -67,6 +68,7 @@ class UserController extends BaseController
                         'password' => Hash::make($request->get('password')),
                         'Authorization' => str_random(60),
                         'img_url' => $request->get('img_url'),
+                        'lang' => $request->get('lang'),
                         'source' => $request->get('source')
                     ]);
                 } else {
@@ -82,6 +84,7 @@ class UserController extends BaseController
                         'email' => $request->get('email'),
                         'Authorization' => str_random(60),
                         'img_url' => $request->get('img_url'),
+                        'lang' => $request->get('lang'),
                         'source' => $request->get('source'),
                         'extern_id' => $request->get('extern_id')
                     ]);
@@ -204,7 +207,7 @@ class UserController extends BaseController
             $emailConfirmData->save();
         }
         $confirmationLink = route('user.confirm.email') . '?token=' . $emailConfirmData->token;
-        $response = $user->notify(new RegistrationConfirmation($confirmationLink));
+        $response = $user->notify(new RegistrationConfirmation($confirmationLink, $user['lang']));
         if ($response == '') {
             return response()->json(['success' => true]);
         } else {
@@ -371,6 +374,24 @@ class UserController extends BaseController
         } catch (Illuminate\Database\QueryException $error) {
             return response()->json($error, 406);
         }
+    }
+    /**
+     * Para actualizar el idioma de usuario registrado
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function updateUserLang(Request $request) {
+        $this->validate($request, [
+            'lang' => 'required',
+        ]);
+        $user = User::where('Authorization', $request->header('Authorization'))->first();
+        if ($user) {
+            $user['lang'] = $request->get('lang');
+            $user->save();
+            return response()->json($user['lang'], 202);
+        }
+        return response()->json('USER_NOT_REGISTRED', 404);
     }
     /**
      * guarda un archivo en nuestro directorio local.

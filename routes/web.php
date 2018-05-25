@@ -37,6 +37,7 @@ $router->group(['middleware' => ['auth']], function () use ($router) {
     $router->post('/user/set/avatar', ['uses' => 'UserController@saveAvatar']);
     $router->put('/user/update', ['uses' => 'UserController@updateUser']);
     $router->put('/user/update/email', ['uses' => 'UserController@updateUserEmail']);
+    $router->put('/user/update/lang', ['uses' => 'UserController@updateUserLang']);
     $router->put('/user/update/direction', ['uses' => 'UserController@updateUserDirection']);
 
     $router->group(['middleware' => ['isAdmin']], function () use ($router) {
