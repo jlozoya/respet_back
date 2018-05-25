@@ -26,6 +26,7 @@ class CreateUsersTable extends Migration
             $table->enum('source', ['app', 'facebook', 'google', 'other']);
             $table->string('phone', 15)->nullable();
             $table->string('extern_id')->nullable();
+            $table->string('lang', 5)->default('es');
             $table->date('birthday')->nullable();
             $table->boolean('confirmed')->default(false);
             $table->enum('role', ['visitor', 'parent', 'student', 'school', 'teacher', 'admin', 'other'])->default('visitor');
