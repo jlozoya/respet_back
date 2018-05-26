@@ -54,7 +54,7 @@ class ContactConfirmation extends Notification implements ShouldQueue
                 ->salutation('Saludos');
         } else if ($this->lang == 'en') {
             return (new MailMessage)
-                ->subject('CContact confirmation')
+                ->subject('Contact confirmation')
                 ->greeting('Hello!')
                 ->line('Thank you very much for contacting us.')
                 ->line('If it was not you, no more actions are required.')
