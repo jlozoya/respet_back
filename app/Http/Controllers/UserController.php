@@ -21,7 +21,7 @@ class UserController extends BaseController
     /**
      * Recupera la información básica de un usuario.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param  number $id
      * @return \Illuminate\Http\Response
      */
     public function getUserById($id) {
@@ -33,6 +33,33 @@ class UserController extends BaseController
         } else {
             return response()->json('SERVER.USER_NOT_REGISTRED', 404);
         }
+    }
+    /**
+     * Recupera la información básica de varios usuarios.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getUsers(Request $request) {
+        $user = User::select(
+            'users.id',
+            'users.name',
+            'users.first_name',
+            'users.last_name',
+            'users.gender',
+            'users.email',
+            'users.img_url',
+            'users.source',
+            'users.phone',
+            'users.lang',
+            'users.birthday',
+            'users.role'
+        )->where('name', 'like', '%' . $request->get('search') . '%')
+        ->orWhere('email', 'like', '%' . $request->get('search') . '%')
+        ->orWhere('phone', 'like', '%' . $request->get('search') . '%')
+        ->paginate(15);
+
+        return response()->json($user, 200);
     }
     /**
      * Valida e inserta los datos del usuario.
@@ -196,7 +223,7 @@ class UserController extends BaseController
      */
     public function sendConfirmEmail($user) {
         $emailConfirmData = EmailConfirm::where('user_id', $user['id'])->first();
-        if ($emailConfirmData == "") {
+        if ($emailConfirmData == '') {
             $emailConfirmData = EmailConfirm::create([
                 'user_id' => $user['id'],
                 'email' => $user['email'],
@@ -225,7 +252,7 @@ class UserController extends BaseController
             'token' => 'required'
         ]);
         $emailConfirmData = EmailConfirm::where('token', $request->token)->first();
-        if ($emailConfirmData == "") {
+        if ($emailConfirmData == '') {
             return response()->json('SERVER.WRONG_TOKEN', 406);
         } else {
             $dateTimeNow = Carbon::now();
