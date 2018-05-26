@@ -22,6 +22,7 @@ class Contact extends Model
         'phone',
         'email',
         'message',
+        'lang',
     ];
     /**
      * Los atributos excluidos del formulario JSON del modelo.

@@ -32,7 +32,6 @@ class ContactMessage extends Notification implements ShouldQueue
     {
         $this->contact = $contact;
         $this->user = $user;
-        $this->lang = $lang;
     }
 
     /**

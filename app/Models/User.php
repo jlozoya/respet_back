@@ -36,7 +36,7 @@ class User extends Model implements CanResetPasswordContract, AuthenticatableCon
         'confirmed',
         'birthday',
         'direction_id',
-        'is_admin',
+        'role',
         'confirmed',
         'created_at',
     ];
