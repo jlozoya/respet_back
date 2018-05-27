@@ -24,8 +24,37 @@ class UserController extends BaseController
      * @param  number $id
      * @return \Illuminate\Http\Response
      */
+    public function getMe(Request $request) {
+        $user = User::where('Authorization', $request->header('Authorization'))->first();
+        if ($user) {
+            $userDirection = Direction::find($user['direction_id']);
+            $user['direction'] = $userDirection;
+            return response()->json($user, 200);
+        } else {
+            return response()->json('SERVER.USER_NOT_REGISTRED', 404);
+        }
+    }
+    /**
+     * Recupera la información básica de un usuario.
+     *
+     * @param  number $id
+     * @return \Illuminate\Http\Response
+     */
     public function getUserById($id) {
-        $user = User::find($id);
+        $user = User::select(
+            'id',
+            'name',
+            'first_name',
+            'last_name',
+            'gender',
+            'email',
+            'img_url',
+            'source',
+            'phone',
+            'lang',
+            'birthday',
+            'role'
+        )->find($id);
         if ($user) {
             $userDirection = Direction::find($user['direction_id']);
             $user['direction'] = $userDirection;
@@ -42,18 +71,18 @@ class UserController extends BaseController
      */
     public function getUsers(Request $request) {
         $user = User::select(
-            'users.id',
-            'users.name',
-            'users.first_name',
-            'users.last_name',
-            'users.gender',
-            'users.email',
-            'users.img_url',
+            'id',
+            'name',
+            'first_name',
+            'last_name',
+            'gender',
+            'email',
+            'img_url',
             'users.source',
-            'users.phone',
-            'users.lang',
-            'users.birthday',
-            'users.role'
+            'phone',
+            'lang',
+            'birthday',
+            'role'
         )->where('name', 'like', '%' . $request->get('search') . '%')
         ->orWhere('email', 'like', '%' . $request->get('search') . '%')
         ->orWhere('phone', 'like', '%' . $request->get('search') . '%')
@@ -418,7 +447,26 @@ class UserController extends BaseController
             $user->save();
             return response()->json($user['lang'], 202);
         }
-        return response()->json('USER_NOT_REGISTRED', 404);
+        return response()->json('SERVER.USER_NOT_REGISTRED', 404);
+    }
+    /**
+     * Estable el rol del usuario
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function setUserRole(Request $request) {
+        $this->validate($request, [
+            'user_id' => 'required',
+            'role' => 'required',
+        ]);
+        $user = User::find($request->get('user_id'));
+        if ($user) {
+            $user['role'] = $request->get('role');
+            $user->save();
+            return response()->json($user['role'], 202);
+        }
+        return response()->json('SERVER.USER_NOT_REGISTRED', 404);
     }
     /**
      * guarda un archivo en nuestro directorio local.

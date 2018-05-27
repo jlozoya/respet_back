@@ -32,7 +32,7 @@ $router->post('/contact/send', ['uses' => 'ContactController@sendContact']);
 
 $router->group(['middleware' => ['auth']], function () use ($router) {
 
-    $router->get('/user/{id}', ['uses' => 'UserController@getUserById']);
+    $router->get('/user/me', ['uses' => 'UserController@getMe']);
     $router->post('/user/confirm/email', ['uses' => 'UserController@reSendConfirmEmail']);
     $router->post('/user/set/avatar', ['uses' => 'UserController@saveAvatar']);
     $router->put('/user/update', ['uses' => 'UserController@updateUser']);
@@ -42,7 +42,10 @@ $router->group(['middleware' => ['auth']], function () use ($router) {
 
     $router->group(['middleware' => ['isAdmin']], function () use ($router) {
         
+        $router->get('/user/{id}', ['uses' => 'UserController@getUserById']);
         $router->post('/users', ['uses' => 'UserController@getUsers']);
+        
+        $router->put('/user/role', ['uses' => 'UserController@setUserRole']);
 
         $router->get('/analytics', ['uses' => 'AnalyticsController@getBasicAnalytics']);
         $router->post('/analytics/users/registration', ['uses' => 'AnalyticsController@getUsersRegistration']);
