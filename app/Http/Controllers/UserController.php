@@ -53,7 +53,8 @@ class UserController extends BaseController
             'phone',
             'lang',
             'birthday',
-            'role'
+            'role',
+            'direction_id'
         )->find($id);
         if ($user) {
             $userDirection = Direction::find($user['direction_id']);
