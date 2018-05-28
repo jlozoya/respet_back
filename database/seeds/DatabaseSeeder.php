@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
     {
         \DB::table('directions')->insert([
             'id' => 1,
-            'contry' => 'México',
+            'country' => 'México',
             'administrative_area_level_1' => 'Durango',
             'administrative_area_level_2' => 'Durango',
             'route' => 'Independencia',

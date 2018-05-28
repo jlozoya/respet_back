@@ -311,9 +311,9 @@ class UserController extends BaseController
             $user = User::where('Authorization', $request->header('Authorization'))->first();
             $userDirection = Direction::find($user['direction_id']);
             if ($userDirection) {
-                if ($request->get('contry')) {
-                    $this->validate($request, ['contry' => 'required|max:60',]);
-                    $userDirection['contry'] = $request->get('contry');
+                if ($request->get('country')) {
+                    $this->validate($request, ['country' => 'required|max:60',]);
+                    $userDirection['country'] = $request->get('country');
                 }
                 if ($request->get('administrative_area_level_1')) {
                     $this->validate($request, ['administrative_area_level_1' => 'required|max:60',]);
@@ -346,7 +346,7 @@ class UserController extends BaseController
                 $userDirection->save();
             } else {
                 $userDirection = Direction::create([
-                    'contry' => $request->get('contry'),
+                    'country' => $request->get('country'),
                     'administrative_area_level_1' => $request->get('administrative_area_level_1'),
                     'administrative_area_level_2' => $request->get('administrative_area_level_2'),
                     'route' => $request->get('route'),
