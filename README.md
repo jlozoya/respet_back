@@ -53,6 +53,13 @@ Comando de la consola para purgar tokens caducados.
 php artisan passport:purge
 ```
 
+Para recargar el auto load.
+
+```bash
+composer dump-autoload
+```
+
+
 ## Perros del Agua back-end
 
 Para ejecutar servidor de pruevas:
