@@ -23,6 +23,15 @@ class UserController extends BaseController
     /**
      * Recupera la información básica de un usuario.
      *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getUser(Request $request) {
+        return $request->user();
+    }
+    /**
+     * Recupera la información básica de un usuario.
+     *
      * @param  number $id
      * @return \Illuminate\Http\Response
      */

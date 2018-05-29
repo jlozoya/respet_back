@@ -31,7 +31,7 @@ $router->get('/user/confirm/email', ['as' => 'user.confirm.email', 'uses' => 'Us
 $router->post('/contact/send', ['uses' => 'ContactController@sendContact']);
 
 $router->group(['middleware' => ['auth:api']], function () use ($router) {
-
+    $router->get('/user', ['uses' => 'UserController@getUser']);
     $router->get('/user/{id}', ['uses' => 'UserController@getUserById']);
     $router->post('/user/confirm/email', ['uses' => 'UserController@reSendConfirmEmail']);
     $router->post('/user/set/avatar', ['uses' => 'UserController@saveAvatar']);

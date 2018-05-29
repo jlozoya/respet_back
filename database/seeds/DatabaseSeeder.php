@@ -35,7 +35,6 @@ class DatabaseSeeder extends Seeder
             'gender' => 'male',
             'email' => 'jlozoya1995@gmail.com',
             'password' => Hash::make('c9b1b2a7ea'),
-            'Authorization' => 'yZyHYZ6VGRMNxtz5cSWmHZLTJWyf5GXIIa1SZj3RIBZjgDULHIMJE4ojV1wC',
             'confirmed' => true,
             'role' => 'admin',
             'phone' => 6181746512,

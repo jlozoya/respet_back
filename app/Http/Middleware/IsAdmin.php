@@ -18,7 +18,7 @@ class IsAdmin
      */
     public function handle($request, Closure $next)
     {
-        $user = User::where('Authorization', $request->header('Authorization'))->first();
+        $user = $request->user();
         if ($user) {
             if ($user['role'] == 'admin') {
                 return $next($request);
