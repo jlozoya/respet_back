@@ -118,7 +118,6 @@ class UserController extends BaseController
                         'gender' => $request->get('gender'),
                         'email' => $request->get('email'),
                         'password' => Hash::make($request->get('password')),
-                        'Authorization' => str_random(60),
                         'img_url' => $request->get('img_url'),
                         'lang' => $request->get('lang'),
                         'source' => $request->get('source')
@@ -136,7 +135,6 @@ class UserController extends BaseController
                         'last_name' => $request->get('last_name'),
                         'gender' => $request->get('gender'),
                         'email' => $request->get('email'),
-                        'Authorization' => str_random(60),
                         'img_url' => $request->get('img_url'),
                         'lang' => $request->get('lang'),
                         'source' => $request->get('source'),
@@ -313,7 +311,7 @@ class UserController extends BaseController
      */
     public function updateUserDirection(Request $request) {
         try {
-            $user = User::where('Authorization', $request->header('Authorization'))->first();
+            $user = $request->user();
             $userDirection = Direction::find($user['direction_id']);
             if ($userDirection) {
                 if ($request->get('country')) {
@@ -376,7 +374,7 @@ class UserController extends BaseController
      */
     public function updateUser(Request $request) {
         try {
-            $user = User::where('Authorization', $request->header('Authorization'))->first();
+            $user = $request->user();
             if ($request->get('name')) {
                 $this->validate($request, ['name' => 'required|min:4|max:60',]);
                 $user->name = $request->get('name');
@@ -414,7 +412,7 @@ class UserController extends BaseController
      */
     public function updateUserEmail(Request $request) {
         try {
-            $user = User::where('Authorization', $request->header('Authorization'))->first();
+            $user = $request->user();
             if ($request->get('email')) {
                 $this->validate($request, [
                     'email' => 'required|email',
@@ -447,7 +445,7 @@ class UserController extends BaseController
         $this->validate($request, [
             'lang' => 'required',
         ]);
-        $user = User::where('Authorization', $request->header('Authorization'))->first();
+        $user = $request->user();
         if ($user) {
             $user['lang'] = $request->get('lang');
             $user->save();
@@ -497,7 +495,7 @@ class UserController extends BaseController
         if (!File::exists($path)) {
             File::makeDirectory($path, 0775, true);
         }
-        $user = User::where('Authorization', $request->header('Authorization'))->first();
+        $user = $request->user();
         Image::make($file)->save($path . $file_name);
         // Evalúa si hay un archivo registrado en el servidor con el mismo nombre para eliminarlo.
         if ($user->img_url && parse_url($user->img_url)['host'] == parse_url(URL::to('/'))['host']) {
