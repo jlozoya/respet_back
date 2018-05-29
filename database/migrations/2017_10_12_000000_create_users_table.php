@@ -21,7 +21,6 @@ class CreateUsersTable extends Migration
             $table->enum('gender', ['male', 'female', 'other'])->nullable();
             $table->string('email', 60)->index();
             $table->string('password', 60);
-            $table->string('Authorization', 60)->unique()->index();
             $table->text('img_url')->nullable();
             $table->enum('source', ['app', 'facebook', 'google', 'other']);
             $table->string('phone', 15)->nullable();

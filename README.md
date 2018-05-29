@@ -38,6 +38,21 @@ Para crear un nuevo modelo:
 php artisan make:model MyModelo
 ```
 
+#### OAuth
+
+Este comando creará las claves de cifrado necesarias para generar tokens de acceso seguro. Además, el comando creará clientes de "acceso personal" y "concesión de contraseña" que se usarán para generar tokens de acceso.
+
+```bash
+php artisan passport:install
+```
+
+Comando de la consola para purgar tokens caducados.
+
+
+```bash
+php artisan passport:purge
+```
+
 ## Perros del Agua back-end
 
 Para ejecutar servidor de pruevas:
@@ -70,6 +85,8 @@ composer require intervention/image
 composer require vluzrmos/lumen-cors
 composer require brozot/laravel-fcm
 composer require nesbot/carbon
+composer require laravel/passport
+composer require dusterio/lumen-passport
 ```
 
 ## Credenciales

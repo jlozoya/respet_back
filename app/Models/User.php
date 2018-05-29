@@ -1,20 +1,22 @@
 <?php
 
 namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Auth\Authenticatable;
 use Laravel\Lumen\Auth\Authorizable;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
-
+// OAuth
+use Laravel\Passport\HasApiTokens;
+// Reiniciar constraseña
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Model implements CanResetPasswordContract, AuthenticatableContract, AuthorizableContract
 {
-    use Notifiable, Authenticatable, Authorizable, CanResetPassword;
+    use HasApiTokens, Notifiable, Authenticatable, Authorizable, CanResetPassword;
     
     /**
      * Los atributos que son asignados en masa.
@@ -48,5 +50,6 @@ class User extends Model implements CanResetPasswordContract, AuthenticatableCon
     protected $hidden = [
         'updated_at',
         'password',
+        'remember_token',
     ];
 }

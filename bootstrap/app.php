@@ -86,6 +86,21 @@ $app->middleware([
 
 /*
 |--------------------------------------------------------------------------
+| Registro de OAuth
+|--------------------------------------------------------------------------
+|
+| Registra las clases necesarias para manejar OAuth.
+|
+*/
+
+$app->register(Laravel\Passport\PassportServiceProvider::class);
+
+$app->register(Dusterio\LumenPassport\PassportServiceProvider::class);
+
+$app->configure('auth');
+
+/*
+|--------------------------------------------------------------------------
 | Registrar proveedores de servicios
 |--------------------------------------------------------------------------
 |

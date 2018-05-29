@@ -2,12 +2,14 @@
 
 namespace App\Providers;
 
-use App\Models\User;
+use Laravel\Passport\Passport;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Dusterio\LumenPassport\LumenPassport;
 
 class AuthServiceProvider extends ServiceProvider
 {
+    
     /**
      * Register any application services.
      *
@@ -17,9 +19,16 @@ class AuthServiceProvider extends ServiceProvider
     {
         //
     }
-
     /**
-     * Boot the authentication services for the application.
+     * The policy mappings for the application.
+     *
+     * @var array
+     */
+    protected $policies = [
+        'App\Model' => 'App\Policies\ModelPolicy',
+    ];
+    /**
+     * Register any authentication / authorization services.
      *
      * @return void
      */
@@ -32,12 +41,13 @@ class AuthServiceProvider extends ServiceProvider
 
         // Nota importante el token a utilizar debe estar definido en el CORS middleware
         // 'vendor/Vluzrmos/LumenCors/CorsService' de lo contrario no pasara.
-
+        
         $this->app['auth']->viaRequest('api', function ($request) {
-            if ($request->header('Authorization')) {
-                $user = User::where('Authorization', $request->header('Authorization'))->first();
-                return $user;
+            if ($request->input('api_token')) {
+                return User::where('api_token', $request->input('api_token'))->first();
             }
         });
+
+        LumenPassport::routes($this->app);
     }
 }

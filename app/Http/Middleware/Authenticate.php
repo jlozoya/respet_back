@@ -1,10 +1,7 @@
 <?php
-
 namespace App\Http\Middleware;
-
 use Closure;
 use Illuminate\Contracts\Auth\Factory as Auth;
-
 class Authenticate
 {
     /**
@@ -13,7 +10,6 @@ class Authenticate
      * @var \Illuminate\Contracts\Auth\Factory
      */
     protected $auth;
-
     /**
      * Create a new middleware instance.
      *
@@ -24,7 +20,6 @@ class Authenticate
     {
         $this->auth = $auth;
     }
-
     /**
      * Handle an incoming request.
      *
@@ -33,7 +28,8 @@ class Authenticate
      * @param  string|null  $guard
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = null) {
+    public function handle($request, Closure $next, $guard = null)
+    {
         if ($this->auth->guard($guard)->guest()) {
             return response('SERVER.NO_SESION', 401);
         }

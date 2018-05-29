@@ -16,24 +16,10 @@ use Intervention\Image\ImageManagerStatic as Image;
 use App\Notifications\RegistrationConfirmation;
 use Carbon\Carbon;
 
+use Illuminate\Support\Facades\Auth;
+
 class UserController extends BaseController
 {
-    /**
-     * Recupera la información básica de un usuario.
-     *
-     * @param  number $id
-     * @return \Illuminate\Http\Response
-     */
-    public function getMe(Request $request) {
-        $user = User::where('Authorization', $request->header('Authorization'))->first();
-        if ($user) {
-            $userDirection = Direction::find($user['direction_id']);
-            $user['direction'] = $userDirection;
-            return response()->json($user, 200);
-        } else {
-            return response()->json('SERVER.USER_NOT_REGISTRED', 404);
-        }
-    }
     /**
      * Recupera la información básica de un usuario.
      *
@@ -128,6 +114,8 @@ class UserController extends BaseController
                         'lang' => $request->get('lang'),
                         'source' => $request->get('source')
                     ]);
+                    $sesion['id'] = $user['id'];
+                    $sesion['token'] = $user->createToken('BigThinks')->accessToken; 
                 } else {
                     $user = User::where(['source' => $request->get('source'), 'extern_id' => $request->get('extern_id')])->first();
                     if ($user) {
@@ -145,9 +133,11 @@ class UserController extends BaseController
                         'source' => $request->get('source'),
                         'extern_id' => $request->get('extern_id')
                     ]);
+                    $sesion['id'] = $user['id'];
+                    $sesion['token'] = $user->createToken('BigThinks')->accessToken;  
                 }
                 $this->sendConfirmEmail($user);
-                return response()->json($user, 201);
+                return response()->json($sesion, 201);
             } catch (Illuminate\Database\QueryException $error) {
                 return response()->json($error, 406);
             }
@@ -163,58 +153,65 @@ class UserController extends BaseController
     public function login(Request $request) {
         if ($request->isJson()) {
             try {
-                $data = $request->json()->all();
-                if ($data['source'] == 'app') {
-                    $user = User::where('email', $data['email'])->first();
-                    if ($user && Hash::check($data['password'], $user->password)) {
-                        $userDirection = Direction::find($user['direction_id']);
-                        $user['direction'] = $userDirection;
-                        return response()->json($user, 200);
-                    } else {
-                        return response()->json('SERVER.INCORRECT_USER', 406);
-                    }
-                } else if ($data['source'] == 'facebook') {
-                    $client = new \GuzzleHttp\Client();
-                    try {
-                        $response = $client->get('https://graph.facebook.com/me?fields=id&access_token=' . $data['accessToken'])->getBody()->getContents();
-                        $response_decoded = json_decode($response, true);
-                        if ($response_decoded['id'] == $data['extern_id']) {
-                            $user = User::where('extern_id', $data['extern_id'])->first();
-                            if ($user) {
-                                $userDirection = Direction::find($user['direction_id']);
-                                $user['direction'] = $userDirection;
-                                return response()->json($user, 200);
-                            } else {
-                                return response()->json('SERVER.USER_NOT_REGISTRED', 404);
-                            }
+                switch ($request->get('source')) {
+                    case 'app': {
+                        $user = User::where('email', $request->get('email'))->where('source', $request->get('source'))->first();
+                        if ($user && Hash::check($request->get('password'), $user->password)) {
+                            $sesion['id'] = $user['id'];
+                            $sesion['token'] = $user->createToken('BigThinks')->accessToken;
+                            return response()->json($sesion, 200);
                         } else {
-                            return response()->json('SERVER.WRONG_USER', 406);
+                            return response()->json('SERVER.INCORRECT_USER', 406);
                         }
-                    } catch (\GuzzleHttp\Exception\ClientException $error) {
-                        return response()->json('SERVER.WRONG_TOKEN', 406);
                     }
-                } else if ($data['source'] == 'google') {
-                    $client = new \GuzzleHttp\Client();
-                    try {
-                        $response = $client->get('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=' . $data['accessToken'])->getBody()->getContents();
-                        $response_decoded = json_decode($response, true);
-                        if ($response_decoded['user_id'] == $data['extern_id']) {
-                            $user = User::where('extern_id', $data['extern_id'])->first();
-                            if ($user) {
-                                $userDirection = Direction::find($user['direction_id']);
-                                $user['direction'] = $userDirection;
-                                return response()->json($user, 200);
+                    break;
+                    case 'facebook': {
+                        $client = new \GuzzleHttp\Client();
+                        try {
+                            $response = $client->get('https://graph.facebook.com/me?fields=id&access_token='
+                            . $request->get('accessToken'))->getBody()->getContents();
+                            $response_decoded = json_decode($response, true);
+                            if ($response_decoded['id'] == $request->get('extern_id')) {
+                                $user = User::where('extern_id', $request->get('extern_id'))->first();
+                                if ($user) {
+                                    $sesion['id'] = $user['id'];
+                                    $sesion['token'] = $user->createToken('BigThinks')->accessToken;
+                                    return response()->json($sesion, 200);
+                                } else {
+                                    return response()->json('SERVER.USER_NOT_REGISTRED', 404);
+                                }
                             } else {
-                                return response()->json('SERVER.USER_NOT_REGISTRED', 404);
+                                return response()->json('SERVER.WRONG_USER', 406);
                             }
-                        } else {
-                            return response()->json('SERVER.WRONG_USER', 406);
+                        } catch (\GuzzleHttp\Exception\ClientException $error) {
+                            return response()->json('SERVER.WRONG_TOKEN', 406);
                         }
-                    } catch (\GuzzleHttp\Exception\ClientException $error) {
-                        return response()->json('SERVER.WRONG_TOKEN', 406);
                     }
+                    break;
+                    case 'google': {
+                        $client = new \GuzzleHttp\Client();
+                        try {
+                            $response = $client->get('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token='
+                            . $request->get('accessToken'))->getBody()->getContents();
+                            $response_decoded = json_decode($response, true);
+                            if ($response_decoded['user_id'] == $request->get('extern_id')) {
+                                $user = User::where('extern_id', $request->get('extern_id'))->first();
+                                if ($user) {
+                                    $sesion['id'] = $user['id'];
+                                    $sesion['token'] = $user->createToken('BigThinks')->accessToken;
+                                    return response()->json($sesion, 200);
+                                } else {
+                                    return response()->json('SERVER.USER_NOT_REGISTRED', 404);
+                                }
+                            } else {
+                                return response()->json('SERVER.WRONG_USER', 406);
+                            }
+                        } catch (\GuzzleHttp\Exception\ClientException $error) {
+                            return response()->json('SERVER.WRONG_TOKEN', 406);
+                        }
+                    }
+                    break;
                 }
-                
             } catch (ModelNotFoundException $error) {
                 return response()->json('SERVER.WRONG_USER', 406);
             }
@@ -233,8 +230,7 @@ class UserController extends BaseController
         ]);
         if ($request->isJson()) {
             try {
-                $data = $request->json()->all();
-                $user = User::where('id', $data['id'])->first();
+                $user = User::where('id', $request->get('id'))->first();
                 if (!$user->confirmed) {
                     return $this->sendConfirmEmail($user);
                 } else {
