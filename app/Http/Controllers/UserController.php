@@ -473,6 +473,15 @@ class UserController extends BaseController
         return response()->json('SERVER.USER_NOT_REGISTRED', 404);
     }
     /**
+     * Estable el rol del usuario
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function logout(Request $request) {
+        return $request->user()->token()->revoke();
+    }
+    /**
      * guarda un archivo en nuestro directorio local.
      * 
      * @param \Illuminate\Http\Request $request
