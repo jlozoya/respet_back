@@ -479,7 +479,9 @@ class UserController extends BaseController
      * @return \Illuminate\Http\Response
      */
     public function logout(Request $request) {
-        return $request->user()->token()->revoke();
+        $request->user()->token()->revoke();
+        $request->user()->token()->delete();
+        return response()->json('SERVER.LOGGEDOUT', 200);
     }
     /**
      * guarda un archivo en nuestro directorio local.
