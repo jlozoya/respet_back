@@ -484,6 +484,32 @@ class UserController extends BaseController
         return response()->json('SERVER.LOGGEDOUT', 200);
     }
     /**
+     * Elimina un usuario
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteUser(Request $request) {
+        $request->user()->token()->revoke();
+        $request->user()->token()->delete();
+        $user = $request->user();
+        Direction::find($user['direction_id'])->delete();
+        $user->delete();
+        return response()->json('SERVER.USER_DELETED', 200);
+    }
+    /**
+     * Elimina un usuario
+     *
+     * @param  number $id
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteUserById($id) {
+        $user = User::find($id);
+        Direction::find($user['direction_id'])->delete();
+        $user->delete();
+        return response()->json('SERVER.USER_DELETED', 200);
+    }
+    /**
      * guarda un archivo en nuestro directorio local.
      * 
      * @param \Illuminate\Http\Request $request
