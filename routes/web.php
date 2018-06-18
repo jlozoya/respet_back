@@ -41,6 +41,10 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
     $router->delete('/user/logout', ['uses' => 'UserController@logout']);
     $router->delete('/user/delete', ['uses' => 'UserController@deleteUser']);
 
+    $router->group(['middleware' => ['isTeacher']], function () use ($router) {
+
+    });
+
     $router->group(['middleware' => ['isAdmin']], function () use ($router) {
         $router->get('/user/{id}', ['uses' => 'UserController@getUserById']);
         $router->post('/users', ['uses' => 'UserController@getUsers']);

@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use App\Models\User;
 
-class IsAdmin
+class IsTeacher
 {
     /**
      * Este middleware valida que los usuarios tengan permisos nivel uno para para ejecutar
@@ -19,7 +19,7 @@ class IsAdmin
     {
         $user = $request->user();
         if ($user) {
-            if ($user['role'] == 'admin') {
+            if ($user['role'] == 'teacher') {
                 return $next($request);
             }
             return response()->json('SERVER.NOT_ENOUGH_RIGHTS', 406);
