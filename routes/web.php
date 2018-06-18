@@ -30,7 +30,6 @@ $router->get('/user/confirm/email', ['as' => 'user.confirm.email', 'uses' => 'Us
 
 $router->post('/contact/send', ['uses' => 'ContactController@sendContact']);
 
-$router->delete('/user/delete/{id}', ['uses' => 'UserController@deleteUserById']);
 $router->group(['middleware' => ['auth:api']], function () use ($router) {
     $router->get('/user', ['uses' => 'UserController@getUser']);
     $router->post('/user/confirm/email', ['uses' => 'UserController@reSendConfirmEmail']);
@@ -46,6 +45,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
         $router->get('/user/{id}', ['uses' => 'UserController@getUserById']);
         $router->post('/users', ['uses' => 'UserController@getUsers']);
         $router->put('/user/role', ['uses' => 'UserController@setUserRole']);
+        $router->delete('/user/delete/{id}', ['uses' => 'UserController@deleteUserById']);
 
         $router->get('/analytics', ['uses' => 'AnalyticsController@getBasicAnalytics']);
         $router->post('/analytics/users/registration', ['uses' => 'AnalyticsController@getUsersRegistration']);
