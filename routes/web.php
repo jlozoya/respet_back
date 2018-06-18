@@ -48,7 +48,12 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
     $router->group(['middleware' => ['isAdmin']], function () use ($router) {
         $router->get('/user/{id}', ['uses' => 'UserController@getUserById']);
         $router->post('/users', ['uses' => 'UserController@getUsers']);
-        $router->put('/user/role', ['uses' => 'UserController@setUserRole']);
+        $router->post('/user/set/avatar/{id}', ['uses' => 'UserController@saveAvatarById']);
+        $router->put('/user/update/{id}', ['uses' => 'UserController@updateUserById']);
+        $router->put('/user/update/email/{id}', ['uses' => 'UserController@updateUserEmailById']);
+        $router->put('/user/update/lang/{id}', ['uses' => 'UserController@updateUserLangById']);
+        $router->put('/user/update/direction/{id}', ['uses' => 'UserController@updateUserDirectionById']);
+        $router->put('/user/role/{id}', ['uses' => 'UserController@setUserRoleById']);
         $router->delete('/user/delete/{id}', ['uses' => 'UserController@deleteUserById']);
 
         $router->get('/analytics', ['uses' => 'AnalyticsController@getBasicAnalytics']);

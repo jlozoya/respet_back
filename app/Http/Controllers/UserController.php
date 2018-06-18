@@ -454,17 +454,237 @@ class UserController extends BaseController
         return response()->json('SERVER.USER_NOT_REGISTRED', 404);
     }
     /**
+     * guarda un archivo en nuestro directorio local.
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function saveAvatar(Request $request)
+    {
+        $this->validate($request, [
+            'file_name' => 'required',
+            'type' => 'required'
+        ]);
+        $file_name = $request->get('file_name');
+        if ($request['type'] == 'base64') {
+            $file = base64_decode(explode(',', $request['file'])[1]);
+        } else {
+            $file = $request->file('file');
+        }
+        $path = $_SERVER['DOCUMENT_ROOT'] . '/big_thinks_back/img/users_avatars/';
+        $file_url = URL::to('/') . '/img/users_avatars/' . $file_name;
+        if (!File::exists($path)) {
+            File::makeDirectory($path, 0775, true);
+        }
+        $user = $request->user();
+        Image::make($file)->save($path . $file_name);
+        // Evalúa si hay un archivo registrado en el servidor con el mismo nombre para eliminarlo.
+        if ($user->img_url && parse_url($user->img_url)['host'] == parse_url(URL::to('/'))['host']) {
+            File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($user->img_url)['path']);
+        }
+        $user->img_url = $file_url;
+        $user->save();
+        return response()->json($file_url, 202);
+    }
+    /**
+     * Actualizar la dirección del usuario.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  number $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updateUserDirectionById(Request $request, $id) {
+        try {
+            $user = User::find($id);
+            $userDirection = Direction::find($user['direction_id']);
+            if ($userDirection) {
+                if ($request->get('country')) {
+                    $this->validate($request, ['country' => 'required|max:60',]);
+                    $userDirection['country'] = $request->get('country');
+                }
+                if ($request->get('administrative_area_level_1')) {
+                    $this->validate($request, ['administrative_area_level_1' => 'required|max:60',]);
+                    $userDirection['administrative_area_level_1'] = $request->get('administrative_area_level_1');
+                }
+                if ($request->get('administrative_area_level_2')) {
+                    $this->validate($request, ['administrative_area_level_2' => 'required|max:60',]);
+                    $userDirection['administrative_area_level_2'] = $request->get('administrative_area_level_2');
+                }
+                if ($request->get('route')) {
+                    $this->validate($request, ['route' => 'required|max:60',]);
+                    $userDirection['route'] = $request->get('route');
+                }
+                if ($request->get('street_number')) {
+                    $this->validate($request, ['street_number' => 'required',]);
+                    $userDirection['street_number'] = $request->get('street_number');
+                }
+                if ($request->get('postal_code')) {
+                    $this->validate($request, ['postal_code' => 'required|numeric',]);
+                    $userDirection['postal_code'] = $request->get('postal_code');
+                }
+                if ($request->get('lat')) {
+                    $this->validate($request, ['lat' => 'required|numeric',]);
+                    $userDirection['lat'] = $request->get('lat');
+                }
+                if ($request->get('lng')) {
+                    $this->validate($request, ['lng' => 'required|numeric',]);
+                    $userDirection['lng'] = $request->get('lng');
+                }
+                $userDirection->save();
+            } else {
+                $userDirection = Direction::create([
+                    'country' => $request->get('country'),
+                    'administrative_area_level_1' => $request->get('administrative_area_level_1'),
+                    'administrative_area_level_2' => $request->get('administrative_area_level_2'),
+                    'route' => $request->get('route'),
+                    'street_number' => $request->get('street_number'),
+                    'postal_code' => $request->get('postal_code'),
+                    'lat' => $request->get('lat'),
+                    'lng' => $request->get('lng'),
+                ]);
+                $user['direction_id'] = $userDirection['id'];
+                $user->save();
+            }
+            return response()->json($userDirection, 201);
+        } catch (Illuminate\Database\QueryException $error) {
+            return response()->json($error, 406);
+        }
+    }
+    /**
+     * Actualiza la información básica de usuario.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  number $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updateUserById(Request $request, $id) {
+        try {
+            $user = User::find($id);
+            if ($request->get('name')) {
+                $this->validate($request, ['name' => 'required|min:4|max:60',]);
+                $user->name = $request->get('name');
+            }
+            if ($request->get('first_name')) {
+                $this->validate($request, ['first_name' => 'required|max:60',]);
+                $user->first_name = $request->get('first_name');
+            }
+            if ($request->get('last_name')) {
+                $this->validate($request, ['last_name' => 'required|max:60',]);
+                $user->last_name = $request->get('last_name');
+            }
+            if ($request->get('gender')) {
+                $this->validate($request, ['gender' => 'required|string',]);
+                $user->gender = $request->get('gender');
+            }
+            if ($request->get('phone')) {
+                $this->validate($request, ['phone' => 'required|numeric',]);
+                $user->phone = $request->get('phone');
+            }
+            if ($request->get('birthday')) {
+                $user->birthday = $request->get('birthday');
+            }
+            $user->save();
+            return response()->json($user, 201);
+        } catch (Illuminate\Database\QueryException $error) {
+            return response()->json($error, 406);
+        }
+    }
+    /**
+     * Llama la función para enviar un correo de confirmación.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  number $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updateUserEmailById(Request $request, $id) {
+        try {
+            $user = User::find($id);
+            if ($request->get('email')) {
+                $this->validate($request, [
+                    'email' => 'required|email',
+                    'source' => 'required',
+                ]);
+                // VALIDAMOS QUE NO EXISTA EL USUARIO DEL MISMO SOURCE
+                $validate = User::where([
+                    'email' => $request->get('email'),
+                    'source' => $request->get('source')
+                ])->first();
+                if ($validate) {
+                    return response()->json('SERVER.USER_EMAIL_ALREADY_EXISTS', 406);
+                } else {
+                    $user->email = $request->get('email');
+                    $user->save();
+                }
+            }
+            return response()->json($user, 201);
+        } catch (Illuminate\Database\QueryException $error) {
+            return response()->json($error, 406);
+        }
+    }
+    /**
+     * Para actualizar el idioma de usuario registrado
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  number $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updateUserLangById(Request $request, $id) {
+        $this->validate($request, [
+            'lang' => 'required',
+        ]);
+        $user = User::find($id);
+        if ($user) {
+            $user['lang'] = $request->get('lang');
+            $user->save();
+            return response()->json($user['lang'], 202);
+        }
+        return response()->json('SERVER.USER_NOT_REGISTRED', 404);
+    }
+    /**
+     * guarda un archivo en nuestro directorio local.
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @param number $id
+     * @return \Illuminate\Http\Response
+     */
+    public function saveAvatarById(Request $request, $id)
+    {
+        $this->validate($request, [
+            'file_name' => 'required',
+            'type' => 'required'
+        ]);
+        $file_name = $request->get('file_name');
+        if ($request['type'] == 'base64') {
+            $file = base64_decode(explode(',', $request['file'])[1]);
+        } else {
+            $file = $request->file('file');
+        }
+        $path = $_SERVER['DOCUMENT_ROOT'] . '/big_thinks_back/img/users_avatars/';
+        $file_url = URL::to('/') . '/img/users_avatars/' . $file_name;
+        if (!File::exists($path)) {
+            File::makeDirectory($path, 0775, true);
+        }
+        $user = User::find($id);
+        Image::make($file)->save($path . $file_name);
+        // Evalúa si hay un archivo registrado en el servidor con el mismo nombre para eliminarlo.
+        if ($user->img_url && parse_url($user->img_url)['host'] == parse_url(URL::to('/'))['host']) {
+            File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($user->img_url)['path']);
+        }
+        $user->img_url = $file_url;
+        $user->save();
+        return response()->json($file_url, 202);
+    }
+    /**
      * Estable el rol del usuario
      *
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function setUserRole(Request $request) {
+    public function setUserRoleById(Request $request, $id) {
         $this->validate($request, [
-            'user_id' => 'required',
             'role' => 'required',
         ]);
-        $user = User::find($request->get('user_id'));
+        $user = User::find($id);
         if ($user) {
             $user['role'] = $request->get('role');
             $user->save();
@@ -508,38 +728,5 @@ class UserController extends BaseController
         Direction::find($user['direction_id'])->delete();
         $user->delete();
         return response()->json('SERVER.USER_DELETED', 200);
-    }
-    /**
-     * guarda un archivo en nuestro directorio local.
-     * 
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function saveAvatar(Request $request)
-    {
-        $this->validate($request, [
-            'file_name' => 'required',
-            'type' => 'required'
-        ]);
-        $file_name = $request->get('file_name');
-        if ($request['type'] == 'base64') {
-            $file = base64_decode(explode(',', $request['file'])[1]);
-        } else {
-            $file = $request->file('file');
-        }
-        $path = $_SERVER['DOCUMENT_ROOT'] . '/big_thinks_back/img/users_avatars/';
-        $file_url = URL::to('/') . '/img/users_avatars/' . $file_name;
-        if (!File::exists($path)) {
-            File::makeDirectory($path, 0775, true);
-        }
-        $user = $request->user();
-        Image::make($file)->save($path . $file_name);
-        // Evalúa si hay un archivo registrado en el servidor con el mismo nombre para eliminarlo.
-        if ($user->img_url && parse_url($user->img_url)['host'] == parse_url(URL::to('/'))['host']) {
-            File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($user->img_url)['path']);
-        }
-        $user->img_url = $file_url;
-        $user->save();
-        return response()->json($file_url, 202);
     }
 }
