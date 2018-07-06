@@ -45,7 +45,7 @@ return [
     | utilizado globalmente para todos los correos electrónicos que envía su aplicación.
     |
     */
-    'from' => ['address' => 'jlozoya1995@gmail.com', 'name' => 'Big Thinks'],
+    'from' => ['address' => env('MAIL_USERNAME', 'example@example.com'), 'name' => env('APP_NAME')],
     /*
     |--------------------------------------------------------------------------
     | Global Stream
@@ -84,7 +84,7 @@ return [
     | conexión. También puede establecer el valor de "contraseña" debajo de este.
     |
     */
-    'username' => env('MAIL_USERNAME', 'jlozoya1995@gmail.com'),
+    'username' => env('MAIL_USERNAME', 'example@example.com'),
     /*
     |--------------------------------------------------------------------------
     | SMTP Server Password
@@ -95,7 +95,7 @@ return [
     | conexión para que la aplicación pueda enviar mensajes.
     |
     */
-    'password' => env('MAIL_PASSWORD', 'nyjkzwkqnxwsgnpm'),
+    'password' => env('MAIL_PASSWORD'),
     /*
     |--------------------------------------------------------------------------
     | Sendmail System Path

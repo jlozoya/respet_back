@@ -41,6 +41,8 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
     $router->delete('/user/logout', ['uses' => 'UserController@logout']);
     $router->delete('/user/delete', ['uses' => 'UserController@deleteUser']);
 
+    $router->post('/user/pay', ['uses' => 'PayController@createPay']);
+
     $router->group(['middleware' => ['isTeacher']], function () use ($router) {
 
     });

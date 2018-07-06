@@ -94,6 +94,7 @@ composer require brozot/laravel-fcm
 composer require nesbot/carbon
 composer require laravel/passport
 composer require dusterio/lumen-passport
+composer require openpay/sdk:dev-master
 ```
 
 ## Credenciales

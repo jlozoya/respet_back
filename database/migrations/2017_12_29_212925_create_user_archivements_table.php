@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUsersArchivementsTable extends Migration
+class CreateUserArchivementsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class CreateUsersArchivementsTable extends Migration
      */
     public function up()
     {
-        Schema::create('users_archivements', function (Blueprint $table) {
-            $table->increments('id');
+        Schema::create('user_archivements', function (Blueprint $table) {
+            $table->increments('id')->unique();
             $table->integer('user_id')->unsigned();
             $table->integer('archivement_id')->unsigned();
             $table->float('progress');
@@ -31,6 +31,8 @@ class CreateUsersArchivementsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users_archivements');
+        \DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        Schema::dropIfExists('user_archivements');
+        \DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
 }
