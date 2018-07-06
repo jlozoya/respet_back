@@ -63,18 +63,18 @@ class PayController extends BaseController
                 'amount' => $coursePrice['amount'],
                 'description' => $coursePrice['description'],
                 'method' => 'card',
-                'authorization' => $charge['authorization'],
-                'creation_date' => $charge['creation_date'],
-                'status' => $charge['status'],
+                'authorization' => $charge->authorization,
+                'creation_date' => $charge->creation_date,
+                'status' => $charge->status,
             ]);
             return response()->json([
-                'authorization' => $charge['authorization'],
-                'creation_date' => $charge['creation_date'],
-                'currency' => $charge['currency'],
-                'customer_id' => $charge['customer_id'],
-                'operation_type' => $charge['operation_type'],
-                'status' => $charge['status'],
-                'transaction_type' => $charge['transaction_type'],
+                'authorization' => $charge->authorization,
+                'creation_date' => $charge->creation_date,
+                'currency' => $charge->currency,
+                'customer_id' => $charge->customer_id,
+                'operation_type' => $charge->operation_type,
+                'status' => $charge->status,
+                'transaction_type' => $charge->transaction_type,
             ], 202);
         } catch (OpenpayApiTransactionError $e) {
             return response()->json([
