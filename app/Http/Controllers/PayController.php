@@ -42,7 +42,7 @@ class PayController extends BaseController
             $coursePrice = CoursePrice::select(
                 'course_prices.id',
                 'course_prices.amount',
-                'course.description'
+                'courses.description'
             )->where('id', $request->get('course_price_id'))
             ->join('courses', 'courses.id', 'course_prices.course_id')->first();
 
