@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUserCoursesPaymentsTable extends Migration
+class CreateUserCoursePaymentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateUserCoursesPaymentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_courses_payments', function (Blueprint $table) {
+        Schema::create('user_course_payments', function (Blueprint $table) {
             $table->increments('id')->unique();
             $table->integer('user_id')->unsigned();
             $table->integer('course_price_id')->unsigned();
@@ -37,7 +37,7 @@ class CreateUserCoursesPaymentsTable extends Migration
     public function down()
     {
         \DB::statement('SET FOREIGN_KEY_CHECKS = 0');
-        Schema::dropIfExists('user_courses_payments');
+        Schema::dropIfExists('user_course_payments');
         \DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
 }
