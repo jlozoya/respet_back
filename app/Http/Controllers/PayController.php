@@ -43,7 +43,7 @@ class PayController extends BaseController
                 'course_prices.id',
                 'course_prices.amount',
                 'courses.description'
-            )->where('id', $request->get('course_price_id'))
+            )->where('course_prices.id', $request->get('course_price_id'))
             ->join('courses', 'courses.id', 'course_prices.course_id')->first();
 
             $chargeData = [
