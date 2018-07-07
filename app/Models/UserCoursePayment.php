@@ -17,9 +17,7 @@ class UserCoursePayment extends Model
         'course_price_id',
         'amount',
         'description',
-        'method',
-        'authorization',
-        'creation_date',
+        'charge_id',
         'status',
     ];
     /**

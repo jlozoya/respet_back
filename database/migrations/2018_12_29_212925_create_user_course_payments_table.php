@@ -19,9 +19,7 @@ class CreateUserCoursePaymentsTable extends Migration
             $table->integer('course_price_id')->unsigned();
             $table->integer('amount')->unsigned();
             $table->string('description')->nullable();
-            $table->string('method', 20);
-            $table->integer('authorization')->unsigned();
-            $table->dateTime('creation_date');
+            $table->string('charge_id', 60);
             $table->string('status', 20);
             $table->timestamps();
 
