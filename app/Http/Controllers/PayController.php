@@ -73,6 +73,13 @@ class PayController extends BaseController
                 'method' => $charge->method,
                 'operation_type' => $charge->operation_type,
                 'transaction_type' => $charge->transaction_type,
+                'status' => $charge->status,
+                'currency' => $charge->currency,
+                'creation_date' => $charge->creation_date,
+                'operation_date' => $charge->operation_date,
+                'description' => $charge->description,
+                'error_message' => $charge->error_message,
+                'order_id' => $charge->order_id,
                 'card' => [
                     'id' => $charge->card->id,
                     'type' => $charge->card->type,
@@ -87,20 +94,7 @@ class PayController extends BaseController
                     'creation_date' => $charge->card->creation_date,
                     'bank_name' => $charge->card->bank_name,
                     'bank_code' => $charge->card->bank_code
-                ],
-                'status' => $charge->status,
-                'currency' => $charge->currency,
-                'exchange_rate' => [
-                    'from' => $charge->exchange_rate->from,
-                    'date' => $charge->exchange_rate->date,
-                    'value' => $charge->exchange_rate->value,
-                    'to' => $charge->exchange_rate->to
-                ],
-                'creation_date' => $charge->creation_date,
-                'operation_date' => $charge->operation_date,
-                'description' => $charge->description,
-                'error_message' => $charge->error_message,
-                'order_id' => $charge->order_id
+                ]
             ];
 
             return response()->json($formattedCharge, 202);
