@@ -24,6 +24,10 @@ class AnalyticsController extends BaseController
         $userMaleNumber = User::where('gender', 1)->count();
         $userFemaleNumber = User::where('gender', 2)->count();
         $contactNumber = Contact::count();
+
+        $userSouceApp = User::where('source', 1)->count();
+        $userSouceFacebook = User::where('source', 2)->count();
+        $userSouceGoogle = User::where('source', 3)->count();
         // Edad
         // 0 a 11 años
         $children = User::whereBetween('birthday', [Carbon::now()->subYears(11), Carbon::now()])->count();
@@ -45,6 +49,11 @@ class AnalyticsController extends BaseController
                 'teens' => $teens,
                 'young_adults' => $young_adults,
                 'unknown' => $unknown_age,
+            ],
+            'sources' => [
+                'app' => $userSouceApp,
+                'facebook' => $userSouceFacebook,
+                'google' => $userSouceGoogle
             ]
         ], 200);
     }
