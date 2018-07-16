@@ -35,7 +35,6 @@ class User extends Model implements CanResetPasswordContract, AuthenticatableCon
         'source',
         'extern_id',
         'lang',
-        'confirmed',
         'birthday',
         'direction_id',
         'role',
@@ -49,7 +48,7 @@ class User extends Model implements CanResetPasswordContract, AuthenticatableCon
      */
     protected $hidden = [
         'updated_at',
+        'confirmed',
         'password',
-        'remember_token',
     ];
 }

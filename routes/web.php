@@ -39,7 +39,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
     $router->put('/user/update/lang', ['uses' => 'UserController@updateUserLang']);
     $router->put('/user/update/direction', ['uses' => 'UserController@updateUserDirection']);
     $router->delete('/user/logout', ['uses' => 'UserController@logout']);
-    $router->delete('/user/delete', ['uses' => 'UserController@deleteUser']);
+    $router->delete('/user', ['uses' => 'UserController@deleteUser']);
 
     $router->post('/user/pay', ['uses' => 'PayController@createPay']);
 

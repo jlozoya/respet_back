@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use Laravel\Lumen\Routing\Controller as BaseController;
 
+use App\Models\Course;
 use App\Models\CoursePrice;
 use App\Models\UserCoursePayment;
+
+use App\Notifications\PayConfirmation;
 
 use Openpay;
 use Illuminate\Http\Request;
@@ -40,11 +43,14 @@ class PayController extends BaseController
             ];
 
             $coursePrice = CoursePrice::select(
+                'course_prices.course_id',
                 'course_prices.id',
                 'course_prices.amount',
                 'courses.description'
             )->where('course_prices.id', $request->get('course_price_id'))
             ->join('courses', 'courses.id', 'course_prices.course_id')->first();
+
+            $course = Course::find($coursePrice['course_id']);
 
             $chargeData = [
                 'amount' => $coursePrice['amount'],
@@ -96,7 +102,7 @@ class PayController extends BaseController
                     'bank_code' => $charge->card->bank_code
                 ]
             ];
-
+            $user->notify(new PayConfirmation($course, $user['lang']));
             return response()->json($formattedCharge, 202);
         } catch (OpenpayApiTransactionError $e) {
             return response()->json([

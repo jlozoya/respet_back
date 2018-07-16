@@ -27,7 +27,15 @@ class UserController extends BaseController
      * @return \Illuminate\Http\Response
      */
     public function getUser(Request $request) {
-        return $request->user();
+        $user = $request->user();
+        if ($user) {
+            if ($user['direction_id']) {
+                $user['direction'] = Direction::find($user['direction_id']);
+            }
+            return response()->json($user, 200);
+        } else {
+            return response()->json('SERVER.USER_NOT_FOUND', 404);
+        }
     }
     /**
      * Recupera la información básica de un usuario.
@@ -52,8 +60,9 @@ class UserController extends BaseController
             'direction_id'
         )->find($id);
         if ($user) {
-            $userDirection = Direction::find($user['direction_id']);
-            $user['direction'] = $userDirection;
+            if ($user['direction_id']) {
+                $user['direction'] = Direction::find($user['direction_id']);
+            }
             return response()->json($user, 200);
         } else {
             return response()->json('SERVER.USER_NOT_REGISTRED', 404);
@@ -667,10 +676,10 @@ class UserController extends BaseController
         $user = User::find($id);
         Image::make($file)->save($path . $file_name);
         // Evalúa si hay un archivo registrado en el servidor con el mismo nombre para eliminarlo.
-        if ($user->img_url && parse_url($user->img_url)['host'] == parse_url(URL::to('/'))['host']) {
-            File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($user->img_url)['path']);
+        if ($user['img_url'] && parse_url($user['img_url'])['host'] == parse_url(URL::to('/'))['host']) {
+            File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($user['img_url'])['path']);
         }
-        $user->img_url = $file_url;
+        $user['img_url'] = $file_url;
         $user->save();
         return response()->json($file_url, 202);
     }
@@ -710,12 +719,21 @@ class UserController extends BaseController
      * @return \Illuminate\Http\Response
      */
     public function deleteUser(Request $request) {
-        $request->user()->token()->revoke();
-        $request->user()->token()->delete();
         $user = $request->user();
-        Direction::find($user['direction_id'])->delete();
-        $user->delete();
-        return response()->json('SERVER.USER_DELETED', 200);
+        if ($user) {
+            $request->user()->token()->revoke();
+            $request->user()->token()->delete();
+            if ($user['direction_id']) {
+                Direction::find($user['direction_id'])->delete();
+            }
+            if ($user['img_url'] && parse_url($user['img_url'])['host'] == parse_url(URL::to('/'))['host']) {
+                File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($user['img_url'])['path']);
+            }
+            $user->delete();
+            return response()->json('SERVER.USER_DELETED', 200);
+        } else {
+            return response()->json('SERVER.USER_NOT_FOUND', 404);
+        }
     }
     /**
      * Elimina un usuario

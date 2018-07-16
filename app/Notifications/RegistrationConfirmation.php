@@ -52,22 +52,37 @@ class RegistrationConfirmation extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        if ($this->lang == 'es') {
-            return (new MailMessage)
-                ->subject('Confirmación de correo')
-                ->greeting('Hola!')
-                ->line('Usted está recibiendo este correo porque se registró exitosamente su cuenta y queremos confirmar su correo. Haga clic en el botón a continuación para confirmar:')
-                ->action('Confirmar correo', $this->confirmationLink)
-                ->line('Si no solicitó registrarse, no se requieren mas acciones.')
-                ->salutation('Saludos');
-        } else if ($this->lang == 'en') {
-            return (new MailMessage)
-                ->subject('Email confirmation')
-                ->greeting('Hello!')
-                ->line('You are receiving this email because your account was successfully registered and we want to confirm your email. Click on the button below to confirm:')
-                ->action('Confirm email', $this->confirmationLink)
-                ->line('If you did not request registration, no further action is required.')
-                ->salutation('Regards');
+        switch($this->lang) {
+            case 'es': {
+                return (new MailMessage)
+                    ->subject('Confirmación de correo')
+                    ->greeting('Hola!')
+                    ->line('Usted está recibiendo este correo porque se registró exitosamente su cuenta y queremos confirmar su correo. Haga clic en el botón a continuación para confirmar:')
+                    ->action('Confirmar correo', $this->confirmationLink)
+                    ->line('Si no solicitó registrarse, no se requieren mas acciones.')
+                    ->salutation('Saludos');
+            }
+            break;
+            case 'en': {
+                return (new MailMessage)
+                    ->subject('Email confirmation')
+                    ->greeting('Hello!')
+                    ->line('You are receiving this email because your account was successfully registered and we want to confirm your email. Click on the button below to confirm:')
+                    ->action('Confirm email', $this->confirmationLink)
+                    ->line('If you did not request registration, no further action is required.')
+                    ->salutation('Regards');
+            }
+            break;
+            default: {
+                return (new MailMessage)
+                    ->subject('Confirmación de correo')
+                    ->greeting('Hola!')
+                    ->line('Usted está recibiendo este correo porque se registró exitosamente su cuenta y queremos confirmar su correo. Haga clic en el botón a continuación para confirmar:')
+                    ->action('Confirmar correo', $this->confirmationLink)
+                    ->line('Si no solicitó registrarse, no se requieren mas acciones.')
+                    ->salutation('Saludos');
+            }
+            break;
         }
     }
 }

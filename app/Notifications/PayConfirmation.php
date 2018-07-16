@@ -7,9 +7,14 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class ContactConfirmation extends Notification implements ShouldQueue
+class PayConfirmation extends Notification implements ShouldQueue
 {
     use Queueable;
+    /**
+     * Idioma para mandar el correo.
+     * @var string
+     */
+    private $course;
     /**
      * Idioma para mandar el correo.
      * @var string
@@ -21,8 +26,9 @@ class ContactConfirmation extends Notification implements ShouldQueue
      * @param  string  $confirmationLink
      * @return void
      */
-    public function __construct($lang = 'es')
+    public function __construct($course, $lang = 'es')
     {
+        $this->course = $course;
         $this->lang = $lang;
     }
 
@@ -44,32 +50,35 @@ class ContactConfirmation extends Notification implements ShouldQueue
      * @return \Illuminate\Notifications\MessageBuilder
      */
     public function toMail($notifiable)
-    {   
+    {
         switch($this->lang) {
             case 'es': {
                 return (new MailMessage)
-                    ->subject('Confirmación de contacto')
+                    ->subject('Confirmación de pago')
                     ->greeting('Hola!')
-                    ->line('Muchas gracias por ponerse en contacto con nosotros.')
-                    ->line('Si no fue usted, no se requieren mas acciones.')
+                    ->line('Le agracemos muchísimo por haber realizado el pago de inscripción, empezamos el día:')
+                    ->line($this->$course['start_date'])
+                    ->line('Lo mantendremos informado.')
                     ->salutation('Saludos');
             }
             break;
             case 'en': {
                 return (new MailMessage)
-                    ->subject('Contact confirmation')
+                    ->subject('Confirmation of payment')
                     ->greeting('Hello!')
-                    ->line('Thank you very much for contacting us.')
-                    ->line('If it was not you, no more actions are required.')
-                    ->salutation ('Greetings');
+                    ->line('We thank you very much for having made the registration payment, we started the day:')
+                    ->line($this->$course['start_date'])
+                    ->line('We will keep you informed.')
+                    ->salutation('Regards');
             }
             break;
             default: {
                 return (new MailMessage)
-                    ->subject('Confirmación de contacto')
+                    ->subject('Confirmación de pago')
                     ->greeting('Hola!')
-                    ->line('Muchas gracias por ponerse en contacto con nosotros.')
-                    ->line('Si no fue usted, no se requieren mas acciones.')
+                    ->line('Le agracemos muchísimo por haber realizado el pago de inscripción, empezamos el día:')
+                    ->line($this->$course['start_date'])
+                    ->line('Lo mantendremos informado.')
                     ->salutation('Saludos');
             }
             break;

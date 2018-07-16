@@ -53,26 +53,43 @@ class ContactMessage extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        if ($this->user['lang'] == 'es') {
-            return (new MailMessage)
-                ->subject('Nuevo mensaje de contacto')
-                ->greeting('Hola ' . $this->user['name'] . '!')
-                ->line('Un usuario envió un mensaje de contacto')
-                ->line('Nombre: ' . $this->contact['name'])
-                ->line('Teléfono: ' . $this->contact['phone'])
-                ->line('Email: ' . $this->contact['email'])
-                ->line('Mensaje: ' . $this->contact['message'])
-                ->salutation('Saludos');
-        } else if ($this->user['lang'] == 'en') {
-            return (new MailMessage)
-                ->subject('New contact message')
-                ->greeting('Hello ' . $this->user['name'] . '!')
-                ->line('A user sent a contact message')
-                ->line('Name: ' . $this->contact['name'])
-                ->line('Phone: ' . $this->contact['phone'])
-                ->line('Email: ' . $this->contact['email'])
-                ->line('Message: ' . $this->contact['message'])
-                ->salutation('Regards');
+        switch($this->lang) {
+            case 'es': {
+                return (new MailMessage)
+                    ->subject('Nuevo mensaje de contacto')
+                    ->greeting('Hola ' . $this->user['name'] . '!')
+                    ->line('Un usuario envió un mensaje de contacto')
+                    ->line('Nombre: ' . $this->contact['name'])
+                    ->line('Teléfono: ' . $this->contact['phone'])
+                    ->line('Email: ' . $this->contact['email'])
+                    ->line('Mensaje: ' . $this->contact['message'])
+                    ->salutation('Saludos');
+            }
+            break;
+            case 'en': {
+                return (new MailMessage)
+                    ->subject('New contact message')
+                    ->greeting('Hello ' . $this->user['name'] . '!')
+                    ->line('A user sent a contact message')
+                    ->line('Name: ' . $this->contact['name'])
+                    ->line('Phone: ' . $this->contact['phone'])
+                    ->line('Email: ' . $this->contact['email'])
+                    ->line('Message: ' . $this->contact['message'])
+                    ->salutation('Regards');
+            }
+            break;
+            default: {
+                return (new MailMessage)
+                    ->subject('Nuevo mensaje de contacto')
+                    ->greeting('Hola ' . $this->user['name'] . '!')
+                    ->line('Un usuario envió un mensaje de contacto')
+                    ->line('Nombre: ' . $this->contact['name'])
+                    ->line('Teléfono: ' . $this->contact['phone'])
+                    ->line('Email: ' . $this->contact['email'])
+                    ->line('Mensaje: ' . $this->contact['message'])
+                    ->salutation('Saludos');
+            }
+            break;
         }
     }
 }
