@@ -305,7 +305,7 @@ class UserController extends BaseController
                 $user->save();
                 $emailConfirmData->delete();
                 // TODO Actualizar al instalarlo
-                return redirect('../big_thinks');
+                return redirect(env('APP_REDIRECTS_LINK', '../'));
             } else {
                 $emailConfirmData->delete();
                 return response()->json('SERVER.TOKEN_EXPIRED', 406);
