@@ -107,8 +107,7 @@ trait ResetsPasswords
         });
         switch ($response) {
             case Password::PASSWORD_RESET:
-                // TODO Actualizar al instalarlo
-                return redirect('../big_thinks');;
+                return redirect(env('APP_REDIRECTS_LINK', '../'));
             default:
                 return $this->getResetFailureResponse($request, $response);
         }
