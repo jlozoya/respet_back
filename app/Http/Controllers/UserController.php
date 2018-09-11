@@ -480,7 +480,7 @@ class UserController extends BaseController
         } else {
             $file = $request->file('file');
         }
-        $path = $_SERVER['DOCUMENT_ROOT'] . '/big_thinks_back/img/users_avatars/';
+        $path = $_SERVER['DOCUMENT_ROOT'] . env('APP_PUBLIC_URL', '/app') . '/img/users_avatars/';
         $file_url = URL::to('/') . '/img/users_avatars/' . $file_name;
         if (!File::exists($path)) {
             File::makeDirectory($path, 0775, true);
@@ -668,7 +668,7 @@ class UserController extends BaseController
         } else {
             $file = $request->file('file');
         }
-        $path = $_SERVER['DOCUMENT_ROOT'] . '/big_thinks_back/img/users_avatars/';
+        $path = $_SERVER['DOCUMENT_ROOT'] . env('APP_PUBLIC_URL', '/app') . '/img/users_avatars/';
         $file_url = URL::to('/') . '/img/users_avatars/' . $file_name;
         if (!File::exists($path)) {
             File::makeDirectory($path, 0775, true);
