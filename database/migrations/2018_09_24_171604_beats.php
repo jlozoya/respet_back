@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCoursesTable extends Migration
+class Beats extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,17 @@ class CreateCoursesTable extends Migration
      */
     public function up()
     {
-        Schema::create('courses', function (Blueprint $table) {
+        Schema::create('beats', function (Blueprint $table) {
             $table->increments('id')->unique();
-            $table->string('name', 60);
-            $table->string('description')->nullable();
-            $table->date('start_date');
-            $table->date('end_date');
-            $table->string('status', 20);
+            $table->integer('reading_id')->unsigned();
+            $table->time('time');
+            $table->integer('beat');
             $table->timestamps();
+
+            $table->foreign('reading_id')->references('id')->on('readings')->onDelete('cascade');
         });
     }
+
     /**
      * Reverse the migrations.
      *
@@ -30,6 +31,6 @@ class CreateCoursesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('courses');
+        //
     }
 }
