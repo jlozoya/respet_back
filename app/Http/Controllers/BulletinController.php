@@ -59,7 +59,7 @@ class BulletinController extends BaseController
                 $bulletin['media'] = Media::find($bulletin['media_id']);
             }
         }
-        return response()->json($bulletin, 200);
+        return response()->json($bulletins, 200);
     }
     /**
      * Actualizar un registro.
