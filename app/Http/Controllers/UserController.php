@@ -141,9 +141,9 @@ class UserController extends BaseController
                         'lang' => $request->get('lang'),
                         'source' => $request->get('source')
                     ]);
-                    if ($request->get('media.url')) {
+                    if ($request->get('media')) {
                         $media = Media::create([
-                            'url' => $request->get('media.url'),
+                            'url' => $request->get('media')['url'],
                             'alt' => 'avatar',
                         ]);
                         $user['media_id'] = $media['id'];
@@ -166,9 +166,9 @@ class UserController extends BaseController
                         'source' => $request->get('source'),
                         'extern_id' => $request->get('extern_id')
                     ]);
-                    if ($request->get('media.url')) {
+                    if ($request->get('media')) {
                         $media = Media::create([
-                            'url' => $request->get('media.url'),
+                            'url' => $request->get('media')['url'],
                             'alt' => 'avatar',
                         ]);
                         $user['media_id'] = $media['id'];
