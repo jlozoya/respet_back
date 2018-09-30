@@ -28,11 +28,13 @@ class CreateUsersTable extends Migration
             $table->string('lang', 5)->default('es');
             $table->date('birthday')->nullable();
             $table->boolean('confirmed')->default(false);
-            $table->enum('role', ['visitor', 'user', 'admin', 'other'])->default('visitor');
+            $table->enum('role', ['visitor', 'user', 'admin', 'other'])
+            ->default('visitor');
             $table->integer('direction_id')->unsigned()->nullable();
             $table->timestamps();
 
-            $table->foreign('direction_id')->references('id')->on('directions')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('direction_id')->references('id')->on('directions')
+            ->onDelete('cascade')->onUpdate('cascade');
         });
     }
     /**
