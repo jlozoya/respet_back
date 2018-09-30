@@ -70,7 +70,6 @@ class BeatController extends BaseController
      * @return \Illuminate\Http\Response
      */
     function deleteBeat($id) {
-        $this->validate($request, ['id' => 'required',]);
         $beat = Beat::find($id);
         $beat->delete();
         return response()->json('SERVER.READING_DELETED', 200);

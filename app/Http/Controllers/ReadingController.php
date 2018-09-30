@@ -70,7 +70,6 @@ class ReadingController extends BaseController
      * @return \Illuminate\Http\Response
      */
     function deleteReading($id) {
-        $this->validate($request, ['id' => 'required',]);
         $reading = Reading::find($id);
         $reading->delete();
         return response()->json('SERVER.READING_DELETED', 200);

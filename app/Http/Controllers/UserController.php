@@ -141,11 +141,13 @@ class UserController extends BaseController
                         'lang' => $request->get('lang'),
                         'source' => $request->get('source')
                     ]);
-                    if ($request->get('url')) {
-                        $user['media'] = Media::create([
+                    if ($request->get('media.url')) {
+                        $media = Media::create([
                             'url' => $request->get('media.url'),
                             'alt' => 'avatar',
                         ]);
+                        $user['media_id'] = $media['id'];
+                        $user->save();
                     }
                     $sesion['id'] = $user['id'];
                     $sesion['token'] = $user->createToken(env('APP_OAUTH_PASS', 'OAuth'))->accessToken; 
@@ -164,11 +166,13 @@ class UserController extends BaseController
                         'source' => $request->get('source'),
                         'extern_id' => $request->get('extern_id')
                     ]);
-                    if ($request->get('url')) {
-                        $user['media'] = Media::create([
+                    if ($request->get('media.url')) {
+                        $media = Media::create([
                             'url' => $request->get('media.url'),
                             'alt' => 'avatar',
                         ]);
+                        $user['media_id'] = $media['id'];
+                        $user->save();
                     }
                     $sesion['id'] = $user['id'];
                     $sesion['token'] = $user->createToken(env('APP_OAUTH_PASS', 'OAuth'))->accessToken;  
@@ -410,26 +414,26 @@ class UserController extends BaseController
             $user = $request->user();
             if ($request->get('name')) {
                 $this->validate($request, ['name' => 'required|min:4|max:60',]);
-                $user->name = $request->get('name');
+                $user['name'] = $request->get('name');
             }
             if ($request->get('first_name')) {
                 $this->validate($request, ['first_name' => 'required|max:60',]);
-                $user->first_name = $request->get('first_name');
+                $user['first_name'] = $request->get('first_name');
             }
             if ($request->get('last_name')) {
                 $this->validate($request, ['last_name' => 'required|max:60',]);
-                $user->last_name = $request->get('last_name');
+                $user['last_name'] = $request->get('last_name');
             }
             if ($request->get('gender')) {
                 $this->validate($request, ['gender' => 'required|string',]);
-                $user->gender = $request->get('gender');
+                $user['gender'] = $request->get('gender');
             }
             if ($request->get('phone')) {
                 $this->validate($request, ['phone' => 'required|numeric',]);
-                $user->phone = $request->get('phone');
+                $user['phone'] = $request->get('phone');
             }
             if ($request->get('birthday')) {
-                $user->birthday = $request->get('birthday');
+                $user['birthday'] = $request->get('birthday');
             }
             $user->save();
             return response()->json($user, 201);
@@ -459,7 +463,7 @@ class UserController extends BaseController
                 if ($validate) {
                     return response()->json('SERVER.USER_EMAIL_ALREADY_EXISTS', 406);
                 } else {
-                    $user->email = $request->get('email');
+                    $user['email'] = $request->get('email');
                     $user->save();
                 }
             }
@@ -609,22 +613,22 @@ class UserController extends BaseController
             }
             if ($request->get('first_name')) {
                 $this->validate($request, ['first_name' => 'required|max:60',]);
-                $user->first_name = $request->get('first_name');
+                $user['first_name'] = $request->get('first_name');
             }
             if ($request->get('last_name')) {
                 $this->validate($request, ['last_name' => 'required|max:60',]);
-                $user->last_name = $request->get('last_name');
+                $user['last_name'] = $request->get('last_name');
             }
             if ($request->get('gender')) {
                 $this->validate($request, ['gender' => 'required|string',]);
-                $user->gender = $request->get('gender');
+                $user['gender'] = $request->get('gender');
             }
             if ($request->get('phone')) {
                 $this->validate($request, ['phone' => 'required|numeric',]);
-                $user->phone = $request->get('phone');
+                $user['phone'] = $request->get('phone');
             }
             if ($request->get('birthday')) {
-                $user->birthday = $request->get('birthday');
+                $user['birthday'] = $request->get('birthday');
             }
             $user->save();
             return response()->json($user, 201);
@@ -655,7 +659,7 @@ class UserController extends BaseController
                 if ($validate) {
                     return response()->json('SERVER.USER_EMAIL_ALREADY_EXISTS', 406);
                 } else {
-                    $user->email = $request->get('email');
+                    $user['email'] = $request->get('email');
                     $user->save();
                 }
             }
@@ -787,7 +791,15 @@ class UserController extends BaseController
      */
     public function deleteUserById($id) {
         $user = User::find($id);
-        Direction::find($user['direction_id'])->delete();
+        if ($user['direction_id']) {
+            Direction::find($user['direction_id'])->delete();
+        }
+        if ($user['media_id']) {
+            if (parse_url($user['media']['url'])['host'] == parse_url(URL::to('/'))['host']) {
+                File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($user['media']['url'])['path']);
+            }
+            $media = Media::find($user['media_id'])->delete();
+        }
         $user->delete();
         return response()->json('SERVER.USER_DELETED', 200);
     }
