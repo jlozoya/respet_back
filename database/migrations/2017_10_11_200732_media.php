@@ -16,8 +16,8 @@ class Media extends Migration
         Schema::create('media', function (Blueprint $table) {
             $table->increments('id')->unique();
             $table->enum('type', ['img', 'video', 'link', 'other'])->default('img');
-            $table->string('source');
-            $table->string('alt', 30);
+            $table->string('url');
+            $table->string('alt', 20)->default('media');
             $table->integer('width')->unsigned()->nullable();
             $table->integer('height')->unsigned()->nullable();
             $table->timestamps();

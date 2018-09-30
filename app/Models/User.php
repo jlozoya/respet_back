@@ -31,7 +31,7 @@ class User extends Model implements CanResetPasswordContract, AuthenticatableCon
         'gender',
         'email',
         'Authorization',
-        'img_url',
+        'media_id',
         'source',
         'extern_id',
         'lang',

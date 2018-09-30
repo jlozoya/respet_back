@@ -7,6 +7,7 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 use App\Models\User;
 use App\Models\EmailConfirm;
 use App\Models\Direction;
+use App\Models\Media;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -32,6 +33,9 @@ class UserController extends BaseController
             if ($user['direction_id']) {
                 $user['direction'] = Direction::find($user['direction_id']);
             }
+            if ($user['media_id']) {
+                $user['media'] = Media::find($user['media_id']);
+            }
             return response()->json($user, 200);
         } else {
             return response()->json('SERVER.USER_NOT_FOUND', 404);
@@ -51,7 +55,7 @@ class UserController extends BaseController
             'last_name',
             'gender',
             'email',
-            'img_url',
+            'media_id',
             'source',
             'phone',
             'lang',
@@ -62,6 +66,9 @@ class UserController extends BaseController
         if ($user) {
             if ($user['direction_id']) {
                 $user['direction'] = Direction::find($user['direction_id']);
+            }
+            if ($user['media_id']) {
+                $user['media'] = Media::find($user['media_id']);
             }
             return response()->json($user, 200);
         } else {
@@ -75,14 +82,14 @@ class UserController extends BaseController
      * @return \Illuminate\Http\Response
      */
     public function getUsers(Request $request) {
-        $user = User::select(
+        $users = User::select(
             'id',
             'name',
             'first_name',
             'last_name',
             'gender',
             'email',
-            'img_url',
+            'media_id',
             'users.source',
             'phone',
             'lang',
@@ -92,8 +99,12 @@ class UserController extends BaseController
         ->orWhere('email', 'like', '%' . $request->get('search') . '%')
         ->orWhere('phone', 'like', '%' . $request->get('search') . '%')
         ->paginate(15);
-
-        return response()->json($user, 200);
+        foreach ($users as &$user) {
+            if ($user['media_id']) {
+                $user['media'] = Media::find($user['media_id']);
+            }
+        }
+        return response()->json($users, 200);
     }
     /**
      * Valida e inserta los datos del usuario.
@@ -127,10 +138,15 @@ class UserController extends BaseController
                         'gender' => $request->get('gender'),
                         'email' => $request->get('email'),
                         'password' => Hash::make($request->get('password')),
-                        'img_url' => $request->get('img_url'),
                         'lang' => $request->get('lang'),
                         'source' => $request->get('source')
                     ]);
+                    if ($request->get('url')) {
+                        $user['media'] = Media::create([
+                            'url' => $request->get('media.url'),
+                            'alt' => 'avatar',
+                        ]);
+                    }
                     $sesion['id'] = $user['id'];
                     $sesion['token'] = $user->createToken('BigThinks')->accessToken; 
                 } else {
@@ -144,11 +160,16 @@ class UserController extends BaseController
                         'last_name' => $request->get('last_name'),
                         'gender' => $request->get('gender'),
                         'email' => $request->get('email'),
-                        'img_url' => $request->get('img_url'),
                         'lang' => $request->get('lang'),
                         'source' => $request->get('source'),
                         'extern_id' => $request->get('extern_id')
                     ]);
+                    if ($request->get('url')) {
+                        $user['media'] = Media::create([
+                            'url' => $request->get('media.url'),
+                            'alt' => 'avatar',
+                        ]);
+                    }
                     $sesion['id'] = $user['id'];
                     $sesion['token'] = $user->createToken('BigThinks')->accessToken;  
                 }
@@ -481,19 +502,29 @@ class UserController extends BaseController
             $file = $request->file('file');
         }
         $path = $_SERVER['DOCUMENT_ROOT'] . env('APP_PUBLIC_URL', '/app') . '/img/users_avatars/';
-        $file_url = URL::to('/') . '/img/users_avatars/' . $file_name;
+        $fileUrl = URL::to('/') . '/img/users_avatars/' . $file_name;
         if (!File::exists($path)) {
             File::makeDirectory($path, 0775, true);
         }
-        $user = $request->user();
         Image::make($file)->save($path . $file_name);
+        $user = $request->user();
         // Evalúa si hay un archivo registrado en el servidor con el mismo nombre para eliminarlo.
-        if ($user->img_url && parse_url($user->img_url)['host'] == parse_url(URL::to('/'))['host']) {
-            File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($user->img_url)['path']);
+        if ($user['media_id']) {
+            $user['media'] = Media::find($user['media_id']);
+            if (parse_url($user['media']['url'])['host'] == parse_url(URL::to('/'))['host']) {
+                File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($user['media']['url'])['path']);
+            }
+            $user['media']['url'] = $fileUrl;
+            $user['media']->save();
+        } else {
+            $media = Media::create([
+                'url' => $fileUrl,
+                'alt' => 'avatar',
+            ]);
+            $user['media_id'] = $media['id'];
+            $user->save();
         }
-        $user->img_url = $file_url;
-        $user->save();
-        return response()->json($file_url, 202);
+        return response()->json($fileUrl, 202);
     }
     /**
      * Actualizar la dirección del usuario.
@@ -669,19 +700,29 @@ class UserController extends BaseController
             $file = $request->file('file');
         }
         $path = $_SERVER['DOCUMENT_ROOT'] . env('APP_PUBLIC_URL', '/app') . '/img/users_avatars/';
-        $file_url = URL::to('/') . '/img/users_avatars/' . $file_name;
+        $fileUrl = URL::to('/') . '/img/users_avatars/' . $file_name;
         if (!File::exists($path)) {
             File::makeDirectory($path, 0775, true);
         }
-        $user = User::find($id);
         Image::make($file)->save($path . $file_name);
+        $user = User::find($id);
         // Evalúa si hay un archivo registrado en el servidor con el mismo nombre para eliminarlo.
-        if ($user['img_url'] && parse_url($user['img_url'])['host'] == parse_url(URL::to('/'))['host']) {
-            File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($user['img_url'])['path']);
+        if ($user['media_id']) {
+            $user['media'] = Media::find($user['media_id']);
+            if (parse_url($user['media']['url'])['host'] == parse_url(URL::to('/'))['host']) {
+                File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($user['media']['url'])['path']);
+            }
+            $user['media']['url'] = $fileUrl;
+            $user['media']->save();
+        } else {
+            $media = Media::create([
+                'url' => $fileUrl,
+                'alt' => 'avatar',
+            ]);
+            $user['media_id'] = $media['id'];
+            $user->save();
         }
-        $user['img_url'] = $file_url;
-        $user->save();
-        return response()->json($file_url, 202);
+        return response()->json($fileUrl, 202);
     }
     /**
      * Estable el rol del usuario

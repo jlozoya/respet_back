@@ -21,7 +21,7 @@ class CreateUsersTable extends Migration
             $table->enum('gender', ['male', 'female', 'other'])->nullable();
             $table->string('email', 60)->index();
             $table->string('password')->nullable();
-            $table->text('img_url')->nullable();
+            $table->integer('media_id')->unsigned()->nullable();
             $table->enum('source', ['app', 'facebook', 'google', 'other']);
             $table->string('phone', 15)->nullable();
             $table->string('extern_id')->nullable();
@@ -34,7 +34,9 @@ class CreateUsersTable extends Migration
             $table->timestamps();
 
             $table->foreign('direction_id')->references('id')->on('directions')
-            ->onDelete('cascade')->onUpdate('cascade');
+            ->onDelete('set null')->onUpdate('cascade');
+            $table->foreign('media_id')->references('id')->on('media')
+            ->onDelete('set null')->onUpdate('cascade');
         });
     }
     /**

@@ -31,6 +31,8 @@ class Beats extends Migration
      */
     public function down()
     {
-        //
+        \DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        Schema::dropIfExists('beats');
+        \DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
 }
