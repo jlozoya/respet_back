@@ -332,7 +332,6 @@ class UserController extends BaseController
                 $user->confirmed = true;
                 $user->save();
                 $emailConfirmData->delete();
-                // TODO Actualizar al instalarlo
                 return redirect(env('APP_REDIRECTS_LINK', '../'));
             } else {
                 $emailConfirmData->delete();
