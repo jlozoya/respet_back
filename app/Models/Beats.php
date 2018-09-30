@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Course extends Model 
+class Beats extends Model 
 {
     /**
      * Los atributos que son asignados en masa.
@@ -13,11 +13,9 @@ class Course extends Model
      */
     protected $fillable = [
         'id',
-        'name',
-        'description',
-        'start_date',
-        'end_date',
-        'status',
+        'reading_id',
+        'time',
+        'beat',
     ];
     /**
      * Los atributos excluidos del formulario JSON del modelo.

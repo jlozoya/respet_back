@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use DB;
 
-class AnalyticsController extends BaseController
+class AnalyticController extends BaseController
 {
     /**
      * Recupera la información básica del estado del servidor.

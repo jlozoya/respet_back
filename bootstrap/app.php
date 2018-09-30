@@ -77,7 +77,6 @@ $app->singleton(
 
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
-    'isTeacher' => App\Http\Middleware\IsTeacher::class,
     'isAdmin' => App\Http\Middleware\IsAdmin::class,
 ]);
 

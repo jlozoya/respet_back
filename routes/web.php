@@ -41,11 +41,17 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
     $router->delete('/user/logout', ['uses' => 'UserController@logout']);
     $router->delete('/user', ['uses' => 'UserController@deleteUser']);
 
+    $router->post('/reading', ['uses' => 'ReadingController@createReading']);
+    $router->get('/reading/{id}', ['uses' => 'ReadingController@showOneReadingById']);
+    $router->put('/reading', ['uses' => 'ReadingController@updateReading']);
+    $router->delete('/reading/{id}', ['uses' => 'ReadingController@deleteReading']);
+
+    $router->post('/beat', ['uses' => 'BeatController@createBeat']);
+    $router->get('/beat/{id}', ['uses' => 'BeatController@showOneBeatById']);
+    $router->put('/beat', ['uses' => 'BeatController@updateBeat']);
+    $router->delete('/beat/{id}', ['uses' => 'BeatController@deleteBeat']);
+
     $router->post('/user/pay', ['uses' => 'PayController@createPay']);
-
-    $router->group(['middleware' => ['isTeacher']], function () use ($router) {
-
-    });
 
     $router->group(['middleware' => ['isAdmin']], function () use ($router) {
         $router->get('/user/{id}', ['uses' => 'UserController@getUserById']);
@@ -58,7 +64,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
         $router->put('/user/role/{id}', ['uses' => 'UserController@setUserRoleById']);
         $router->delete('/user/delete/{id}', ['uses' => 'UserController@deleteUserById']);
 
-        $router->get('/analytics', ['uses' => 'AnalyticsController@getBasicAnalytics']);
-        $router->post('/analytics/users/registration', ['uses' => 'AnalyticsController@getUsersRegistration']);
+        $router->get('/analytics', ['uses' => 'AnalyticController@getBasicAnalytics']);
+        $router->post('/analytics/users/registration', ['uses' => 'AnalyticController@getUsersRegistration']);
     });
 });
