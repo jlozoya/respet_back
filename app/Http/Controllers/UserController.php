@@ -148,7 +148,7 @@ class UserController extends BaseController
                         ]);
                     }
                     $sesion['id'] = $user['id'];
-                    $sesion['token'] = $user->createToken('BigThinks')->accessToken; 
+                    $sesion['token'] = $user->createToken(env('APP_OAUTH_PASS', 'OAuth'))->accessToken; 
                 } else {
                     $user = User::where(['source' => $request->get('source'), 'extern_id' => $request->get('extern_id')])->first();
                     if ($user) {
@@ -171,7 +171,7 @@ class UserController extends BaseController
                         ]);
                     }
                     $sesion['id'] = $user['id'];
-                    $sesion['token'] = $user->createToken('BigThinks')->accessToken;  
+                    $sesion['token'] = $user->createToken(env('APP_OAUTH_PASS', 'OAuth'))->accessToken;  
                 }
                 $this->sendConfirmEmail($user);
                 return response()->json($sesion, 201);
@@ -195,7 +195,8 @@ class UserController extends BaseController
                         $user = User::where('email', $request->get('email'))->where('source', $request->get('source'))->first();
                         if ($user && Hash::check($request->get('password'), $user->password)) {
                             $sesion['id'] = $user['id'];
-                            $sesion['token'] = $user->createToken('BigThinks')->accessToken;
+                            $sesion['token'] = $user
+                            ->createToken(env('APP_OAUTH_PASS', 'OAuth'))->accessToken;
                             return response()->json($sesion, 200);
                         } else {
                             return response()->json('SERVER.INCORRECT_USER', 406);
@@ -212,7 +213,8 @@ class UserController extends BaseController
                                 $user = User::where('extern_id', $request->get('extern_id'))->first();
                                 if ($user) {
                                     $sesion['id'] = $user['id'];
-                                    $sesion['token'] = $user->createToken('BigThinks')->accessToken;
+                                    $sesion['token'] = $user
+                                    ->createToken(env('APP_OAUTH_PASS', 'OAuth'))->accessToken;
                                     return response()->json($sesion, 200);
                                 } else {
                                     return response()->json('SERVER.USER_NOT_REGISTRED', 404);
@@ -235,7 +237,8 @@ class UserController extends BaseController
                                 $user = User::where('extern_id', $request->get('extern_id'))->first();
                                 if ($user) {
                                     $sesion['id'] = $user['id'];
-                                    $sesion['token'] = $user->createToken('BigThinks')->accessToken;
+                                    $sesion['token'] = $user
+                                    ->createToken(env('APP_OAUTH_PASS', 'OAuth'))->accessToken;
                                     return response()->json($sesion, 200);
                                 } else {
                                     return response()->json('SERVER.USER_NOT_REGISTRED', 404);
