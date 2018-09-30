@@ -30,6 +30,9 @@ $router->get('/user/confirm/email', ['as' => 'user.confirm.email', 'uses' => 'Us
 
 $router->post('/contact/send', ['uses' => 'ContactController@sendContact']);
 
+$router->get('/bulletins', ['uses' => 'BulletinController@showBulletins']);
+$router->get('/bulletin/{id}', ['uses' => 'BulletinController@showOneBulletinById']);
+
 $router->group(['middleware' => ['auth:api']], function () use ($router) {
     $router->get('/user', ['uses' => 'UserController@getUser']);
     $router->post('/user/confirm/email', ['uses' => 'UserController@reSendConfirmEmail']);
@@ -63,6 +66,10 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
         $router->put('/user/update/direction/{id}', ['uses' => 'UserController@updateUserDirectionById']);
         $router->put('/user/role/{id}', ['uses' => 'UserController@setUserRoleById']);
         $router->delete('/user/delete/{id}', ['uses' => 'UserController@deleteUserById']);
+
+        $router->post('/bulletin', ['uses' => 'BulletinController@createBulletin']);
+        $router->put('/bulletin', ['uses' => 'BulletinController@updateBulletin']);
+        $router->delete('/bulletin/{id}', ['uses' => 'BulletinController@deleteBulletin']);
 
         $router->get('/analytics', ['uses' => 'AnalyticController@getBasicAnalytics']);
         $router->post('/analytics/users/registration', ['uses' => 'AnalyticController@getUsersRegistration']);

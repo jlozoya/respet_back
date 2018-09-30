@@ -47,6 +47,21 @@ class BulletinController extends BaseController
         return response()->json($bulletin, 200);
     }
     /**
+     * Recupera Un registro.
+     *
+     * @param  number $id
+     * @return \Illuminate\Http\Response
+     */
+    function showBulletins() {
+        $bulletins = Bulletin::all()->paginate(6);
+        foreach ($bulletins as &$bulletin) {
+            if ($bulletin['media_id']) {
+                $bulletin['media'] = Media::find($bulletin['media_id']);
+            }
+        }
+        return response()->json($bulletin, 200);
+    }
+    /**
      * Actualizar un registro.
      *
      * @param  \Illuminate\Http\Request $request
