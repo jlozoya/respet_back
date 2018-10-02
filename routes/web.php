@@ -37,13 +37,15 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
     $router->get('/user', ['uses' => 'UserController@getUser']);
     $router->post('/user/confirm/email', ['uses' => 'UserController@reSendConfirmEmail']);
     $router->post('/user/set/avatar', ['uses' => 'UserController@saveAvatar']);
+    $router->put('/user/social/link', ['uses' => 'UserController@createSocialLink']);
     $router->put('/user/update', ['uses' => 'UserController@updateUser']);
     $router->put('/user/update/email', ['uses' => 'UserController@updateUserEmail']);
     $router->put('/user/update/lang', ['uses' => 'UserController@updateUserLang']);
     $router->put('/user/update/direction', ['uses' => 'UserController@updateUserDirection']);
+    $router->delete('/user/social/link/:id', ['uses' => 'UserController@deleteSocialLink']);
     $router->delete('/user/logout', ['uses' => 'UserController@logout']);
     $router->delete('/user', ['uses' => 'UserController@deleteUser']);
-
+    
     $router->post('/reading', ['uses' => 'ReadingController@createReading']);
     $router->get('/reading/{id}', ['uses' => 'ReadingController@showOneReadingById']);
     $router->put('/reading', ['uses' => 'ReadingController@updateReading']);

@@ -244,15 +244,15 @@ class UserController extends BaseController
                         }
                     }
                     break;
-                    case 'facebook': {
+                    case 'google': {
                         $client = new \GuzzleHttp\Client();
                         try {
-                            $response = $client->get('https://graph.facebook.com/me?fields=id&access_token='
+                            $response = $client->get('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token='
                             . $request->get('accessToken'))->getBody()->getContents();
                             $response_decoded = json_decode($response, true);
-                            if ($response_decoded['id'] == $request->get('extern_id')) {
+                            if ($response_decoded['user_id'] == $request->get('extern_id')) {
                                 $socialLink = SocialLink::where([
-                                    'extern_id' => $request->get('extern_id'), 'source' => 'facebook'
+                                    'extern_id' => $request->get('extern_id'), 'source' => 'google'
                                 ])->first();
                                 if ($socialLink) {
                                     $user = User::find($socialLink['user_id']);
@@ -271,15 +271,15 @@ class UserController extends BaseController
                         }
                     }
                     break;
-                    case 'google': {
+                    case 'facebook': {
                         $client = new \GuzzleHttp\Client();
                         try {
-                            $response = $client->get('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token='
+                            $response = $client->get('https://graph.facebook.com/me?fields=id&access_token='
                             . $request->get('accessToken'))->getBody()->getContents();
                             $response_decoded = json_decode($response, true);
-                            if ($response_decoded['user_id'] == $request->get('extern_id')) {
+                            if ($response_decoded['id'] == $request->get('extern_id')) {
                                 $socialLink = SocialLink::where([
-                                    'extern_id' => $request->get('extern_id'), 'source' => 'google'
+                                    'extern_id' => $request->get('extern_id'), 'source' => 'facebook'
                                 ])->first();
                                 if ($socialLink) {
                                     $user = User::find($socialLink['user_id']);
@@ -381,6 +381,99 @@ class UserController extends BaseController
                 return response()->json('SERVER.TOKEN_EXPIRED', 406);
             }
         }
+    }
+    /**
+     * Vincula una red social a una cuenta.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function createSocialLink(Request $request) {
+        try {
+            $user = $request->user();
+            $this->validate($request, [
+                'source' => 'required',
+                'extern_id' => 'required',
+                'accessToken' => 'required'
+            ]);
+            switch ($request->get('source')) {
+                case 'google': {
+                    $client = new \GuzzleHttp\Client();
+                    try {
+                        $response = $client->get('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token='
+                        . $request->get('accessToken'))->getBody()->getContents();
+                        $response_decoded = json_decode($response, true);
+                        if ($response_decoded['user_id'] == $request->get('extern_id')) {
+                            $socialLink = SocialLink::where([
+                                'extern_id' => $request->get('extern_id'), 'source' => 'google'
+                            ])->first();
+                            if (!$socialLink) {
+                                $socialLink = SocialLink::create([
+                                    'user_id' => $user['id'],
+                                    'extern_id' => $request->get('extern_id'),
+                                    'source' => $request->get('source')
+                                ]);
+                                return response()->json($socialLink, 202);
+                            } else {
+                                return response()->json('SERVER.USER_SOCIAL_ALREADY_USED', 401);
+                            }
+                        } else {
+                            return response()->json('SERVER.WRONG_USER', 406);
+                        }
+                    } catch (\GuzzleHttp\Exception\ClientException $error) {
+                        return response()->json('SERVER.WRONG_TOKEN', 406);
+                    }
+                }
+                break;
+                case 'facebook': {
+                    $client = new \GuzzleHttp\Client();
+                    try {
+                        $response = $client->get('https://graph.facebook.com/me?fields=id&access_token='
+                        . $request->get('accessToken'))->getBody()->getContents();
+                        $response_decoded = json_decode($response, true);
+                        if ($response_decoded['id'] == $request->get('extern_id')) {
+                            $socialLink = SocialLink::where([
+                                'extern_id' => $request->get('extern_id'), 'source' => 'google'
+                            ])->first();
+                            if (!$socialLink) {
+                                $socialLink = SocialLink::create([
+                                    'user_id' => $user['id'],
+                                    'extern_id' => $request->get('extern_id'),
+                                    'source' => $request->get('source')
+                                ]);
+                                return response()->json($socialLink, 202);
+                            } else {
+                                return response()->json('SERVER.USER_SOCIAL_ALREADY_USED', 404);
+                            }
+                        } else {
+                            return response()->json('SERVER.WRONG_USER', 406);
+                        }
+                    } catch (\GuzzleHttp\Exception\ClientException $error) {
+                        return response()->json('SERVER.WRONG_TOKEN', 406);
+                    }
+                }
+                break;
+            }
+        } catch (ModelNotFoundException $error) {
+            return response()->json('SERVER.WRONG_USER', 406);
+        }
+    }
+    /**
+     * Vincula una red social a una cuenta.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteSocialLink(Request $request, $id) {
+        $user = $request->user();
+        $socialLink = SocialLink::where([
+            'id' => $id, 'user_id' => $user['id']
+        ])->first();
+        if ($socialLink) {
+            $socialLink->delete();
+            return response()->json('SERVER.WRONG_SOCIAL_LINK_DELETED', 201);
+        }
+        return response()->json('SERVER.WRONG_SOCIAL_LINK_ID', 404);
     }
     /**
      * Actualizar la dirección del usuario.
@@ -815,9 +908,12 @@ class UserController extends BaseController
             if ($user['direction_id']) {
                 Direction::find($user['direction_id'])->delete();
             }
-            if ($user['img_url'] && parse_url($user['img_url'])['host'] == parse_url(URL::to('/'))['host']) {
-                File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($user['img_url'])['path']);
-            }
+            if ($user['media_id']) {
+                $user['media'] = Media::find($user['media_id']);
+                if (parse_url($user['media']['url'])['host'] == parse_url(URL::to('/'))['host']) {
+                    File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($user['media']['url'])['path']);
+                }
+            }    
             $user->delete();
             return response()->json('SERVER.USER_DELETED', 200);
         } else {
