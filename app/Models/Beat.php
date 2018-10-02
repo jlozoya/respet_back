@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Beats extends Model 
+class Beat extends Model 
 {
     /**
      * Los atributos que son asignados en masa.

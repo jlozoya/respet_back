@@ -30,12 +30,16 @@ trait ResetsPasswords
         $broker = Password::broker($broker);
         
         /** @var User $user */
-        $user = $broker->getUser(array('email' => $this->getSendResetLinkEmailCredentials($request), 'source' => $request->get('source')));
+        $user = $broker->getUser([
+            'email' => $this->getSendResetLinkEmailCredentials($request),
+            'source' => $request->get('source')
+        ]);
         if ($user) {
             $token = $broker->createToken(
                 $user
             );
-            $resetLink = URL::to('/') . '/password/reset/' . $token . '?email=' . $request->get('email') . '&source=' . $request->get('source');
+            $resetLink = URL::to('/') . '/password/reset/' . $token . '?email='
+            . $request->get('email') . '&source=' . $request->get('source');
             $response = $user->notify(new ResetPasswordNotification($resetLink, $user['lang']));
             if ($response == '') {
                 return $this->getSendResetLinkEmailSuccessResponse($response);

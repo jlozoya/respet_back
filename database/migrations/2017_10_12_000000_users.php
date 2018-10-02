@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUsersTable extends Migration
+class Users extends Migration
 {
     /**
      * Run the migrations.
@@ -22,12 +22,13 @@ class CreateUsersTable extends Migration
             $table->string('email', 60)->index();
             $table->string('password')->nullable();
             $table->integer('media_id')->unsigned()->nullable();
-            $table->enum('source', ['app', 'facebook', 'google', 'other']);
             $table->string('phone', 15)->nullable();
-            $table->string('extern_id')->nullable();
             $table->string('lang', 5)->default('es');
             $table->date('birthday')->nullable();
             $table->boolean('confirmed')->default(false);
+            $table->enum('source',
+                ['app', 'google', 'facebook', 'instagram', 'twitter', 'other']
+            )->default('app');
             $table->enum('role', ['visitor', 'user', 'admin', 'other'])
             ->default('visitor');
             $table->integer('direction_id')->unsigned()->nullable();

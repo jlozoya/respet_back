@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\EmailConfirm;
 use App\Models\Direction;
 use App\Models\Media;
+use App\Models\SocialLink;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -36,6 +37,11 @@ class UserController extends BaseController
             if ($user['media_id']) {
                 $user['media'] = Media::find($user['media_id']);
             }
+            $user['social_links'] = SocialLink::select(
+                'id',
+                'extern_id',
+                'source'
+            )->where('user_id', $user['id'])->get();
             return response()->json($user, 200);
         } else {
             return response()->json('SERVER.USER_NOT_FOUND', 404);
@@ -70,6 +76,11 @@ class UserController extends BaseController
             if ($user['media_id']) {
                 $user['media'] = Media::find($user['media_id']);
             }
+            $user['social_links'] = SocialLink::select(
+                'id',
+                'extern_id',
+                'source'
+            )->where('user_id', $user['id'])->get();
             return response()->json($user, 200);
         } else {
             return response()->json('SERVER.USER_NOT_REGISTRED', 404);
@@ -100,9 +111,17 @@ class UserController extends BaseController
         ->orWhere('phone', 'like', '%' . $request->get('search') . '%')
         ->paginate(15);
         foreach ($users as &$user) {
+            if ($user['direction_id']) {
+                $user['direction'] = Direction::find($user['direction_id']);
+            }
             if ($user['media_id']) {
                 $user['media'] = Media::find($user['media_id']);
             }
+            $user['social_links'] = SocialLink::select(
+                'id',
+                'extern_id',
+                'source'
+            )->where('user_id', $user['id'])->get();
         }
         return response()->json($users, 200);
     }
@@ -124,7 +143,9 @@ class UserController extends BaseController
         if ($request->isJson()) {
             try {
                 if ($request->get('source') == 'app') {
-                    $user = User::where(['source' => $request->get('source'), 'email' => $request->get('email')])->first();
+                    $user = User::where([
+                        'source' => $request->get('source'), 'email' => $request->get('email')
+                    ])->first();
                     if ($user) {
                         return response()->json('SERVER.USER_ALREADY_EXISTS', 401);
                     }
@@ -139,7 +160,7 @@ class UserController extends BaseController
                         'email' => $request->get('email'),
                         'password' => Hash::make($request->get('password')),
                         'lang' => $request->get('lang'),
-                        'source' => $request->get('source')
+                        'source' => $request->get('source'),
                     ]);
                     if ($request->get('media')) {
                         $media = Media::create([
@@ -152,8 +173,10 @@ class UserController extends BaseController
                     $sesion['id'] = $user['id'];
                     $sesion['token'] = $user->createToken(env('APP_OAUTH_PASS', 'OAuth'))->accessToken; 
                 } else {
-                    $user = User::where(['source' => $request->get('source'), 'extern_id' => $request->get('extern_id')])->first();
-                    if ($user) {
+                    $socialLink = SocialLink::where([
+                        'source' => $request->get('source'), 'extern_id' => $request->get('extern_id')
+                    ])->first();
+                    if ($socialLink) {
                         return response()->json('SERVER.USER_ALREADY_EXISTS', 401);
                     }
                     $user = User::create([
@@ -164,7 +187,11 @@ class UserController extends BaseController
                         'email' => $request->get('email'),
                         'lang' => $request->get('lang'),
                         'source' => $request->get('source'),
-                        'extern_id' => $request->get('extern_id')
+                    ]);
+                    $socialLink = SocialLink::create([
+                        'user_id' => $user['id'],
+                        'source' => $request->get('source'),
+                        'extern_id' => $request->get('extern_id'),
                     ]);
                     if ($request->get('media')) {
                         $media = Media::create([
@@ -175,7 +202,8 @@ class UserController extends BaseController
                         $user->save();
                     }
                     $sesion['id'] = $user['id'];
-                    $sesion['token'] = $user->createToken(env('APP_OAUTH_PASS', 'OAuth'))->accessToken;  
+                    $sesion['token'] = $user
+                    ->createToken(env('APP_OAUTH_PASS', 'OAuth'))->accessToken;  
                 }
                 $this->sendConfirmEmail($user);
                 return response()->json($sesion, 201);
@@ -194,9 +222,18 @@ class UserController extends BaseController
     public function login(Request $request) {
         if ($request->isJson()) {
             try {
+                $this->validate($request, [
+                    'source' => 'required'
+                ]);
                 switch ($request->get('source')) {
                     case 'app': {
-                        $user = User::where('email', $request->get('email'))->where('source', $request->get('source'))->first();
+                        $this->validate($request, [
+                            'email' => 'required|email',
+                            'password' => 'required|min:6|max:60',
+                        ]);
+                        $user = User::where([
+                            'email' => $request->get('email'), 'source' => $request->get('source')
+                        ])->first();
                         if ($user && Hash::check($request->get('password'), $user->password)) {
                             $sesion['id'] = $user['id'];
                             $sesion['token'] = $user
@@ -214,8 +251,11 @@ class UserController extends BaseController
                             . $request->get('accessToken'))->getBody()->getContents();
                             $response_decoded = json_decode($response, true);
                             if ($response_decoded['id'] == $request->get('extern_id')) {
-                                $user = User::where('extern_id', $request->get('extern_id'))->first();
-                                if ($user) {
+                                $socialLink = SocialLink::where([
+                                    'extern_id' => $request->get('extern_id'), 'source' => 'facebook'
+                                ])->first();
+                                if ($socialLink) {
+                                    $user = User::find($socialLink['user_id']);
                                     $sesion['id'] = $user['id'];
                                     $sesion['token'] = $user
                                     ->createToken(env('APP_OAUTH_PASS', 'OAuth'))->accessToken;
@@ -238,8 +278,11 @@ class UserController extends BaseController
                             . $request->get('accessToken'))->getBody()->getContents();
                             $response_decoded = json_decode($response, true);
                             if ($response_decoded['user_id'] == $request->get('extern_id')) {
-                                $user = User::where('extern_id', $request->get('extern_id'))->first();
-                                if ($user) {
+                                $socialLink = SocialLink::where([
+                                    'extern_id' => $request->get('extern_id'), 'source' => 'google'
+                                ])->first();
+                                if ($socialLink) {
+                                    $user = User::find($socialLink['user_id']);
                                     $sesion['id'] = $user['id'];
                                     $sesion['token'] = $user
                                     ->createToken(env('APP_OAUTH_PASS', 'OAuth'))->accessToken;
@@ -650,7 +693,6 @@ class UserController extends BaseController
                     'email' => 'required|email',
                     'source' => 'required',
                 ]);
-                // VALIDAMOS QUE NO EXISTA EL USUARIO DEL MISMO SOURCE
                 $validate = User::where([
                     'email' => $request->get('email'),
                     'source' => $request->get('source')

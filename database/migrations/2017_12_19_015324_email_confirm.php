@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-class CreatePasswordsResetsTable extends Migration
+class EmailConfirm extends Migration
 {
     /**
      * Run the migrations.
@@ -10,10 +10,14 @@ class CreatePasswordsResetsTable extends Migration
      */
     public function up()
     {
-        Schema::create('passwords_resets', function (Blueprint $table) {
+        Schema::create('email_confirm', function (Blueprint $table) {
+            $table->increments('id')->unique();
+            $table->integer('user_id')->unsigned();
             $table->string('email');
-            $table->string('token', 120)->index();
+            $table->string('token', 60)->index();
             $table->timestamp('created_at');
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
     /**
@@ -23,6 +27,6 @@ class CreatePasswordsResetsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('passwords_resets');
+        Schema::drop('email_confirm');
     }
 }
