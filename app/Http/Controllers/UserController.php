@@ -67,6 +67,7 @@ class UserController extends BaseController
             'lang',
             'birthday',
             'role',
+            'source',
             'direction_id'
         )->find($id);
         if ($user) {
@@ -105,7 +106,8 @@ class UserController extends BaseController
             'phone',
             'lang',
             'birthday',
-            'role'
+            'role',
+            'source'
         )->where('name', 'like', '%' . $request->get('search') . '%')
         ->orWhere('email', 'like', '%' . $request->get('search') . '%')
         ->orWhere('phone', 'like', '%' . $request->get('search') . '%')
