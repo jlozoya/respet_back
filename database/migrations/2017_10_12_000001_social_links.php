@@ -16,7 +16,7 @@ class SocialLinks extends Migration
         Schema::create('social_links', function (Blueprint $table) {
             $table->increments('id')->unique();
             $table->integer('user_id')->unsigned();
-            $table->integer('extern_id')->unsigned();
+            $table->string('extern_id');
             $table->enum('source', ['google', 'facebook', 'instagram', 'twitter', 'other']);
             $table->timestamps();
 
