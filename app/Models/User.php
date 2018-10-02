@@ -37,6 +37,8 @@ class User extends Model implements CanResetPasswordContract, AuthenticatableCon
         'direction_id',
         'role',
         'confirmed',
+        // 'app', 'google', 'facebook', 'instagram', 'twitter', 'other'
+        'source',
         'created_at',
     ];
     /**

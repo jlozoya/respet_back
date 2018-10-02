@@ -15,6 +15,7 @@ class SocialLink extends Model
         'id',
         'user_id',
         'extern_id',
+        // 'google', 'facebook', 'instagram', 'twitter', 'other'
         'source',
     ];
     /**
