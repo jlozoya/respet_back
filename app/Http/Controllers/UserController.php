@@ -407,9 +407,10 @@ class UserController extends BaseController
                         $response_decoded = json_decode($response, true);
                         if ($response_decoded['user_id'] == $request->get('extern_id')) {
                             $socialLink = SocialLink::where([
-                                'extern_id' => $request->get('extern_id'), 'source' => 'google'
+                                'extern_id' => $request->get('extern_id'),
+                                'source' => $request->get('source')
                             ])->first();
-                            if (!$socialLink) {
+                            if (!$socialLink && $user['source'] != $request->get('source')) {
                                 $socialLink = SocialLink::create([
                                     'user_id' => $user['id'],
                                     'extern_id' => $request->get('extern_id'),
@@ -435,9 +436,10 @@ class UserController extends BaseController
                         $response_decoded = json_decode($response, true);
                         if ($response_decoded['id'] == $request->get('extern_id')) {
                             $socialLink = SocialLink::where([
-                                'extern_id' => $request->get('extern_id'), 'source' => 'google'
+                                'extern_id' => $request->get('extern_id'),
+                                'source' => $request->get('source')
                             ])->first();
-                            if (!$socialLink) {
+                            if (!$socialLink && $user['source'] != $request->get('source')) {
                                 $socialLink = SocialLink::create([
                                     'user_id' => $user['id'],
                                     'extern_id' => $request->get('extern_id'),
@@ -473,7 +475,7 @@ class UserController extends BaseController
         ])->first();
         if ($socialLink) {
             $socialLink->delete();
-            return response()->json('SERVER.WRONG_SOCIAL_LINK_DELETED', 201);
+            return response()->json('SERVER.SOCIAL_LINK_DELETED', 201);
         }
         return response()->json('SERVER.WRONG_SOCIAL_LINK_ID', 404);
     }
