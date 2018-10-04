@@ -42,7 +42,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
     $router->put('/user/update/email', ['uses' => 'UserController@updateUserEmail']);
     $router->put('/user/update/lang', ['uses' => 'UserController@updateUserLang']);
     $router->put('/user/update/direction', ['uses' => 'UserController@updateUserDirection']);
-    $router->delete('/user/social/link/:id', ['uses' => 'UserController@deleteSocialLink']);
+    $router->delete('/user/social/link/{id}', ['uses' => 'UserController@deleteSocialLink']);
     $router->delete('/user/logout', ['uses' => 'UserController@logout']);
     $router->delete('/user', ['uses' => 'UserController@deleteUser']);
     
