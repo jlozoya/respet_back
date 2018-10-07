@@ -53,7 +53,7 @@ class BulletinController extends BaseController
      * @return \Illuminate\Http\Response
      */
     function showBulletins() {
-        $bulletins = Bulletin::paginate(6);
+        $bulletins = Bulletin::orderBy('created_at', 'desc')->paginate(6);
         foreach ($bulletins as &$bulletin) {
             if ($bulletin['media_id']) {
                 $bulletin['media'] = Media::find($bulletin['media_id']);
