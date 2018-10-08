@@ -70,6 +70,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
         $router->delete('/user/delete/{id}', ['uses' => 'UserController@deleteUserById']);
 
         $router->post('/bulletin', ['uses' => 'BulletinController@createBulletin']);
+        $router->post('/bulletin/set/img', ['uses' => 'BulletinController@setImg']);
         $router->put('/bulletin', ['uses' => 'BulletinController@updateBulletin']);
         $router->delete('/bulletin/{id}', ['uses' => 'BulletinController@deleteBulletin']);
 

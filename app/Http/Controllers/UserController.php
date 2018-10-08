@@ -15,10 +15,11 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\ImageManagerStatic as Image;
-use App\Notifications\RegistrationConfirmation;
-use Carbon\Carbon;
-
 use Illuminate\Support\Facades\Auth;
+
+use App\Notifications\RegistrationConfirmation;
+
+use Carbon\Carbon;
 
 class UserController extends BaseController
 {
@@ -826,7 +827,7 @@ class UserController extends BaseController
         return response()->json('SERVER.USER_NOT_REGISTRED', 404);
     }
     /**
-     * guarda un archivo en nuestro directorio local.
+     * Guarda un archivo en nuestro directorio local.
      * 
      * @param \Illuminate\Http\Request $request
      * @param number $id

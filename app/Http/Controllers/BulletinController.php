@@ -5,8 +5,12 @@ namespace App\Http\Controllers;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
 use App\Models\Bulletin;
+use App\Models\Media;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\File;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class BulletinController extends BaseController
 {
@@ -95,5 +99,50 @@ class BulletinController extends BaseController
         $bulletin = Bulletin::find($id);
         $bulletin->delete();
         return response()->json('SERVER.READING_DELETED', 200);
+    }
+    /**
+     * Guarda un archivo en nuestro directorio local.
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function setImg(Request $request)
+    {
+        $this->validate($request, [
+            'file_name' => 'required',
+            'type' => 'required'
+        ]);
+        $file_name = $request->get('file_name');
+        if ($request['type'] == 'base64') {
+            $file = base64_decode(explode(',', $request['file'])[1]);
+        } else {
+            $file = $request->file('file');
+        }
+        $path = $_SERVER['DOCUMENT_ROOT'] . env('APP_PUBLIC_URL', '/app') . '/img/bulletins/';
+        $fileUrl = URL::to('/') . '/img/bulletins/' . $file_name;
+        if (!File::exists($path)) {
+            File::makeDirectory($path, 0775, true);
+        }
+        Image::make($file)->save($path . $file_name);
+        if ($request->get('params')['bulletin_id']) {
+            $bulletin = Bulletin::find($request->get('params')['bulletin_id']);
+            // Evalúa si hay un archivo registrado en el servidor con el mismo nombre para eliminarlo.
+            if ($bulletin['media_id']) {
+                $bulletin['media'] = Media::find($bulletin['media_id']);
+                if (parse_url($bulletin['media']['url'])['host'] == parse_url(URL::to('/'))['host']) {
+                    File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($bulletin['media']['url'])['path']);
+                }
+                $bulletin['media']['url'] = $fileUrl;
+                $bulletin['media']->save();
+            }
+         } else {
+            $bulletin = Media::create([
+                'url' => $fileUrl,
+                'alt' => 'bulletin',
+            ]);
+            $bulletin['media_id'] = $media['id'];
+            $bulletin->save();
+        }
+        return response()->json($fileUrl, 202);
     }
 }
