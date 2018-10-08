@@ -29,6 +29,7 @@ class BulletinController extends BaseController
         $bulletin = Bulletin::create([
             'title' => $request->get('title'),
             'description' => $request->get('description'),
+            'date' => $request->get('date'),
         ]);
         if ($request->get('media.url')) {
             $media = Media::create([
@@ -48,6 +49,9 @@ class BulletinController extends BaseController
      */
     function showOneBulletinById($id) {
         $bulletin = Bulletin::find($id);
+        if ($bulletin['media_id']) {
+            $bulletin['media'] = Media::find($bulletin['media_id']);
+        }
         return response()->json($bulletin, 200);
     }
     /**
@@ -73,7 +77,7 @@ class BulletinController extends BaseController
      */
     function updateBulletin(Request $request) {
         $this->validate($request, ['id' => 'required',]);
-        $bulletin = Bulletin::find($id);
+        $bulletin = Bulletin::find($request->get('id'));
         if ($request->get('title')) {
             $this->validate($request, ['title' => 'required|max:255',]);
             $bulletin['title'] = $request->get('title');
@@ -86,8 +90,11 @@ class BulletinController extends BaseController
             $this->validate($request, ['date' => 'required',]);
             $bulletin['date'] = $request->get('date');
         }
-        $user->save();
-        return response()->json($user, 201);
+        $bulletin->save();
+        if ($bulletin['media_id']) {
+            $bulletin['media'] = Media::find($bulletin['media_id']);
+        }
+        return response()->json($bulletin, 201);
     }
     /**
      * Eliminar un registro.
@@ -97,6 +104,13 @@ class BulletinController extends BaseController
      */
     function deleteBulletin($id) {
         $bulletin = Bulletin::find($id);
+        if ($bulletin['media_id']) {
+            $media = Media::find($bulletin['media_id']);
+            if (parse_url($media['url'])['host'] == parse_url(URL::to('/'))['host']) {
+                File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($media['url'])['path']);
+            }
+            $media->delete();
+        }
         $bulletin->delete();
         return response()->json('SERVER.READING_DELETED', 200);
     }
@@ -124,25 +138,23 @@ class BulletinController extends BaseController
             File::makeDirectory($path, 0775, true);
         }
         Image::make($file)->save($path . $file_name);
-        if ($request->get('params')['bulletin_id']) {
-            $bulletin = Bulletin::find($request->get('params')['bulletin_id']);
-            // Evalúa si hay un archivo registrado en el servidor con el mismo nombre para eliminarlo.
-            if ($bulletin['media_id']) {
-                $bulletin['media'] = Media::find($bulletin['media_id']);
-                if (parse_url($bulletin['media']['url'])['host'] == parse_url(URL::to('/'))['host']) {
-                    File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($bulletin['media']['url'])['path']);
-                }
-                $bulletin['media']['url'] = $fileUrl;
-                $bulletin['media']->save();
+        $bulletin = Bulletin::find($request->get('params')['bulletin_id']);
+        // Evalúa si hay un archivo registrado en el servidor con el mismo nombre para eliminarlo.
+        if ($bulletin['media_id']) {
+            $bulletin['media'] = Media::find($bulletin['media_id']);
+            if (parse_url($bulletin['media']['url'])['host'] == parse_url(URL::to('/'))['host']) {
+                File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($bulletin['media']['url'])['path']);
             }
-         } else {
-            $bulletin = Media::create([
+            $bulletin['media']['url'] = $fileUrl;
+            $bulletin['media']->save();
+        } else {
+            $media = Media::create([
                 'url' => $fileUrl,
                 'alt' => 'bulletin',
             ]);
             $bulletin['media_id'] = $media['id'];
             $bulletin->save();
         }
-        return response()->json($fileUrl, 202);
+        return response()->json($bulletin, 202);
     }
 }
