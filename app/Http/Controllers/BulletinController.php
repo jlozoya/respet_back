@@ -158,8 +158,8 @@ class BulletinController extends BaseController
                 'height' => $fileMade->height(),
             ]);
             $bulletin['media_id'] = $media['id'];
-            $bulletin['media'] = $media;
             $bulletin->save();
+            $bulletin['media'] = $media;
         }
         return response()->json($bulletin, 202);
     }
