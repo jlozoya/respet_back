@@ -850,7 +850,8 @@ class UserController extends BaseController
         if (!File::exists($path)) {
             File::makeDirectory($path, 0775, true);
         }
-        Image::make($file)->save($path . $file_name);
+        $fileMade = Image::make($file);
+        $fileMade->save($path . $file_name);
         $user = User::find($id);
         // Evalúa si hay un archivo registrado en el servidor con el mismo nombre para eliminarlo.
         if ($user['media_id']) {
@@ -859,11 +860,15 @@ class UserController extends BaseController
                 File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($user['media']['url'])['path']);
             }
             $user['media']['url'] = $fileUrl;
+            $user['media']['width'] = $fileMade->width();
+            $user['media']['height'] = $fileMade->height();
             $user['media']->save();
         } else {
             $media = Media::create([
                 'url' => $fileUrl,
                 'alt' => 'avatar',
+                'width' => $fileMade->width(),
+                'height' => $fileMade->height(),
             ]);
             $user['media_id'] = $media['id'];
             $user->save();
