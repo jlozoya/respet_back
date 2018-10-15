@@ -137,7 +137,8 @@ class BulletinController extends BaseController
         if (!File::exists($path)) {
             File::makeDirectory($path, 0775, true);
         }
-        Image::make($file)->save($path . $file_name);
+        $fileMade = Image::make($file);
+        $fileMade->save($path . $file_name);
         $bulletin = Bulletin::find($request->get('params')['bulletin_id']);
         // Evalúa si hay un archivo registrado en el servidor con el mismo nombre para eliminarlo.
         if ($bulletin['media_id']) {
@@ -146,13 +147,18 @@ class BulletinController extends BaseController
                 File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($bulletin['media']['url'])['path']);
             }
             $bulletin['media']['url'] = $fileUrl;
+            $bulletin['media']['width'] = $fileMade->width();
+            $bulletin['media']['height'] = $fileMade->height();
             $bulletin['media']->save();
         } else {
             $media = Media::create([
                 'url' => $fileUrl,
                 'alt' => 'bulletin',
+                'width' => $fileMade->width(),
+                'height' => $fileMade->height(),
             ]);
             $bulletin['media_id'] = $media['id'];
+            $bulletin['media'] = $media;
             $bulletin->save();
         }
         return response()->json($bulletin, 202);
