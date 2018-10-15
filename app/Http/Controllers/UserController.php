@@ -855,14 +855,15 @@ class UserController extends BaseController
         $user = User::find($id);
         // Evalúa si hay un archivo registrado en el servidor con el mismo nombre para eliminarlo.
         if ($user['media_id']) {
-            $user['media'] = Media::find($user['media_id']);
-            if (parse_url($user['media']['url'])['host'] == parse_url(URL::to('/'))['host']) {
-                File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($user['media']['url'])['path']);
+            $media = Media::find($user['media_id']);
+            if (parse_url($media['url'])['host'] == parse_url(URL::to('/'))['host']) {
+                File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($media['url'])['path']);
             }
-            $user['media']['url'] = $fileUrl;
-            $user['media']['width'] = $fileMade->width();
-            $user['media']['height'] = $fileMade->height();
-            $user['media']->save();
+            $media['url'] = $fileUrl;
+            $media['width'] = $fileMade->width();
+            $media['height'] = $fileMade->height();
+            $media->save();
+            $user['media'] = $media;
         } else {
             $media = Media::create([
                 'url' => $fileUrl,
