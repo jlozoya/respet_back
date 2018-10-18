@@ -95,6 +95,7 @@ composer require nesbot/carbon
 composer require laravel/passport
 composer require dusterio/lumen-passport
 composer require openpay/sdk:dev-master
+composer require mercadopago/dx-php:dev-master
 ```
 
 ## Credenciales
