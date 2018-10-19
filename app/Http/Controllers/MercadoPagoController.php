@@ -4,10 +4,8 @@ namespace App\Http\Controllers;
 
 use Laravel\Lumen\Routing\Controller as BaseController;
 
-use App\Http\Models\Usuario;
+use App\Models\User;
 
-use MercadoPago;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class MercadoPagoController extends BaseController
@@ -20,32 +18,32 @@ class MercadoPagoController extends BaseController
      * @return \Illuminate\Http\Response
      */
     function createPay(Request $request) {
-        MercadoPago\SDK::setAccessToken("TEST-8026039331247054-062720-88556d33cad76e15ca6561d92f008586-254831625");
-        //...
-        $payment = new MercadoPago\Payment();
-        $payment->transaction_amount = 100;
-        $payment->token = $request->get('id');
-        $payment->description = "Enormous Wool Hat";
-        $payment->installments = $request->get('installments');
-        $payment->payment_method_id = $request->get('payment_method_id');
-        $payment->issuer_id = $request->get('issuer_id');
-        $payment->payer = [
-            "email" => "joyce@gmail.com"
-        ];
-        // Guarda y postea el pago
-        $payment->save();
-        //...
-        // Imprime el estado del pago
-        echo $payment->status;
-        print_r($payment);
-        //...
-        // Imprime el estado del pago
-        return response()->json($payment, 202);
+        $client = new \GuzzleHttp\Client();
+        try {
+            $response = $client->post('https://api.mercadopago.com/v1/payments?access_token=' . 
+            env('MP_ACCESS_TOKEN'), [
+                'headers' => ['Content-Type' => 'application/json'],
+                'body' => json_encode([
+                    'payer' => [
+                        'email' => $request->get('email')
+                    ],
+                    'token' => $request->get('id'),
+                    'description' => 'Title of what you are paying for',
+                    'installments' => $request->get('installments'),
+                    'issuer_id' => $request->get('issuer_id'),
+                    'payment_method_id' => $request->get('payment_method_id'),
+                    'transaction_amount' => 100
+                ])
+            ]);
+            return response()->json($response, 202);
+        } catch (\GuzzleHttp\Exception\BadResponseException $error) {
+            return response($error->getResponse()->getBody(), 406);
+        }
     }
 
     public function generatePaymentGateway()
     {
-        $mp = new MP (env('MP_CLIENT_ID'), env('MP_CLIENT_SECRET'));
+        $mp = new MP (env('MP_ACCESS_TOKEN'), env('MP_CLIENT_SECRET'));
 
         $current_user = auth()->user();
 
