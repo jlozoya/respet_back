@@ -2,6 +2,8 @@
 
 require_once __DIR__.'/../vendor/autoload.php';
 
+use Dusterio\LumenPassport\LumenPassport;
+
 try {
     (new Dotenv\Dotenv(__DIR__.'/../'))->load();
 } catch (Dotenv\Exception\InvalidPathException $e) {
@@ -93,12 +95,13 @@ $app->middleware([
 |
 */
 
+$app->configure('auth');
+
 $app->register(Laravel\Passport\PassportServiceProvider::class);
 
 $app->register(Dusterio\LumenPassport\PassportServiceProvider::class);
 
-$app->configure('auth');
-
+LumenPassport::allowMultipleTokens();
 /*
 |--------------------------------------------------------------------------
 | Registrar proveedores de servicios
