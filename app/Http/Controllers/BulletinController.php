@@ -5,8 +5,12 @@ namespace App\Http\Controllers;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
 use App\Models\Bulletin;
+use App\Models\Media;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\File;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class BulletinController extends BaseController
 {
@@ -25,6 +29,7 @@ class BulletinController extends BaseController
         $bulletin = Bulletin::create([
             'title' => $request->get('title'),
             'description' => $request->get('description'),
+            'date' => $request->get('date'),
         ]);
         if ($request->get('media.url')) {
             $media = Media::create([
@@ -44,6 +49,9 @@ class BulletinController extends BaseController
      */
     function showOneBulletinById($id) {
         $bulletin = Bulletin::find($id);
+        if ($bulletin['media_id']) {
+            $bulletin['media'] = Media::find($bulletin['media_id']);
+        }
         return response()->json($bulletin, 200);
     }
     /**
@@ -53,7 +61,7 @@ class BulletinController extends BaseController
      * @return \Illuminate\Http\Response
      */
     function showBulletins() {
-        $bulletins = Bulletin::paginate(6);
+        $bulletins = Bulletin::orderBy('created_at', 'desc')->paginate(6);
         foreach ($bulletins as &$bulletin) {
             if ($bulletin['media_id']) {
                 $bulletin['media'] = Media::find($bulletin['media_id']);
@@ -69,7 +77,7 @@ class BulletinController extends BaseController
      */
     function updateBulletin(Request $request) {
         $this->validate($request, ['id' => 'required',]);
-        $bulletin = Bulletin::find($id);
+        $bulletin = Bulletin::find($request->get('id'));
         if ($request->get('title')) {
             $this->validate($request, ['title' => 'required|max:255',]);
             $bulletin['title'] = $request->get('title');
@@ -82,8 +90,11 @@ class BulletinController extends BaseController
             $this->validate($request, ['date' => 'required',]);
             $bulletin['date'] = $request->get('date');
         }
-        $user->save();
-        return response()->json($user, 201);
+        $bulletin->save();
+        if ($bulletin['media_id']) {
+            $bulletin['media_id'] = Media::find($bulletin['media_id']);
+        }
+        return response()->json($bulletin, 201);
     }
     /**
      * Eliminar un registro.
@@ -93,7 +104,63 @@ class BulletinController extends BaseController
      */
     function deleteBulletin($id) {
         $bulletin = Bulletin::find($id);
+        if ($bulletin['media_id']) {
+            $media = Media::find($bulletin['media_id']);
+            if (parse_url($media['url'])['host'] == parse_url(URL::to('/'))['host']) {
+                File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($media['url'])['path']);
+            }
+            $media->delete();
+        }
         $bulletin->delete();
         return response()->json('SERVER.READING_DELETED', 200);
+    }
+    /**
+     * Guarda un archivo en nuestro directorio local.
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function setImg(Request $request)
+    {
+        $this->validate($request, [
+            'file_name' => 'required',
+            'type' => 'required'
+        ]);
+        $file_name = $request->get('file_name');
+        if ($request['type'] == 'base64') {
+            $file = base64_decode(explode(',', $request['file'])[1]);
+        } else {
+            $file = $request->file('file');
+        }
+        $path = $_SERVER['DOCUMENT_ROOT'] . env('APP_PUBLIC_URL', '/app') . '/img/bulletins/';
+        $fileUrl = URL::to('/') . '/img/bulletins/' . $file_name;
+        if (!File::exists($path)) {
+            File::makeDirectory($path, 0775, true);
+        }
+        $fileMade = Image::make($file);
+        $fileMade->save($path . $file_name);
+        $bulletin = Bulletin::find($request->get('params')['bulletin_id']);
+        // Evalúa si hay un archivo registrado en el servidor con el mismo nombre para eliminarlo.
+        if ($bulletin['media_id']) {
+            $bulletin['media'] = Media::find($bulletin['media_id']);
+            if (parse_url($bulletin['media']['url'])['host'] == parse_url(URL::to('/'))['host']) {
+                File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($bulletin['media']['url'])['path']);
+            }
+            $bulletin['media']['url'] = $fileUrl;
+            $bulletin['media']['width'] = $fileMade->width();
+            $bulletin['media']['height'] = $fileMade->height();
+            $bulletin['media']->save();
+        } else {
+            $media = Media::create([
+                'url' => $fileUrl,
+                'alt' => 'bulletin',
+                'width' => $fileMade->width(),
+                'height' => $fileMade->height(),
+            ]);
+            $bulletin['media_id'] = $media['id'];
+            $bulletin->save();
+            $bulletin['media'] = $media;
+        }
+        return response()->json($bulletin, 202);
     }
 }

@@ -15,10 +15,11 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\ImageManagerStatic as Image;
-use App\Notifications\RegistrationConfirmation;
-use Carbon\Carbon;
-
 use Illuminate\Support\Facades\Auth;
+
+use App\Notifications\RegistrationConfirmation;
+
+use Carbon\Carbon;
 
 class UserController extends BaseController
 {
@@ -407,9 +408,10 @@ class UserController extends BaseController
                         $response_decoded = json_decode($response, true);
                         if ($response_decoded['user_id'] == $request->get('extern_id')) {
                             $socialLink = SocialLink::where([
-                                'extern_id' => $request->get('extern_id'), 'source' => 'google'
+                                'extern_id' => $request->get('extern_id'),
+                                'source' => $request->get('source')
                             ])->first();
-                            if (!$socialLink) {
+                            if (!$socialLink && $user['source'] != $request->get('source')) {
                                 $socialLink = SocialLink::create([
                                     'user_id' => $user['id'],
                                     'extern_id' => $request->get('extern_id'),
@@ -435,9 +437,10 @@ class UserController extends BaseController
                         $response_decoded = json_decode($response, true);
                         if ($response_decoded['id'] == $request->get('extern_id')) {
                             $socialLink = SocialLink::where([
-                                'extern_id' => $request->get('extern_id'), 'source' => 'google'
+                                'extern_id' => $request->get('extern_id'),
+                                'source' => $request->get('source')
                             ])->first();
-                            if (!$socialLink) {
+                            if (!$socialLink && $user['source'] != $request->get('source')) {
                                 $socialLink = SocialLink::create([
                                     'user_id' => $user['id'],
                                     'extern_id' => $request->get('extern_id'),
@@ -473,7 +476,7 @@ class UserController extends BaseController
         ])->first();
         if ($socialLink) {
             $socialLink->delete();
-            return response()->json('SERVER.WRONG_SOCIAL_LINK_DELETED', 201);
+            return response()->json('SERVER.SOCIAL_LINK_DELETED', 201);
         }
         return response()->json('SERVER.WRONG_SOCIAL_LINK_ID', 404);
     }
@@ -824,7 +827,7 @@ class UserController extends BaseController
         return response()->json('SERVER.USER_NOT_REGISTRED', 404);
     }
     /**
-     * guarda un archivo en nuestro directorio local.
+     * Guarda un archivo en nuestro directorio local.
      * 
      * @param \Illuminate\Http\Request $request
      * @param number $id
@@ -847,7 +850,8 @@ class UserController extends BaseController
         if (!File::exists($path)) {
             File::makeDirectory($path, 0775, true);
         }
-        Image::make($file)->save($path . $file_name);
+        $fileMade = Image::make($file);
+        $fileMade->save($path . $file_name);
         $user = User::find($id);
         // Evalúa si hay un archivo registrado en el servidor con el mismo nombre para eliminarlo.
         if ($user['media_id']) {
@@ -856,11 +860,15 @@ class UserController extends BaseController
                 File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($user['media']['url'])['path']);
             }
             $user['media']['url'] = $fileUrl;
+            $user['media']['width'] = $fileMade->width();
+            $user['media']['height'] = $fileMade->height();
             $user['media']->save();
         } else {
             $media = Media::create([
                 'url' => $fileUrl,
                 'alt' => 'avatar',
+                'width' => $fileMade->width(),
+                'height' => $fileMade->height(),
             ]);
             $user['media_id'] = $media['id'];
             $user->save();

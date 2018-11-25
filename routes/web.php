@@ -33,6 +33,8 @@ $router->post('/contact/send', ['uses' => 'ContactController@sendContact']);
 $router->get('/bulletins', ['uses' => 'BulletinController@showBulletins']);
 $router->get('/bulletin/{id}', ['uses' => 'BulletinController@showOneBulletinById']);
 
+$router->post('/pay', ['uses' => 'MercadoPagoController@createPay']);
+
 $router->group(['middleware' => ['auth:api']], function () use ($router) {
     $router->get('/user', ['uses' => 'UserController@getUser']);
     $router->post('/user/confirm/email', ['uses' => 'UserController@reSendConfirmEmail']);
@@ -70,6 +72,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
         $router->delete('/user/delete/{id}', ['uses' => 'UserController@deleteUserById']);
 
         $router->post('/bulletin', ['uses' => 'BulletinController@createBulletin']);
+        $router->post('/bulletin/set/img', ['uses' => 'BulletinController@setImg']);
         $router->put('/bulletin', ['uses' => 'BulletinController@updateBulletin']);
         $router->delete('/bulletin/{id}', ['uses' => 'BulletinController@deleteBulletin']);
 
