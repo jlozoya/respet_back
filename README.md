@@ -1,6 +1,6 @@
 # Lumen PHP Framework
 
-### Documentación oficial
+## Documentación oficial
 
 La documentación para Lumen puede encontrar en el [sitio web de Lumen](http://lumen.laravel.com/docs).
 
@@ -48,7 +48,6 @@ php artisan passport:install
 
 Comando de la consola para purgar tokens caducados.
 
-
 ```bash
 php artisan passport:purge
 ```
@@ -58,9 +57,6 @@ Para recargar el auto load.
 ```bash
 composer dump-autoload
 ```
-
-
-## Perros del Agua back-end
 
 Para ejecutar servidor de pruevas:
 
