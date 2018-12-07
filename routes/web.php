@@ -47,16 +47,6 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
     $router->delete('/user/social/link/{id}', ['uses' => 'UserController@deleteSocialLink']);
     $router->delete('/user/logout', ['uses' => 'UserController@logout']);
     $router->delete('/user', ['uses' => 'UserController@deleteUser']);
-    
-    $router->post('/reading', ['uses' => 'ReadingController@createReading']);
-    $router->get('/reading/{id}', ['uses' => 'ReadingController@showOneReadingById']);
-    $router->put('/reading', ['uses' => 'ReadingController@updateReading']);
-    $router->delete('/reading/{id}', ['uses' => 'ReadingController@deleteReading']);
-
-    $router->post('/beat', ['uses' => 'BeatController@createBeat']);
-    $router->get('/beat/{id}', ['uses' => 'BeatController@showOneBeatById']);
-    $router->put('/beat', ['uses' => 'BeatController@updateBeat']);
-    $router->delete('/beat/{id}', ['uses' => 'BeatController@deleteBeat']);
 
     $router->post('/user/pay', ['uses' => 'PayController@createPay']);
 
