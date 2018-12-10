@@ -109,3 +109,17 @@ Ftp hostinger
 ```bash
 git clone ssh://git-codecommit.us-east-2.amazonaws.com/v1/repos/morsleep_back
 ```
+
+## Apidoc
+
+Para generar la documentación de la api instala [Apidoc](http://apidocjs.com/)
+
+```bash
+npm install apidoc -g
+```
+
+Ejecuta:
+
+```bash
+apidoc -o api-docs
+```

@@ -1,31 +1,122 @@
 <?php
-
-/*
-|--------------------------------------------------------------------------
-| Application Routes
-|--------------------------------------------------------------------------
-|
-| Aquí es donde puede registrar todas las rutas para una aplicación.
-| Es una brisa. Simplemente dile a Lumen los URI a los que debería responder
-| y darle el Cierre para llamar cuando se solicita ese URI.
-|
-*/
-
+/**
+ * @api {get} / Obtiene la versión de laravel lumen.
+ * @apiVersion 0.0.1
+ * @apiName Version
+ * @apiGroup Api
+ * @apiPermission none
+ *
+ * @apiSuccess (200) {String} version Versión de laravel lumen.
+ */
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
-
-$router->get('/key', function () use ($router) {
-    return str_random(32);
-});
-
-$router->post('/user/login', ['uses' => 'UserController@login']);
+/**
+ * @api {post} /user/signup Resgistra un nuevo ususario.
+ * @apiVersion 0.0.1
+ * @apiName Signup
+ * @apiGroup User
+ * @apiPermission none
+ *
+ * @apiParam {String} name Nombre de usuario.
+ * @apiParam {String} first_name Primer nombre.
+ * @apiParam {String} last_name Apellido.
+ * @apiParam {String} email Email del nuevo usuario.
+ * @apiParam {String} source Fuente con la que se crea la cuenta 'facebook' | 'google' | 'app'.
+ * @apiParam {String} [gender] Genero del ususario 'male' | 'female' | 'other'.
+ * @apiParam {String} [lang] Idioma del ususario.
+ * @apiParam {Object} [media] Imagen del nuevo usuario a registrar {media: {url: String}.
+ *
+ * @apiSuccess (201) {Number} id Id del usuario.
+ * @apiSuccess (201) {String} token Token con la sesión del usuario.
+ * 
+ * @apiError (401) {String} SERVER.USER_ALREADY_EXISTS Cuando el usuario ya existe.
+ * @apiError (401) {String} SERVER.UNAUTHORIZED Cuando el usuario no está autorizado.
+ * @apiError (406) {QueryException} error Mensaje de error.
+ */
 $router->post('/user/signup', ['uses' => 'UserController@signup']);
+/**
+ * @api {post} /user/login Solicita una sesión al servidor.
+ * @apiVersion 0.0.1
+ * @apiName Login
+ * @apiGroup User
+ * @apiPermission none
+ *
+ * @apiParam {String} source Nombre de la fuente con la que se inicia sesión 'facebook' | 'google' | 'app'.
+ * @apiParam {String} email Email del usuario.
+ * @apiParam {String} password Contraseña del usuario.
+ *
+ * @apiSuccess (200) {Number} id Id del usuario.
+ * @apiSuccess (200) {String} token Token con la sesión del usuario.
+ * 
+ * @apiError (404) {String} SERVER.WRONG_USER Cuando no se encontró la información del usuario.
+ * @apiError (404) {String} SERVER.USER_NOT_REGISTRED Cuando el email no está registrado.
+ * @apiError (406) {String} SERVER.INCORRECT_USER Cuando el usuario o contraseña no están registrados.
+ * @apiError (406) {String} SERVER.WRONG_TOKEN Cuando el token enviado es incorrecto.
+ */
+$router->post('/user/login', ['uses' => 'UserController@login']);
 
+/**
+ * @api {post} /password/email Recupera una contraseña con un email.
+ * @apiVersion 0.0.1
+ * @apiName PostEmail
+ * @apiGroup Password
+ * @apiPermission none
+ *
+ * @apiParam {String} source Nombre de la fuente con la que se inicia sesión 'facebook' | 'google' | 'app'.
+ * @apiParam {String} email Email del usuario.
+ *
+ * @apiSuccess (200) {String} SERVER.EMAIL_READY Confirmación de que se envió un correo para recuperar la contraseña.
+ * 
+ * @apiError (404) {String} SERVER.WRONG_USER Cuando no se encontró la información del usuario.
+ */
 $router->post('/password/email', 'PasswordController@postEmail');
+/**
+ * @api {get} /password/reset/:token Habré una vista para resetear la contraseña.
+ * @apiVersion 0.0.1
+ * @apiName ShowResetForm
+ * @apiGroup Password
+ * @apiPermission none
+ *
+ * @apiParam {String} token Token para resetear la contraseña.
+ * @apiParam {String} email Email del usuario.
+ *
+ * @apiSuccess (200) {String} view Vista con el formulario para resetear la contraseña.
+ */
 $router->get('/password/reset/{token}', ['uses' => 'PasswordController@showResetForm']);
+/**
+ * @api {post} /password/reset Para resetear la contraseña.
+ * @apiVersion 0.0.1
+ * @apiName PostReset
+ * @apiGroup Password
+ * @apiPermission none
+ * 
+ * @apiParam {String} email Email del usuario.
+ * @apiParam {String} password Nueva contraseña el usuario.
+ * @apiParam {String} password_confirmation Confirmación de la nueva contraseña el usuario.
+ * @apiParam {String} token Token para resetear la contraseña.
+ * @apiParam {String} source Nombre de la fuente con la que se inicia sesión 'facebook' | 'google' | 'app'.
+ *
+ * @apiSuccess (200) {Redirect} redirect Redirección a la página principal.
+ * 
+ * @apiError (400) {String} SERVER.RESET_FAIL En caso de que falle el reseteo de la contraseña.
+ */
 $router->post('/password/reset', ['as' => 'password.reset', 'uses' => 'PasswordController@postReset']);
-
+/**
+ * @api {get} /user/confirm/email Para obtener un email de confirmación de email.
+ * @apiVersion 0.0.1
+ * @apiName ConfirmEmail
+ * @apiGroup User
+ * @apiPermission none
+ * 
+ * @apiParam {Number} id Id del usuario.
+ *
+ * @apiSuccess (200) {String} SERVER.USER_ALREADY_CONFIRMED Correo ya confirmado.
+ * @apiSuccess (200) {String} SERVER.EMAIL_SEND Email de confirmación enviado.
+ * 
+ * @apiError (404) {String} SERVER.USER_NOT_FOUND No se encontró el usuario a confirmar.
+ * @apiError (400) {String} SERVER.EMAIL_FAIL Cuando no se logra enviar le email.
+ */
 $router->get('/user/confirm/email', ['as' => 'user.confirm.email', 'uses' => 'UserController@confirmEmail']);
 
 $router->post('/contact/send', ['uses' => 'ContactController@sendContact']);

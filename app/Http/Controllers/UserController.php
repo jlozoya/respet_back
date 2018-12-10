@@ -267,7 +267,7 @@ class UserController extends BaseController
                                     return response()->json('SERVER.USER_NOT_REGISTRED', 404);
                                 }
                             } else {
-                                return response()->json('SERVER.WRONG_USER', 406);
+                                return response()->json('SERVER.WRONG_USER', 404);
                             }
                         } catch (\GuzzleHttp\Exception\ClientException $error) {
                             return response()->json('SERVER.WRONG_TOKEN', 406);
@@ -294,7 +294,7 @@ class UserController extends BaseController
                                     return response()->json('SERVER.USER_NOT_REGISTRED', 404);
                                 }
                             } else {
-                                return response()->json('SERVER.WRONG_USER', 406);
+                                return response()->json('SERVER.WRONG_USER', 404);
                             }
                         } catch (\GuzzleHttp\Exception\ClientException $error) {
                             return response()->json('SERVER.WRONG_TOKEN', 406);
@@ -303,7 +303,7 @@ class UserController extends BaseController
                     break;
                 }
             } catch (ModelNotFoundException $error) {
-                return response()->json('SERVER.WRONG_USER', 406);
+                return response()->json('SERVER.WRONG_USER', 404);
             }
         }
         return response()->json('SERVER.UNAUTHORIZED', 401);
@@ -318,18 +318,15 @@ class UserController extends BaseController
         $this->validate($request, [
             'id' => 'required'
         ]);
-        if ($request->isJson()) {
-            try {
-                $user = User::where('id', $request->get('id'))->first();
-                if (!$user->confirmed) {
-                    return $this->sendConfirmEmail($user);
-                } else {
-                    return response()->json('SERVER.USER_ALREADY_CONFIRMED', 200);
-                }
-            } catch (ModelNotFoundException $error) {
-                return response()->json('SERVER.WRONG_USER', 406);
+        $user = User::find($request->get('id'));
+        if ($user) {
+            if (!$user->confirmed) {
+                return $this->sendConfirmEmail($user);
+            } else {
+                return response()->json('SERVER.USER_ALREADY_CONFIRMED', 200);
             }
         }
+        return response()->json('SERVER.USER_NOT_FOUND', 404);
     }
     /**
      * Envía el correo electrónico correspondiente para que el usuario confirme que es su correo electrónico.
@@ -352,9 +349,9 @@ class UserController extends BaseController
         $confirmationLink = route('user.confirm.email') . '?token=' . $emailConfirmData->token;
         $response = $user->notify(new RegistrationConfirmation($confirmationLink, $user['lang']));
         if ($response == '') {
-            return response()->json(['success' => true]);
+            return response()->json('SERVER.EMAIL_SEND', 200);
         } else {
-            return response()->json(['success' => false]);
+            return response()->json('SERVER.EMAIL_FAIL', 400);
         }
     }
     /**
@@ -422,7 +419,7 @@ class UserController extends BaseController
                                 return response()->json('SERVER.USER_SOCIAL_ALREADY_USED', 401);
                             }
                         } else {
-                            return response()->json('SERVER.WRONG_USER', 406);
+                            return response()->json('SERVER.WRONG_USER', 404);
                         }
                     } catch (\GuzzleHttp\Exception\ClientException $error) {
                         return response()->json('SERVER.WRONG_TOKEN', 406);
@@ -451,7 +448,7 @@ class UserController extends BaseController
                                 return response()->json('SERVER.USER_SOCIAL_ALREADY_USED', 404);
                             }
                         } else {
-                            return response()->json('SERVER.WRONG_USER', 406);
+                            return response()->json('SERVER.WRONG_USER', 404);
                         }
                     } catch (\GuzzleHttp\Exception\ClientException $error) {
                         return response()->json('SERVER.WRONG_TOKEN', 406);
@@ -460,7 +457,7 @@ class UserController extends BaseController
                 break;
             }
         } catch (ModelNotFoundException $error) {
-            return response()->json('SERVER.WRONG_USER', 406);
+            return response()->json('SERVER.WRONG_USER', 404);
         }
     }
     /**
