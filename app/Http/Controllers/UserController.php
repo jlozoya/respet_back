@@ -364,10 +364,8 @@ class UserController extends BaseController
         $this->validate($request, [
             'token' => 'required'
         ]);
-        $emailConfirmData = EmailConfirm::where('token', $request->token)->first();
-        if ($emailConfirmData == '') {
-            return response()->json('SERVER.WRONG_TOKEN', 406);
-        } else {
+        $emailConfirmData = EmailConfirm::where('token', $request->get('token'))->first();
+        if ($emailConfirmData) {
             $dateTimeNow = Carbon::now();
             $dateTimeCreatedAt = Carbon::parse($emailConfirmData->created_at);
             if ($dateTimeNow->diffInDays($dateTimeCreatedAt) <= 30) {
@@ -380,6 +378,8 @@ class UserController extends BaseController
                 $emailConfirmData->delete();
                 return response()->json('SERVER.TOKEN_EXPIRED', 406);
             }
+        } else {
+            return response()->json('SERVER.WRONG_TOKEN', 406);
         }
     }
     /**
@@ -473,7 +473,7 @@ class UserController extends BaseController
         ])->first();
         if ($socialLink) {
             $socialLink->delete();
-            return response()->json('SERVER.SOCIAL_LINK_DELETED', 201);
+            return response()->json('SERVER.SOCIAL_LINK_DELETED', 202);
         }
         return response()->json('SERVER.WRONG_SOCIAL_LINK_ID', 404);
     }
@@ -633,15 +633,15 @@ class UserController extends BaseController
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function saveAvatar(Request $request)
+    public function setAvatar(Request $request)
     {
         $this->validate($request, [
             'file_name' => 'required',
             'type' => 'required'
         ]);
         $file_name = $request->get('file_name');
-        if ($request['type'] == 'base64') {
-            $file = base64_decode(explode(',', $request['file'])[1]);
+        if ($request->get('type') == 'base64') {
+            $file = base64_decode(explode(',', $request->get('file'))[1]);
         } else {
             $file = $request->file('file');
         }
@@ -830,7 +830,7 @@ class UserController extends BaseController
      * @param number $id
      * @return \Illuminate\Http\Response
      */
-    public function saveAvatarById(Request $request, $id)
+    public function setAvatarById(Request $request, $id)
     {
         $this->validate($request, [
             'file_name' => 'required',
@@ -899,7 +899,7 @@ class UserController extends BaseController
     public function logout(Request $request) {
         $request->user()->token()->revoke();
         $request->user()->token()->delete();
-        return response()->json('SERVER.LOGGEDOUT', 200);
+        return response()->json('SERVER.LOGGEDOUT', 202);
     }
     /**
      * Elimina un usuario
@@ -922,7 +922,7 @@ class UserController extends BaseController
                 }
             }    
             $user->delete();
-            return response()->json('SERVER.USER_DELETED', 200);
+            return response()->json('SERVER.USER_DELETED', 202);
         } else {
             return response()->json('SERVER.USER_NOT_FOUND', 404);
         }

@@ -47,7 +47,7 @@ class BulletinController extends BaseController
      * @param  number $id
      * @return \Illuminate\Http\Response
      */
-    function showOneBulletinById($id) {
+    function getOneBulletinById($id) {
         $bulletin = Bulletin::find($id);
         if ($bulletin['media_id']) {
             $bulletin['media'] = Media::find($bulletin['media_id']);
@@ -60,7 +60,7 @@ class BulletinController extends BaseController
      * @param  number $id
      * @return \Illuminate\Http\Response
      */
-    function showBulletins() {
+    function getBulletins() {
         $bulletins = Bulletin::orderBy('created_at', 'desc')->paginate(6);
         foreach ($bulletins as &$bulletin) {
             if ($bulletin['media_id']) {
@@ -104,15 +104,18 @@ class BulletinController extends BaseController
      */
     function deleteBulletin($id) {
         $bulletin = Bulletin::find($id);
-        if ($bulletin['media_id']) {
-            $media = Media::find($bulletin['media_id']);
-            if (parse_url($media['url'])['host'] == parse_url(URL::to('/'))['host']) {
-                File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($media['url'])['path']);
+        if ($bulletin) {
+            if ($bulletin['media_id']) {
+                $media = Media::find($bulletin['media_id']);
+                if (parse_url($media['url'])['host'] == parse_url(URL::to('/'))['host']) {
+                    File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($media['url'])['path']);
+                }
+                $media->delete();
             }
-            $media->delete();
+            $bulletin->delete();
+            return response()->json('SERVER.BULLETIN_DELETED', 202);
         }
-        $bulletin->delete();
-        return response()->json('SERVER.READING_DELETED', 200);
+        return response()->json('SERVER.BULLETIN_NOT_FOUND', 404);
     }
     /**
      * Guarda un archivo en nuestro directorio local.
@@ -127,8 +130,8 @@ class BulletinController extends BaseController
             'type' => 'required'
         ]);
         $file_name = $request->get('file_name');
-        if ($request['type'] == 'base64') {
-            $file = base64_decode(explode(',', $request['file'])[1]);
+        if ($request->get('type') == 'base64') {
+            $file = base64_decode(explode(',', $request->get('file'))[1]);
         } else {
             $file = $request->file('file');
         }
