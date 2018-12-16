@@ -648,7 +648,7 @@ class UserController extends BaseController
         $path = $_SERVER['DOCUMENT_ROOT'] . env('APP_PUBLIC_URL', '/app') . '/img/users_avatars/';
         $fileUrl = URL::to('/') . '/img/users_avatars/' . $file_name;
         if (!File::exists($path)) {
-            File::makeDirectory($path, 0775, true);
+            File::makeDirectory($path, 2777, true);
         }
         Image::make($file)->save($path . $file_name);
         $user = $request->user();
@@ -845,7 +845,7 @@ class UserController extends BaseController
         $path = $_SERVER['DOCUMENT_ROOT'] . env('APP_PUBLIC_URL', '/app') . '/img/users_avatars/';
         $fileUrl = URL::to('/') . '/img/users_avatars/' . $file_name;
         if (!File::exists($path)) {
-            File::makeDirectory($path, 0775, true);
+            File::makeDirectory($path, 2775, true);
         }
         $fileMade = Image::make($file);
         $fileMade->save($path . $file_name);
