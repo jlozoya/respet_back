@@ -409,6 +409,14 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      */
     $router->post('/user/pay', ['uses' => 'PayController@createPay']);
 
+    $router->get('/pets', ['uses' => 'PetController@index']);
+    $router->post('/pet', ['uses' => 'PetController@store']);
+    $router->get('/pet/create', ['uses' => 'PetController@create']);
+    $router->get('/pet/{id}', ['uses' => 'PetController@show']);
+    $router->put('/pet/{id}', ['uses' => 'PetController@update']);
+    $router->delete('/pet/{id}', ['uses' => 'PetController@destroy']);
+    $router->get('/pet/{id}/edit ', ['uses' => 'PetController@edit']);
+
     $router->group(['middleware' => ['isAdmin']], function () use ($router) {
         /**
          * @api {get} /user/:id Obtiene la información de un usuario por su id.
