@@ -7,7 +7,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class ContactConfirmation extends Notification implements ShouldQueue
+class SupportConfirmation extends Notification implements ShouldQueue
 {
     use Queueable;
     /**
@@ -48,7 +48,7 @@ class ContactConfirmation extends Notification implements ShouldQueue
         switch($this->lang) {
             case 'es': {
                 return (new MailMessage)
-                    ->subject('Confirmación de contacto')
+                    ->subject('Confirmación de soporte')
                     ->greeting('Hola!')
                     ->line('Muchas gracias por ponerse en contacto con nosotros.')
                     ->line('Si no fue usted, no se requieren mas acciones.')
@@ -57,7 +57,7 @@ class ContactConfirmation extends Notification implements ShouldQueue
             break;
             case 'en': {
                 return (new MailMessage)
-                    ->subject('Contact confirmation')
+                    ->subject('Support confirmation')
                     ->greeting('Hello!')
                     ->line('Thank you very much for contacting us.')
                     ->line('If it was not you, no more actions are required.')

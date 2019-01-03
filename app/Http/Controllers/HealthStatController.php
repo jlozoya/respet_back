@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\HealthStat;
+use App\Model\HealthStat;
 use Illuminate\Http\Request;
 
 class HealthStatController extends Controller
@@ -13,16 +13,6 @@ class HealthStatController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
     {
         //
     }
@@ -41,21 +31,10 @@ class HealthStatController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Pet  $pet
+     * @param  number  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Pet $pet)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Pet  $pet
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Pet $pet)
+    public function show($id)
     {
         //
     }
@@ -64,10 +43,10 @@ class HealthStatController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Pet  $pet
+     * @param  number  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Pet $pet)
+    public function update(Request $request, $id)
     {
         //
     }
@@ -75,10 +54,10 @@ class HealthStatController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Pet  $pet
+     * @param  number  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Pet $pet)
+    public function destroy($id)
     {
         //
     }

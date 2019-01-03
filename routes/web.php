@@ -12,9 +12,9 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 /**
- * @api {post} /user/signup Resgistra un nuevo usuario.
+ * @api {post} /user Resgistra un nuevo usuario.
  * @apiVersion 0.0.1
- * @apiName Signup
+ * @apiName Store
  * @apiGroup User
  * @apiPermission none
  *
@@ -40,9 +40,9 @@ $router->get('/', function () use ($router) {
  * @apiError (406) {QueryException} error Error al
  * ejecutar la consulta.
  */
-$router->post('/user/signup', ['uses' => 'UserController@signup']);
+$router->post('/user', ['uses' => 'UserController@store']);
 /**
- * @api {post} /user/login Solicita una sesión al servidor.
+ * @api {post} /oauth/token Solicita una sesión al servidor.
  * @apiVersion 0.0.1
  * @apiName Login
  * @apiGroup User
@@ -65,7 +65,7 @@ $router->post('/user/signup', ['uses' => 'UserController@signup']);
  * @apiError (406) {String} SERVER.WRONG_TOKEN Cuando el token
  * enviado es incorrecto.
  */
-$router->post('/user/login', ['uses' => 'UserController@login']);
+$router->post('/oauth/token', ['uses' => 'UserController@login']);
 
 /**
  * @api {post} /password/email Recupera una contraseña con un email.
@@ -142,7 +142,7 @@ $router->get('/user/confirm/email', ['as' => 'user.confirm.email', 'uses' => 'Us
 /**
  * @api {post} /contact/send Enviar un correo de contacto a administradores.
  * @apiVersion 0.0.1
- * @apiName SendContact
+ * @apiName CreateSupport
  * @apiGroup Visitor
  * @apiPermission none
  * 
@@ -154,7 +154,7 @@ $router->get('/user/confirm/email', ['as' => 'user.confirm.email', 'uses' => 'Us
  * @apiSuccess (201) {User} user Es la información del usuario
  * que envió la solicitud.
  */
-$router->post('/contact/send', ['uses' => 'ContactController@sendContact']);
+$router->post('/support', ['uses' => 'SupportController@create']);
 
 /**
  * @api {get} /bulletins Consultar noticias por pagina.
@@ -168,10 +168,11 @@ $router->post('/contact/send', ['uses' => 'ContactController@sendContact']);
  * @apiSuccess (200) {Pagination} pagination Noticias paginadas.
  */
 $router->get('/bulletins', ['uses' => 'BulletinController@getBulletins']);
+
 /**
  * @api {get} /bulletins Consultar noticias por id.
  * @apiVersion 0.0.1
- * @apiName GetOneBulletinById
+ * @apiName ShowBulletin
  * @apiGroup Bulletin
  * @apiPermission none
  * 
@@ -179,13 +180,13 @@ $router->get('/bulletins', ['uses' => 'BulletinController@getBulletins']);
  *
  * @apiSuccess (200) {Bulletin} bulletin Una noticia.
  */
-$router->get('/bulletin/{id}', ['uses' => 'BulletinController@getOneBulletinById']);
+$router->get('/bulletin/{id}', ['uses' => 'BulletinController@show']);
 
 $router->group(['middleware' => ['auth:api']], function () use ($router) {
     /**
      * @api {get} /user Obtiene la información del usuario propio.
      * @apiVersion 0.0.1
-     * @apiName GetUser
+     * @apiName index
      * @apiGroup User
      * @apiPermission user
      * 
@@ -196,7 +197,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * @apiError (406) {String} SERVER.USER_NOT_FOUND En caso de que
      * no se encuentre el usuario relacionado el token.
      */
-    $router->get('/user', ['uses' => 'UserController@getUser']);
+    $router->get('/user', ['uses' => 'UserController@index']);
     /**
      * @api {post} /user/confirm/email Re enviar un correo para
      * confirmar la dirección de correo.
@@ -220,7 +221,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      */
     $router->post('/user/confirm/email', ['uses' => 'UserController@reSendConfirmEmail']);
     /**
-     * @api {post} /user/set/avatar Establecer el avatar del usuario propio.
+     * @api {put} /user/avatar Establecer el avatar del usuario propio.
      * @apiVersion 0.0.1
      * @apiName SetAvatar
      * @apiGroup User
@@ -235,7 +236,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * 
      * @apiSuccess (202) {String} fileUrl Url donde se almaceno el archivo.
      */
-    $router->post('/user/set/avatar', ['uses' => 'UserController@setAvatar']);
+    $router->put('/user/avatar', ['uses' => 'UserController@updateAvatar']);
     /**
      * @api {put} /user/social/link Establecer el avatar del usuario propio.
      * @apiVersion 0.0.1
@@ -261,7 +262,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      */
     $router->put('/user/social/link', ['uses' => 'UserController@createSocialLink']);
     /**
-     * @api {put} /user/update Actualizar la información del usuario propio.
+     * @api {put} /user Actualizar la información del usuario propio.
      * @apiVersion 0.0.1
      * @apiName UpdateUser
      * @apiGroup User
@@ -279,9 +280,9 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * 
      * @apiError (406) {QueryException} error Error al ejecutar la consulta.
      */
-    $router->put('/user/update', ['uses' => 'UserController@updateUser']);
+    $router->put('/user', ['uses' => 'UserController@updateUser']);
     /**
-     * @api {put} /user/update/email Actualizar el email del usuario propio.
+     * @api {put} /user/email Actualizar el email del usuario propio.
      * @apiVersion 0.0.1
      * @apiName UpdateUserEmail
      * @apiGroup User
@@ -299,9 +300,9 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * ya tiene un correo registrado.
      * @apiError (406) {QueryException} error Error al ejecutar la consulta.
      */
-    $router->put('/user/update/email', ['uses' => 'UserController@updateUserEmail']);
+    $router->put('/user/email', ['uses' => 'UserController@updateUserEmail']);
     /**
-     * @api {put} /user/update/lang Actualizar el idioma del usuario propio.
+     * @api {put} /user/lang Actualizar el idioma del usuario propio.
      * @apiVersion 0.0.1
      * @apiName UpdateUserLang
      * @apiGroup User
@@ -316,9 +317,9 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * @apiError (404) {String} SERVER.USER_NOT_REGISTRED Cuando el
      * usuario no fue localizado.
      */
-    $router->put('/user/update/lang', ['uses' => 'UserController@updateUserLang']);
+    $router->put('/user/lang', ['uses' => 'UserController@updateUserLang']);
     /**
-     * @api {put} /user/update/direction Actualizar la dirección del usuario propio.
+     * @api {put} /user/direction Actualizar la dirección del usuario propio.
      * @apiVersion 0.0.1
      * @apiName UpdateUserDirection
      * @apiGroup User
@@ -340,7 +341,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * 
      * @apiError (406) {QueryException} error Error al ejecutar la consulta.
      */
-    $router->put('/user/update/direction', ['uses' => 'UserController@updateUserDirection']);
+    $router->put('/user/direction', ['uses' => 'UserController@updateUserDirection']);
     /**
      * @api {delete} /user/social/link/:id Eliminar un vínculo propio
      * con una red social.
@@ -411,11 +412,15 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
 
     $router->get('/pets', ['uses' => 'PetController@index']);
     $router->post('/pet', ['uses' => 'PetController@store']);
-    $router->get('/pet/create', ['uses' => 'PetController@create']);
     $router->get('/pet/{id}', ['uses' => 'PetController@show']);
     $router->put('/pet/{id}', ['uses' => 'PetController@update']);
     $router->delete('/pet/{id}', ['uses' => 'PetController@destroy']);
-    $router->get('/pet/{id}/edit ', ['uses' => 'PetController@edit']);
+
+    $router->get('/health_stats', ['uses' => 'HealthStatController@index']);
+    $router->post('/health_stat', ['uses' => 'HealthStatController@store']);
+    $router->get('/health_stat/{id}', ['uses' => 'HealthStatController@show']);
+    $router->put('/health_stat/{id}', ['uses' => 'HealthStatController@update']);
+    $router->delete('/health_stat/{id}', ['uses' => 'HealthStatController@destroy']);
 
     $router->group(['middleware' => ['isAdmin']], function () use ($router) {
         /**
@@ -451,25 +456,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          */
         $router->post('/users', ['uses' => 'UserController@getUsers']);
         /**
-         * @api {post} /user/set/avatar/:id Establecer el avatar de un usuario por su id.
-         * @apiVersion 0.0.1
-         * @apiName SetAvatarById
-         * @apiGroup Admin
-         * @apiPermission admin
-         * 
-         * @apiHeader (Auth) {String} Authorization Token de autorización.
-         *
-         * @apiParam {Number} id Id del usuario a actualizar.
-         * @apiParam {File} file Es el archivo a almacenar.
-         * @apiParam {String} file_name Nombre del archivo.
-         * @apiParam {String} [type] Define el tipo de archivo, en caso de
-         * ser base64 se debe indicar.
-         * 
-         * @apiSuccess (202) {String} fileUrl Url donde se almaceno el archivo.
-         */
-        $router->post('/user/set/avatar/{id}', ['uses' => 'UserController@setAvatarById']);
-        /**
-         * @api {put} /user/update/:id Actualizar la información de un usuario por su id.
+         * @api {put} /user/:id Actualizar la información de un usuario por su id.
          * @apiVersion 0.0.1
          * @apiName UpdateUserById
          * @apiGroup Admin
@@ -488,9 +475,27 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * 
          * @apiError (406) {QueryException} error Error al ejecutar la consulta.
          */
-        $router->put('/user/update/{id}', ['uses' => 'UserController@updateUserById']);
+        $router->put('/user/{id}', ['uses' => 'UserController@updateUserById']);
         /**
-         * @api {put} /user/update/email/:id Actualizar el email de un usuario por su id.
+         * @api {put} /user/avatar/:id Establecer el avatar de un usuario por su id.
+         * @apiVersion 0.0.1
+         * @apiName SetAvatarById
+         * @apiGroup Admin
+         * @apiPermission admin
+         * 
+         * @apiHeader (Auth) {String} Authorization Token de autorización.
+         *
+         * @apiParam {Number} id Id del usuario a actualizar.
+         * @apiParam {File} file Es el archivo a almacenar.
+         * @apiParam {String} file_name Nombre del archivo.
+         * @apiParam {String} [type] Define el tipo de archivo, en caso de
+         * ser base64 se debe indicar.
+         * 
+         * @apiSuccess (202) {String} fileUrl Url donde se almaceno el archivo.
+         */
+        $router->put('/user/avatar/{id}', ['uses' => 'UserController@updateAvatarById']);
+        /**
+         * @api {put} /user/email/:id Actualizar el email de un usuario por su id.
          * @apiVersion 0.0.1
          * @apiName UpdateUserEmailById
          * @apiGroup Admin
@@ -509,9 +514,9 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * ya tiene un correo registrado.
          * @apiError (406) {QueryException} error Error al ejecutar la consulta.
          */
-        $router->put('/user/update/email/{id}', ['uses' => 'UserController@updateUserEmailById']);
+        $router->put('/user/email/{id}', ['uses' => 'UserController@updateUserEmailById']);
         /**
-         * @api {put} /user/update/lang/:id Actualizar el idioma de un usuario por su id.
+         * @api {put} /user/lang/:id Actualizar el idioma de un usuario por su id.
          * @apiVersion 0.0.1
          * @apiName UpdateUserLangById
          * @apiGroup Admin
@@ -527,9 +532,9 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * @apiError (404) {String} SERVER.USER_NOT_REGISTRED Cuando el
          * usuario no fue localizado.
          */
-        $router->put('/user/update/lang/{id}', ['uses' => 'UserController@updateUserLangById']);
+        $router->put('/user/lang/{id}', ['uses' => 'UserController@updateUserLangById']);
         /**
-         * @api {put} /user/update/direction/:id Actualizar la dirección de un usuario por su id.
+         * @api {put} /user/direction/:id Actualizar la dirección de un usuario por su id.
          * @apiVersion 0.0.1
          * @apiName UpdateUserDirectionById
          * @apiGroup Admin
@@ -552,7 +557,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * 
          * @apiError (406) {QueryException} error Error al ejecutar la consulta.
          */
-        $router->put('/user/update/direction/{id}', ['uses' => 'UserController@updateUserDirectionById']);
+        $router->put('/user/direction/{id}', ['uses' => 'UserController@updateUserDirectionById']);
         /**
          * @api {put} /user/role/:id Actualizar el rol del usuario por su id.
          * @apiVersion 0.0.1
@@ -591,7 +596,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
         /**
          * @api {post} /bulletin Crear una nueva noticia.
          * @apiVersion 0.0.1
-         * @apiName CreateBulletin
+         * @apiName Create Bulletin
          * @apiGroup Bulletin
          * @apiPermission admin
          * 
@@ -603,9 +608,9 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * 
          * @apiSuccess (202) {Bulletin} bulletin Noticia creada.
          */
-        $router->post('/bulletin', ['uses' => 'BulletinController@createBulletin']);
+        $router->post('/bulletin', ['uses' => 'BulletinController@create']);
         /**
-         * @api {post} /bulletin/set/img Establece la imagen de la noticia.
+         * @api {put} /bulletin/img Establece la imagen de la noticia.
          * @apiVersion 0.0.1
          * @apiName SetImg
          * @apiGroup Bulletin
@@ -620,7 +625,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * 
          * @apiSuccess (202) {Bulletin} bulletin Noticia creada.
          */
-        $router->post('/bulletin/set/img', ['uses' => 'BulletinController@setImg']);
+        $router->put('/bulletin/img', ['uses' => 'BulletinController@setImg']);
         /**
          * @api {put} /bulletin Actualizar una noticia.
          * @apiVersion 0.0.1

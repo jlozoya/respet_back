@@ -29,7 +29,7 @@ class UserController extends BaseController
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function getUser(Request $request) {
+    public function index(Request $request) {
         $user = $request->user();
         if ($user) {
             if ($user['direction_id']) {
@@ -134,7 +134,7 @@ class UserController extends BaseController
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function signup(Request $request) {
+    public function store(Request $request) {
         $this->validate($request, [
             'name' => 'required|min:4|max:60',
             'first_name' => 'required|max:60',
@@ -633,7 +633,7 @@ class UserController extends BaseController
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function setAvatar(Request $request)
+    public function updateAvatar(Request $request)
     {
         $this->validate($request, [
             'file_name' => 'required',
@@ -830,7 +830,7 @@ class UserController extends BaseController
      * @param number $id
      * @return \Illuminate\Http\Response
      */
-    public function setAvatarById(Request $request, $id)
+    public function updateAvatarById(Request $request, $id)
     {
         $this->validate($request, [
             'file_name' => 'required',

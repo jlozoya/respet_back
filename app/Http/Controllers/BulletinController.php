@@ -20,7 +20,7 @@ class BulletinController extends BaseController
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    function createBulletin(Request $request) {
+    function create(Request $request) {
         $this->validate($request, [
             'title' => 'required|max:255',
             'description' => 'required',
@@ -47,7 +47,7 @@ class BulletinController extends BaseController
      * @param  number $id
      * @return \Illuminate\Http\Response
      */
-    function getOneBulletinById($id) {
+    function show($id) {
         $bulletin = Bulletin::find($id);
         if ($bulletin['media_id']) {
             $bulletin['media'] = Media::find($bulletin['media_id']);

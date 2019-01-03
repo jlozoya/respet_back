@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Notifications\Notifiable;
 
-class Contact extends Model 
+class Support extends Model 
 {
     use Notifiable;
 
-    protected $table = 'contact';
+    protected $table = 'support';
     /**
      * Los atributos que son asignados en masa.
      *
