@@ -97,7 +97,7 @@ composer require dusterio/lumen-passport
 Ssh hostinger
 
 ```bash
-ssh -i ~/.ssh/amazon-pakal ubuntu@ec2-18-223-114-102.us-east-2.compute.amazonaws.com
+ssh -i ~/.ssh/amazon-pakal ubuntu@ec2-18-220-85-105.us-east-2.compute.amazonaws.com
 ```
 
 Ftp hostinger

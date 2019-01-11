@@ -32,6 +32,7 @@ class User extends Model implements CanResetPasswordContract, AuthenticatableCon
         'email',
         'password',
         'media_id',
+        'phone',
         'lang',
         'birthday',
         'confirmed',

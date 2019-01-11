@@ -192,7 +192,39 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * 
      * @apiHeader (Auth) {String} Authorization Token de autorización.
      *
-     * @apiSuccess (200) {User} user Información del usuario.
+     * @apiSuccess (200) {Object} user Información del usuario.
+     * @apiSuccess (200) {Number} user.id Id del usuario.
+     * @apiSuccess (200) {String} user.name Nombre de usuario.
+     * @apiSuccess (200) {String} user.first_name Primer nombre del usuario.
+     * @apiSuccess (200) {String} user.last_name Apellido del usuario.
+     * @apiSuccess (200) {String} [user.gender] Genero del usuario.
+     * @apiSuccess (200) {String} user.email Email del usuario.
+     * @apiSuccess (200) {Number} [user.media_id] Id de la imagen del usuario.
+     * @apiSuccess (200) {Object} [user.media] Información de la imagen del usuario.
+     * @apiSuccess (200) {Number} [user.media.id] Id de la imagen del usuario.
+     * @apiSuccess (200) {String} [user.media.type] Tipo de la imagen del usuario.
+     * @apiSuccess (200) {String} [user.media.url] Url de la imagen del usuario.
+     * @apiSuccess (200) {String} [user.media.alt] Alt de la imagen del usuario.
+     * @apiSuccess (200) {Number} [user.media.width] Ancho de la imagen del usuario.
+     * @apiSuccess (200) {Number} [user.media.height] Alto de la imagen del usuario.
+     * @apiSuccess (200) {String} [user.phone] Telefono del usuario.
+     * @apiSuccess (200) {String} user.lang Idioma del usuario.
+     * @apiSuccess (200) {String} [user.birthday] Fecha de nacimiento del usuario.
+     * @apiSuccess (200) {Boolean} [user.confirmed] Si el correo del usuario está confirmado.
+     * @apiSuccess (200) {String} user.source Fuente desde la que se registro el usuario.
+     * @apiSuccess (200) {String} user.role Rol del usuario.
+     * @apiSuccess (200) {Number} [user.direction_id] Id de la dirección del usuario.
+     * @apiSuccess (200) {Object} [user.direction] Dirección del usuario.
+     * @apiSuccess (200) {String} [user.direction.id] Información del usuario.
+     * @apiSuccess (200) {String} [user.direction.contry] País de la dirección del usuario.
+     * @apiSuccess (200) {String} [user.direction.administrative_area_level_1] Estado de la dirección del usuario.
+     * @apiSuccess (200) {String} [user.direction.administrative_area_level_2] Municipio de la dirección del usuario.
+     * @apiSuccess (200) {String} [user.direction.route] Calle de la dirección del usuario.
+     * @apiSuccess (200) {Number} [user.direction.street_number] Numero de la dirección del usuario.
+     * @apiSuccess (200) {Number} [user.direction.postal_code] Código postal de la dirección del usuario.
+     * @apiSuccess (200) {Number} [user.direction.lat] Latitud de la dirección del usuario.
+     * @apiSuccess (200) {Number} [user.direction.lng] Longitud postal de la dirección del usuario.
+     * @apiSuccess (200) {String} user.created_at Información del usuario.
      * 
      * @apiError (406) {String} SERVER.USER_NOT_FOUND En caso de que
      * no se encuentre el usuario relacionado el token.
@@ -251,8 +283,12 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * a el usuario en dicha red social.
      * @apiParam {String} accessToken Token emitido por la red social.
      * 
-     * @apiSuccess (202) {SocialLink} socialLink Contenido del registro
+     * @apiSuccess (202) {Object} socialLink Contenido del registro
      * del nuevo vínculo con la red social.
+     * @apiSuccess (202) {Number} socialLink.id Id del nuevo registro.
+     * @apiSuccess (202) {Number} socialLink.user_id Id del usuario.
+     * @apiSuccess (202) {Number} socialLink.extern_id Id del usuario en la red social correspondiente.
+     * @apiSuccess (202) {String} socialLink.source Fuente del vinculo con la red social.
      * 
      * @apiError (401) {String} SERVER.USER_SOCIAL_ALREADY_USED Cuando ya
      * está en uso ese vínculo por otro usuario.
@@ -276,7 +312,22 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * @apiParam {String} [gender] Genero del usuario 'male' | 'female' | 'other'.
      * @apiParam {String} [phone] Número de teléfono del usuario.
      * 
-     * @apiSuccess (201) {User} user Información del usuario.
+     * @apiSuccess (201) {Object} user Información del usuario.
+     * @apiSuccess (201) {Number} user.id Id del usuario.
+     * @apiSuccess (201) {String} user.name Nombre de usuario.
+     * @apiSuccess (201) {String} user.first_name Primer nombre del usuario.
+     * @apiSuccess (201) {String} user.last_name Apellido del usuario.
+     * @apiSuccess (201) {String} [user.gender] Genero del usuario.
+     * @apiSuccess (201) {String} user.email Email del usuario.
+     * @apiSuccess (201) {Number} [user.media_id] Id de la imagen del usuario.
+     * @apiSuccess (201) {String} [user.phone] Telefono del usuario.
+     * @apiSuccess (201) {String} user.lang Idioma del usuario.
+     * @apiSuccess (201) {String} [user.birthday] Fecha de nacimiento del usuario.
+     * @apiSuccess (201) {Boolean} [user.confirmed] Si el correo del usuario está confirmado.
+     * @apiSuccess (201) {String} user.source Fuente desde la que se registro el usuario.
+     * @apiSuccess (201) {String} user.role Rol del usuario.
+     * @apiSuccess (201) {Number} [user.direction_id] Id de la dirección del usuario.
+     * @apiSuccess (201) {String} user.created_at Información del usuario.
      * 
      * @apiError (406) {QueryException} error Error al ejecutar la consulta.
      */
@@ -294,7 +345,22 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * @apiParam {String} source Nombre de la fuente con la que se inicia sesión
      * 'facebook' | 'google' | 'app'.
      * 
-     * @apiSuccess (201) {User} user Información del usuario.
+     * @apiSuccess (201) {Object} user Información del usuario.
+     * @apiSuccess (201) {Number} user.id Id del usuario.
+     * @apiSuccess (201) {String} user.name Nombre de usuario.
+     * @apiSuccess (201) {String} user.first_name Primer nombre del usuario.
+     * @apiSuccess (201) {String} user.last_name Apellido del usuario.
+     * @apiSuccess (201) {String} [user.gender] Genero del usuario.
+     * @apiSuccess (201) {String} user.email Email del usuario.
+     * @apiSuccess (201) {Number} [user.media_id] Id de la imagen del usuario.
+     * @apiSuccess (201) {String} [user.phone] Telefono del usuario.
+     * @apiSuccess (201) {String} user.lang Idioma del usuario.
+     * @apiSuccess (201) {String} [user.birthday] Fecha de nacimiento del usuario.
+     * @apiSuccess (201) {Boolean} [user.confirmed] Si el correo del usuario está confirmado.
+     * @apiSuccess (201) {String} user.source Fuente desde la que se registro el usuario.
+     * @apiSuccess (201) {String} user.role Rol del usuario.
+     * @apiSuccess (201) {Number} [user.direction_id] Id de la dirección del usuario.
+     * @apiSuccess (201) {String} user.created_at Información del usuario.
      * 
      * @apiError (406) {String} SERVER.USER_EMAIL_ALREADY_EXISTS Cuando un usuario
      * ya tiene un correo registrado.
@@ -336,8 +402,16 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * @apiParam {String} [lat] Latitud del usuario.
      * @apiParam {String} [lng] Longitud del usuario.
      * 
-     * @apiSuccess (201) {Direction} userDirection Información de la
-     * dirección del usuario.
+     * @apiSuccess (201) {Object} [direction] userDirección del usuario.
+     * @apiSuccess (201) {String} [direction.id] Información del usuario.
+     * @apiSuccess (201) {String} [direction.contry] País de la dirección del usuario.
+     * @apiSuccess (201) {String} [direction.administrative_area_level_1] Estado de la dirección del usuario.
+     * @apiSuccess (201) {String} [direction.administrative_area_level_2] Municipio de la dirección del usuario.
+     * @apiSuccess (201) {String} [direction.route] Calle de la dirección del usuario.
+     * @apiSuccess (201) {Number} [direction.street_number] Numero de la dirección del usuario.
+     * @apiSuccess (201) {Number} [direction.postal_code] Código postal de la dirección del usuario.
+     * @apiSuccess (201) {Number} [direction.lat] Latitud de la dirección del usuario.
+     * @apiSuccess (201) {Number} [direction.lng] Longitud postal de la dirección del usuario.
      * 
      * @apiError (406) {QueryException} error Error al ejecutar la consulta.
      */
@@ -434,7 +508,39 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          *
          * @apiParam {Number} id Id del usuario.
          * 
-         * @apiSuccess (200) {User} user Información del usuario.
+         * @apiSuccess (200) {Object} user Información del usuario.
+         * @apiSuccess (200) {Number} user.id Id del usuario.
+         * @apiSuccess (200) {String} user.name Nombre de usuario.
+         * @apiSuccess (200) {String} user.first_name Primer nombre del usuario.
+         * @apiSuccess (200) {String} user.last_name Apellido del usuario.
+         * @apiSuccess (200) {String} [user.gender] Genero del usuario.
+         * @apiSuccess (200) {String} user.email Email del usuario.
+         * @apiSuccess (200) {Number} [user.media_id] Id de la imagen del usuario.
+         * @apiSuccess (200) {Object} [user.media] Información de la imagen del usuario.
+         * @apiSuccess (200) {Number} [user.media.id] Id de la imagen del usuario.
+         * @apiSuccess (200) {String} [user.media.type] Tipo de la imagen del usuario.
+         * @apiSuccess (200) {String} [user.media.url] Url de la imagen del usuario.
+         * @apiSuccess (200) {String} [user.media.alt] Alt de la imagen del usuario.
+         * @apiSuccess (200) {Number} [user.media.width] Ancho de la imagen del usuario.
+         * @apiSuccess (200) {Number} [user.media.height] Alto de la imagen del usuario.
+         * @apiSuccess (200) {String} [user.phone] Telefono del usuario.
+         * @apiSuccess (200) {String} user.lang Idioma del usuario.
+         * @apiSuccess (200) {String} [user.birthday] Fecha de nacimiento del usuario.
+         * @apiSuccess (200) {Boolean} [user.confirmed] Si el correo del usuario está confirmado.
+         * @apiSuccess (200) {String} user.source Fuente desde la que se registro el usuario.
+         * @apiSuccess (200) {String} user.role Rol del usuario.
+         * @apiSuccess (200) {Number} [user.direction_id] Id de la dirección del usuario.
+         * @apiSuccess (200) {Object} [user.direction] Dirección del usuario.
+         * @apiSuccess (200) {String} [user.direction.id] Información del usuario.
+         * @apiSuccess (200) {String} [user.direction.contry] País de la dirección del usuario.
+         * @apiSuccess (200) {String} [user.direction.administrative_area_level_1] Estado de la dirección del usuario.
+         * @apiSuccess (200) {String} [user.direction.administrative_area_level_2] Municipio de la dirección del usuario.
+         * @apiSuccess (200) {String} [user.direction.route] Calle de la dirección del usuario.
+         * @apiSuccess (200) {Number} [user.direction.street_number] Numero de la dirección del usuario.
+         * @apiSuccess (200) {Number} [user.direction.postal_code] Código postal de la dirección del usuario.
+         * @apiSuccess (200) {Number} [user.direction.lat] Latitud de la dirección del usuario.
+         * @apiSuccess (200) {Number} [user.direction.lng] Longitud postal de la dirección del usuario.
+         * @apiSuccess (200) {String} user.created_at Información del usuario.
          * 
          * @apiError (406) {String} SERVER.USER_NOT_FOUND En caso de que no se
          * encuentre el usuario relacionado el token.
@@ -452,7 +558,39 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * @apiParam {Number} page Número de la página a consultar.
          * @apiParam {String} search Texto en caso en caso de querer realizar una búsqueda.
          * 
-         * @apiSuccess (200) {User[]} user Lista de usuarios.
+         * @apiSuccess (200) {Object[]} user Información del usuario.
+         * @apiSuccess (200) {Number} user.id Id del usuario.
+         * @apiSuccess (200) {String} user.name Nombre de usuario.
+         * @apiSuccess (200) {String} user.first_name Primer nombre del usuario.
+         * @apiSuccess (200) {String} user.last_name Apellido del usuario.
+         * @apiSuccess (200) {String} [user.gender] Genero del usuario.
+         * @apiSuccess (200) {String} user.email Email del usuario.
+         * @apiSuccess (200) {Number} [user.media_id] Id de la imagen del usuario.
+         * @apiSuccess (200) {Object} [user.media] Información de la imagen del usuario.
+         * @apiSuccess (200) {Number} [user.media.id] Id de la imagen del usuario.
+         * @apiSuccess (200) {String} [user.media.type] Tipo de la imagen del usuario.
+         * @apiSuccess (200) {String} [user.media.url] Url de la imagen del usuario.
+         * @apiSuccess (200) {String} [user.media.alt] Alt de la imagen del usuario.
+         * @apiSuccess (200) {Number} [user.media.width] Ancho de la imagen del usuario.
+         * @apiSuccess (200) {Number} [user.media.height] Alto de la imagen del usuario.
+         * @apiSuccess (200) {String} [user.phone] Telefono del usuario.
+         * @apiSuccess (200) {String} user.lang Idioma del usuario.
+         * @apiSuccess (200) {String} [user.birthday] Fecha de nacimiento del usuario.
+         * @apiSuccess (200) {Boolean} [user.confirmed] Si el correo del usuario está confirmado.
+         * @apiSuccess (200) {String} user.source Fuente desde la que se registro el usuario.
+         * @apiSuccess (200) {String} user.role Rol del usuario.
+         * @apiSuccess (200) {Number} [user.direction_id] Id de la dirección del usuario.
+         * @apiSuccess (200) {Object} [user.direction] Dirección del usuario.
+         * @apiSuccess (200) {String} [user.direction.id] Información del usuario.
+         * @apiSuccess (200) {String} [user.direction.contry] País de la dirección del usuario.
+         * @apiSuccess (200) {String} [user.direction.administrative_area_level_1] Estado de la dirección del usuario.
+         * @apiSuccess (200) {String} [user.direction.administrative_area_level_2] Municipio de la dirección del usuario.
+         * @apiSuccess (200) {String} [user.direction.route] Calle de la dirección del usuario.
+         * @apiSuccess (200) {Number} [user.direction.street_number] Numero de la dirección del usuario.
+         * @apiSuccess (200) {Number} [user.direction.postal_code] Código postal de la dirección del usuario.
+         * @apiSuccess (200) {Number} [user.direction.lat] Latitud de la dirección del usuario.
+         * @apiSuccess (200) {Number} [user.direction.lng] Longitud postal de la dirección del usuario.
+         * @apiSuccess (200) {String} user.created_at Información del usuario.
          */
         $router->post('/users', ['uses' => 'UserController@getUsers']);
         /**
@@ -471,7 +609,22 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * @apiParam {String} [gender] Genero del usuario 'male' | 'female' | 'other'.
          * @apiParam {String} [phone] Número de teléfono del usuario.
          * 
-         * @apiSuccess (201) {User} user Información del usuario.
+         * @apiSuccess (201) {Object} user Información del usuario.
+         * @apiSuccess (201) {Number} user.id Id del usuario.
+         * @apiSuccess (201) {String} user.name Nombre de usuario.
+         * @apiSuccess (201) {String} user.first_name Primer nombre del usuario.
+         * @apiSuccess (201) {String} user.last_name Apellido del usuario.
+         * @apiSuccess (201) {String} [user.gender] Genero del usuario.
+         * @apiSuccess (201) {String} user.email Email del usuario.
+         * @apiSuccess (201) {Number} [user.media_id] Id de la imagen del usuario.
+         * @apiSuccess (201) {String} [user.phone] Telefono del usuario.
+         * @apiSuccess (201) {String} user.lang Idioma del usuario.
+         * @apiSuccess (201) {String} [user.birthday] Fecha de nacimiento del usuario.
+         * @apiSuccess (201) {Boolean} [user.confirmed] Si el correo del usuario está confirmado.
+         * @apiSuccess (201) {String} user.source Fuente desde la que se registro el usuario.
+         * @apiSuccess (201) {String} user.role Rol del usuario.
+         * @apiSuccess (201) {Number} [user.direction_id] Id de la dirección del usuario.
+         * @apiSuccess (201) {String} user.created_at Información del usuario.
          * 
          * @apiError (406) {QueryException} error Error al ejecutar la consulta.
          */
@@ -486,7 +639,8 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * @apiHeader (Auth) {String} Authorization Token de autorización.
          *
          * @apiParam {Number} id Id del usuario a actualizar.
-         * @apiParam {File} file Es el archivo a almacenar.
+         * @apiParam {String} file Es el archivo a almacenar, puede ser de tipo archivo
+         * se recomienda usar.
          * @apiParam {String} file_name Nombre del archivo.
          * @apiParam {String} [type] Define el tipo de archivo, en caso de
          * ser base64 se debe indicar.
@@ -508,7 +662,22 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * @apiParam {String} source Nombre de la fuente con la que se inicia sesión
          * 'facebook' | 'google' | 'app'.
          * 
-         * @apiSuccess (201) {User} user Información del usuario.
+         * @apiSuccess (201) {Object} user Información del usuario.
+         * @apiSuccess (201) {Number} user.id Id del usuario.
+         * @apiSuccess (201) {String} user.name Nombre de usuario.
+         * @apiSuccess (201) {String} user.first_name Primer nombre del usuario.
+         * @apiSuccess (201) {String} user.last_name Apellido del usuario.
+         * @apiSuccess (201) {String} [user.gender] Genero del usuario.
+         * @apiSuccess (201) {String} user.email Email del usuario.
+         * @apiSuccess (201) {Number} [user.media_id] Id de la imagen del usuario.
+         * @apiSuccess (201) {String} [user.phone] Telefono del usuario.
+         * @apiSuccess (201) {String} user.lang Idioma del usuario.
+         * @apiSuccess (201) {String} [user.birthday] Fecha de nacimiento del usuario.
+         * @apiSuccess (201) {Boolean} [user.confirmed] Si el correo del usuario está confirmado.
+         * @apiSuccess (201) {String} user.source Fuente desde la que se registro el usuario.
+         * @apiSuccess (201) {String} user.role Rol del usuario.
+         * @apiSuccess (201) {Number} [user.direction_id] Id de la dirección del usuario.
+         * @apiSuccess (201) {String} user.created_at Información del usuario.
          * 
          * @apiError (406) {String} SERVER.USER_EMAIL_ALREADY_EXISTS Cuando un usuario
          * ya tiene un correo registrado.
@@ -570,7 +739,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * @apiParam {Number} id Id del usuario a actualizar.
          * @apiParam {String} [role] Nuevo rol del usuario.
          * 
-         * @apiSuccess (202) {Direction} role Nuevo rol del usuario.
+         * @apiSuccess (202) {String} role Nuevo rol del usuario.
          * 
          * @apiError (404) {String} SERVER.USER_NOT_REGISTRED Cuando el usuario no está registrado.
          */
@@ -671,6 +840,23 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          *
          * @apiSuccess (200) {Object} analytics Objeto con la información
          * de los usuarios en la base de datos.
+         * @apiSuccess (200) {Number} analytics.users_number Numero de usuarios.
+         * @apiSuccess (200) {Object} analytics.gender Objeto con la información del genero
+         * de los usuarios.
+         * @apiSuccess (200) {Number} analytics.gender.male_number Numero de hombres.
+         * @apiSuccess (200) {Number} analytics.gender.female_number Numero de mujeres.
+         * @apiSuccess (200) {Number} analytics.supports_number Numero de solicitudes de soporte.
+         * @apiSuccess (200) {Object} analytics.ages Objeto con la información
+         * de la edad de los usuarios.
+         * @apiSuccess (200) {Number} analytics.ages.children Numero de niños.
+         * @apiSuccess (200) {Number} analytics.ages.teens Numero de adolecentes.
+         * @apiSuccess (200) {Number} analytics.ages.young_adults Numero de adultos jovenes
+         * @apiSuccess (200) {Number} analytics.ages.unknown Numero de usuarios con edad desconocida.
+         * @apiSuccess (200) {Object} analytics.sources Objeto con la información
+         * del origen desde donde se registraron los usuarios.
+         * @apiSuccess (200) {Number} analytics.sources.app Numero de ususarios registrados desde la aplicación.
+         * @apiSuccess (200) {Number} analytics.sources.facebook Numero de ususarios registrados desde facebook.
+         * @apiSuccess (200) {Number} analytics.sources.google Numero de ususarios registrados desde google.
          */
         $router->get('/analytics', ['uses' => 'AnalyticController@getBasicAnalytics']);
         /**
@@ -685,8 +871,10 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          *
          * @apiParam {String} interval Intervalo de tiempo a consultar.
          * 
-         * @apiSuccess (200) {Object} analytics Objeto con la información
+         * @apiSuccess (200) {Object[]} analytics Objeto con la información
          * de los usuarios en la base de datos.
+         * @apiSuccess (200) {String} analytics.created_at Fecha en que se registraron.
+         * @apiSuccess (200) {Number} analytics.users Numero de ususario.
          */
         $router->post('/analytics/users/registration', ['uses' => 'AnalyticController@getUsersRegistration']);
     });
