@@ -19,7 +19,48 @@ class PetController extends BaseController
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-        $pets = Pet::all()->paginate(5);
+        if ($request->get('search')) {
+            $pets = Pet::where('name', 'like', '%' . $request->get('search') . '%')
+            ->orWhere('description', 'like', '%' . $request->get('search') . '%')
+            ->orWhere('state', 'like', '%' . $request->get('search') . '%')
+            ->paginate(5);
+            return $this->attachData($pets);
+        } else if ($request->get('direction')) {
+            $where = "";
+            if ($request->input('direction.country')) {
+                $where .= " `directions`.`country` LIKE '%" . $request->input('direction.country') . "%'";
+            }
+            if ($request->input('direction.administrative_area_level_1')) {
+                $where .= " `directions`.`administrative_area_level_1` LIKE '%" . $request->input('direction.administrative_area_level_1') . "%'";
+            }
+            if ($request->input('direction.administrative_area_level_2')) {
+                $where .= " `directions`.`administrative_area_level_2` LIKE '%" . $request->input('direction.administrative_area_level_2') . "%'";
+            }
+            if ($request->input('direction.route')) {
+                $where .= " `directions`.`route` LIKE '%" . $request->input('direction.route') . "%'";
+            }
+            if ($request->input('direction.street_number')) {
+                $where .= " `directions`.`street_number` LIKE '%" . $request->input('direction.street_number') . "%'";
+            }
+            if ($request->input('direction.postal_code')) {
+                $where .= " `directions`.`postal_code` LIKE '%" . $request->input('direction.postal_code') . "%'";
+            }
+            if ($request->input('direction.lat')) {
+                $where .= " `directions`.`lat` LIKE '%" . $request->input('direction.lat') . "%'";
+            }
+            if ($request->input('direction.lng')) {
+                $where .= " `directions`.`lng` LIKE '%" . $request->input('direction.lng') . "%'";
+            }
+            return $this->attachData(Pet::select('pets.*')
+            ->join('directions', 'pets.direction_id', '=', 'directions.id')
+            ->whereRaw($where)
+            ->paginate(5));
+        } else {
+            return $this->attachData(Pet::paginate(5));
+        }
+    }
+
+    private function attachData($pets) {
         foreach ($pets as &$pet) {
             if ($pet['direction_id']) {
                 $pet['direction'] = Direction::find($pet['direction_id']);
@@ -54,27 +95,29 @@ class PetController extends BaseController
         ]);
         if ($request->get('direction')) {
             $direction = Direction::create([
-                'contry' => $request->get('direction')['contry'],
-                'administrative_area_level_1' => $request->get('direction')['administrative_area_level_1'],
-                'administrative_area_level_2' => $request->get('direction')['administrative_area_level_2'],
-                'route' => $request->get('direction')['route'],
-                'street_number' => $request->get('direction')['street_number'],
-                'postal_code' => $request->get('direction')['postal_code'],
-                'lat' => $request->get('direction')['lat'],
-                'lng' => $request->get('direction')['lng'],
+                'country' => $request->input('direction.country'),
+                'administrative_area_level_1' => $request->input('direction.administrative_area_level_1'),
+                'administrative_area_level_2' => $request->input('direction.administrative_area_level_2'),
+                'route' => $request->input('direction.route'),
+                'street_number' => $request->input('direction.street_number'),
+                'postal_code' => $request->input('direction.postal_code'),
+                'lat' => $request->input('direction.lat'),
+                'lng' => $request->input('direction.lng'),
             ]);
             $pet['direction_id'] = $direction['id'];
             $pet->save();
+            $pet['direction'] = $direction;
         }
         if ($request->get('media')) {
             $media = Media::create([
-                'url' => $request->get('media')['url'],
-                'alt' => $request->get('media')['alt'],
-                'width' => $request->get('media')['width'],
-                'height' => $request->get('media')['height'],
+                'url' => $request->input('media.url'),
+                'alt' => $request->input('media.alt'),
+                'width' => $request->input('media.width'),
+                'height' => $request->input('media.height'),
             ]);
             $pet['media_id'] = $media['id'];
             $pet->save();
+            $pet['media'] = $media;
         }
         return response()->json($pet, 201);
     }
@@ -163,14 +206,14 @@ class PetController extends BaseController
             } else {
                 if ($request->get('direction')) {
                     $direction = Direction::create([
-                        'country' => $request->get('direction')['country'],
-                        'administrative_area_level_1' => $request->get('direction')['administrative_area_level_1'],
-                        'administrative_area_level_2' => $request->get('direction')['administrative_area_level_2'],
-                        'route' => $request->get('direction')['route'],
-                        'street_number' => $request->get('direction')['street_number'],
-                        'postal_code' => $request->get('direction')['postal_code'],
-                        'lat' => $request->get('direction')['lat'],
-                        'lng' => $request->get('direction')['lng'],
+                        'country' => $request->input('direction.country'),
+                        'administrative_area_level_1' => $request->input('direction.administrative_area_level_1'),
+                        'administrative_area_level_2' => $request->input('direction.administrative_area_level_2'),
+                        'route' => $request->input('direction.route'),
+                        'street_number' => $request->input('direction.street_number'),
+                        'postal_code' => $request->input('direction.postal_code'),
+                        'lat' => $request->input('direction.lat'),
+                        'lng' => $request->input('direction.lng'),
                     ]);
                     $pet['direction_id'] = $direction['id'];
                 }

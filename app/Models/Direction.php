@@ -13,7 +13,7 @@ class Direction extends Model
      */
     protected $fillable = [
         'id',
-        'contry',
+        'country',
         'administrative_area_level_1',
         'administrative_area_level_2',
         'route',
