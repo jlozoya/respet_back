@@ -13,7 +13,7 @@ class CatEmails extends Migration
      */
     public function up()
     {
-        Schema::table('cat_emails', function (Blueprint $table) {
+        Schema::create('cat_emails', function (Blueprint $table) {
             $table->increments('id')->unique();
             $table->integer('contact_information_id')->unsigned();
             $table->string('email', 60);

@@ -552,23 +552,23 @@ class UserController extends BaseController
         try {
             $user = $request->user();
             if ($request->get('name')) {
-                $this->validate($request, ['name' => 'required|min:4|max:60',]);
+                $this->validate($request, ['name' => 'min:4|max:60',]);
                 $user['name'] = $request->get('name');
             }
             if ($request->get('first_name')) {
-                $this->validate($request, ['first_name' => 'required|max:60',]);
+                $this->validate($request, ['first_name' => 'max:60',]);
                 $user['first_name'] = $request->get('first_name');
             }
             if ($request->get('last_name')) {
-                $this->validate($request, ['last_name' => 'required|max:60',]);
+                $this->validate($request, ['last_name' => 'max:60',]);
                 $user['last_name'] = $request->get('last_name');
             }
             if ($request->get('gender')) {
-                $this->validate($request, ['gender' => 'required|string',]);
+                $this->validate($request, ['gender' => 'string',]);
                 $user['gender'] = $request->get('gender');
             }
             if ($request->get('phone')) {
-                $this->validate($request, ['phone' => 'required|numeric',]);
+                $this->validate($request, ['phone' => 'numeric',]);
                 $user['phone'] = $request->get('phone');
             }
             if ($request->get('birthday')) {

@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use Laravel\Lumen\Routing\Controller as BaseController;
+
 use App\Models\Pet;
 use App\Models\Direction;
 use App\Models\Media;
 
 use Illuminate\Http\Request;
 
-class PetController extends Controller
+class PetController extends BaseController
 {
     /**
      * Muestra una lista del recurso.
@@ -51,7 +53,7 @@ class PetController extends Controller
             'media_id' => $request->get('media_id'),
         ]);
         if ($request->get('direction')) {
-            $direction = Media::create([
+            $direction = Direction::create([
                 'contry' => $request->get('direction')['contry'],
                 'administrative_area_level_1' => $request->get('direction')['administrative_area_level_1'],
                 'administrative_area_level_2' => $request->get('direction')['administrative_area_level_2'],
