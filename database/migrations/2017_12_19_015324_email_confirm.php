@@ -17,7 +17,8 @@ class EmailConfirm extends Migration
             $table->string('token', 60)->index();
             $table->timestamp('created_at');
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')
+            ->onDelete('cascade')->onUpdate('cascade');
         });
     }
     /**

@@ -168,7 +168,9 @@ class UserController extends BaseController
                     if ($request->get('media')) {
                         $media = Media::create([
                             'url' => $request->get('media')['url'],
-                            'alt' => 'avatar',
+                            'alt' => $request->get('media')['alt'],
+                            'width' => $request->get('media')['width'],
+                            'height' => $request->get('media')['height'],
                         ]);
                         $user['media_id'] = $media['id'];
                         $user->save();
@@ -237,7 +239,7 @@ class UserController extends BaseController
                         $user = User::where([
                             'email' => $request->get('email'), 'source' => $request->get('source')
                         ])->first();
-                        if ($user && Hash::check($request->get('password'), $user->password)) {
+                        if ($user && Hash::check($request->get('password'), $user['password'])) {
                             $sesion['id'] = $user['id'];
                             $sesion['token'] = $user
                             ->createToken(env('APP_OAUTH_PASS', 'OAuth'))->accessToken;
@@ -320,7 +322,7 @@ class UserController extends BaseController
         ]);
         $user = User::find($request->get('id'));
         if ($user) {
-            if (!$user->confirmed) {
+            if (!$user['confirmed']) {
                 return $this->sendConfirmEmail($user);
             } else {
                 return response()->json('SERVER.USER_ALREADY_CONFIRMED', 200);
@@ -343,10 +345,10 @@ class UserController extends BaseController
                 'token' => str_random(60)
             ]);
         } else {
-            $emailConfirmData->token = str_random(60);
+            $emailConfirmData['token'] = str_random(60);
             $emailConfirmData->save();
         }
-        $confirmationLink = route('user.confirm.email') . '?token=' . $emailConfirmData->token;
+        $confirmationLink = route('user.confirm.email') . '?token=' . $emailConfirmData['token'];
         $response = $user->notify(new RegistrationConfirmation($confirmationLink, $user['lang']));
         if ($response == '') {
             return response()->json('SERVER.EMAIL_SEND', 200);
@@ -367,10 +369,10 @@ class UserController extends BaseController
         $emailConfirmData = EmailConfirm::where('token', $request->get('token'))->first();
         if ($emailConfirmData) {
             $dateTimeNow = Carbon::now();
-            $dateTimeCreatedAt = Carbon::parse($emailConfirmData->created_at);
+            $dateTimeCreatedAt = Carbon::parse($emailConfirmData['created_at']);
             if ($dateTimeNow->diffInDays($dateTimeCreatedAt) <= 30) {
-                $user = User::where('id', $emailConfirmData->user_id)->first();
-                $user->confirmed = true;
+                $user = User::where('id', $emailConfirmData['user_id'])->first();
+                $user['confirmed'] = true;
                 $user->save();
                 $emailConfirmData->delete();
                 return redirect(env('APP_REDIRECTS_LINK', '../'));
@@ -486,43 +488,43 @@ class UserController extends BaseController
     public function updateUserDirection(Request $request) {
         try {
             $user = $request->user();
-            $userDirection = Direction::find($user['direction_id']);
-            if ($userDirection) {
+            $direction = Direction::find($user['direction_id']);
+            if ($direction) {
                 if ($request->get('country')) {
                     $this->validate($request, ['country' => 'required|max:60',]);
-                    $userDirection['country'] = $request->get('country');
+                    $direction['country'] = $request->get('country');
                 }
                 if ($request->get('administrative_area_level_1')) {
                     $this->validate($request, ['administrative_area_level_1' => 'required|max:60',]);
-                    $userDirection['administrative_area_level_1'] = $request->get('administrative_area_level_1');
+                    $direction['administrative_area_level_1'] = $request->get('administrative_area_level_1');
                 }
                 if ($request->get('administrative_area_level_2')) {
                     $this->validate($request, ['administrative_area_level_2' => 'required|max:60',]);
-                    $userDirection['administrative_area_level_2'] = $request->get('administrative_area_level_2');
+                    $direction['administrative_area_level_2'] = $request->get('administrative_area_level_2');
                 }
                 if ($request->get('route')) {
                     $this->validate($request, ['route' => 'required|max:60',]);
-                    $userDirection['route'] = $request->get('route');
+                    $direction['route'] = $request->get('route');
                 }
                 if ($request->get('street_number')) {
                     $this->validate($request, ['street_number' => 'required',]);
-                    $userDirection['street_number'] = $request->get('street_number');
+                    $direction['street_number'] = $request->get('street_number');
                 }
                 if ($request->get('postal_code')) {
                     $this->validate($request, ['postal_code' => 'required|numeric',]);
-                    $userDirection['postal_code'] = $request->get('postal_code');
+                    $direction['postal_code'] = $request->get('postal_code');
                 }
                 if ($request->get('lat')) {
                     $this->validate($request, ['lat' => 'required|numeric',]);
-                    $userDirection['lat'] = $request->get('lat');
+                    $direction['lat'] = $request->get('lat');
                 }
                 if ($request->get('lng')) {
                     $this->validate($request, ['lng' => 'required|numeric',]);
-                    $userDirection['lng'] = $request->get('lng');
+                    $direction['lng'] = $request->get('lng');
                 }
-                $userDirection->save();
+                $direction->save();
             } else {
-                $userDirection = Direction::create([
+                $direction = Direction::create([
                     'country' => $request->get('country'),
                     'administrative_area_level_1' => $request->get('administrative_area_level_1'),
                     'administrative_area_level_2' => $request->get('administrative_area_level_2'),
@@ -532,10 +534,10 @@ class UserController extends BaseController
                     'lat' => $request->get('lat'),
                     'lng' => $request->get('lng'),
                 ]);
-                $user['direction_id'] = $userDirection['id'];
+                $user['direction_id'] = $direction['id'];
                 $user->save();
             }
-            return response()->json($userDirection, 201);
+            return response()->json($direction, 201);
         } catch (Illuminate\Database\QueryException $error) {
             return response()->json($error, 406);
         }
@@ -680,43 +682,42 @@ class UserController extends BaseController
     public function updateUserDirectionById(Request $request, $id) {
         try {
             $user = User::find($id);
-            $userDirection = Direction::find($user['direction_id']);
-            if ($userDirection) {
+            $direction = Direction::find($user['direction_id']);
+            if ($direction) {
                 if ($request->get('country')) {
-                    $this->validate($request, ['country' => 'required|max:60',]);
-                    $userDirection['country'] = $request->get('country');
+                    $this->validate($request, ['country' => 'max:60',]);
+                    $direction['country'] = $request->get('country');
                 }
                 if ($request->get('administrative_area_level_1')) {
-                    $this->validate($request, ['administrative_area_level_1' => 'required|max:60',]);
-                    $userDirection['administrative_area_level_1'] = $request->get('administrative_area_level_1');
+                    $this->validate($request, ['administrative_area_level_1' => 'max:60',]);
+                    $direction['administrative_area_level_1'] = $request->get('administrative_area_level_1');
                 }
                 if ($request->get('administrative_area_level_2')) {
-                    $this->validate($request, ['administrative_area_level_2' => 'required|max:60',]);
-                    $userDirection['administrative_area_level_2'] = $request->get('administrative_area_level_2');
+                    $this->validate($request, ['administrative_area_level_2' => 'max:60',]);
+                    $direction['administrative_area_level_2'] = $request->get('administrative_area_level_2');
                 }
                 if ($request->get('route')) {
-                    $this->validate($request, ['route' => 'required|max:60',]);
-                    $userDirection['route'] = $request->get('route');
+                    $this->validate($request, ['route' => 'max:60',]);
+                    $direction['route'] = $request->get('route');
                 }
                 if ($request->get('street_number')) {
-                    $this->validate($request, ['street_number' => 'required',]);
-                    $userDirection['street_number'] = $request->get('street_number');
+                    $direction['street_number'] = $request->get('street_number');
                 }
                 if ($request->get('postal_code')) {
-                    $this->validate($request, ['postal_code' => 'required|numeric',]);
-                    $userDirection['postal_code'] = $request->get('postal_code');
+                    $this->validate($request, ['postal_code' => 'numeric',]);
+                    $direction['postal_code'] = $request->get('postal_code');
                 }
                 if ($request->get('lat')) {
-                    $this->validate($request, ['lat' => 'required|numeric',]);
-                    $userDirection['lat'] = $request->get('lat');
+                    $this->validate($request, ['lat' => 'numeric',]);
+                    $direction['lat'] = $request->get('lat');
                 }
                 if ($request->get('lng')) {
-                    $this->validate($request, ['lng' => 'required|numeric',]);
-                    $userDirection['lng'] = $request->get('lng');
+                    $this->validate($request, ['lng' => 'numeric',]);
+                    $direction['lng'] = $request->get('lng');
                 }
-                $userDirection->save();
+                $direction->save();
             } else {
-                $userDirection = Direction::create([
+                $direction = Direction::create([
                     'country' => $request->get('country'),
                     'administrative_area_level_1' => $request->get('administrative_area_level_1'),
                     'administrative_area_level_2' => $request->get('administrative_area_level_2'),
@@ -726,10 +727,10 @@ class UserController extends BaseController
                     'lat' => $request->get('lat'),
                     'lng' => $request->get('lng'),
                 ]);
-                $user['direction_id'] = $userDirection['id'];
+                $user['direction_id'] = $direction['id'];
                 $user->save();
             }
-            return response()->json($userDirection, 201);
+            return response()->json($direction, 201);
         } catch (Illuminate\Database\QueryException $error) {
             return response()->json($error, 406);
         }
@@ -745,23 +746,23 @@ class UserController extends BaseController
         try {
             $user = User::find($id);
             if ($request->get('name')) {
-                $this->validate($request, ['name' => 'required|min:4|max:60',]);
-                $user->name = $request->get('name');
+                $this->validate($request, ['name' => 'min:4|max:60',]);
+                $user['name'] = $request->get('name');
             }
             if ($request->get('first_name')) {
-                $this->validate($request, ['first_name' => 'required|max:60',]);
+                $this->validate($request, ['first_name' => 'max:60',]);
                 $user['first_name'] = $request->get('first_name');
             }
             if ($request->get('last_name')) {
-                $this->validate($request, ['last_name' => 'required|max:60',]);
+                $this->validate($request, ['last_name' => 'max:60',]);
                 $user['last_name'] = $request->get('last_name');
             }
             if ($request->get('gender')) {
-                $this->validate($request, ['gender' => 'required|string',]);
+                $this->validate($request, ['gender' => 'string',]);
                 $user['gender'] = $request->get('gender');
             }
             if ($request->get('phone')) {
-                $this->validate($request, ['phone' => 'required|numeric',]);
+                $this->validate($request, ['phone' => 'numeric',]);
                 $user['phone'] = $request->get('phone');
             }
             if ($request->get('birthday')) {
@@ -939,10 +940,11 @@ class UserController extends BaseController
             Direction::find($user['direction_id'])->delete();
         }
         if ($user['media_id']) {
-            if (parse_url($user['media']['url'])['host'] == parse_url(URL::to('/'))['host']) {
-                File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($user['media']['url'])['path']);
+            $media = Media::find($user['media_id']);
+            if (parse_url($media['url'])['host'] == parse_url(URL::to('/'))['host']) {
+                File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($media['url'])['path']);
             }
-            $media = Media::find($user['media_id'])->delete();
+            $media->delete();
         }
         $user->delete();
         return response()->json('SERVER.USER_DELETED', 200);

@@ -13,11 +13,14 @@ class Pet extends Model
      */
     protected $fillable = [
         'id',
+        'user_id',
         'name',
+        'show_contact_information',
         'description',
         // 'found' | 'lost' | 'on_adoption' | 'on_sale' | 'on_hold' | 'other'
         'state',
         'direction_id',
+        'direction_accuracy',
         'media_id',
     ];
     /**
