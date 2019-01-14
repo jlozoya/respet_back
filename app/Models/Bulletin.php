@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Beat extends Model 
+class Bulletin extends Model 
 {
     /**
      * Los atributos que son asignados en masa.
@@ -13,9 +13,12 @@ class Beat extends Model
      */
     protected $fillable = [
         'id',
-        'reading_id',
-        'time',
-        'beat',
+        'title',
+        'description',
+        'date',
+        'media_id',
+        'created_at',
+        'updated_at',
     ];
     /**
      * Los atributos excluidos del formulario JSON del modelo.
@@ -23,7 +26,5 @@ class Beat extends Model
      * @var array
      */
     protected $hidden = [
-        'created_at',
-        'updated_at',
     ];
 }
