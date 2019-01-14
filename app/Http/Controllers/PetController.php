@@ -60,6 +60,12 @@ class PetController extends BaseController
         }
     }
 
+    /**
+     * Agrega información a la consulta.
+     * 
+     * @param $pets
+     * @return \Illuminate\Http\Response
+     */
     private function attachData($pets) {
         foreach ($pets as &$pet) {
             if ($pet['direction_id']) {
@@ -130,6 +136,12 @@ class PetController extends BaseController
      */
     public function show($id) {
         $pet = Pet::find($id);
+        if ($pet['direction_id']) {
+            $pet['direction'] = Direction::find($pet['direction_id']);
+        }
+        if ($pet['media_id']) {
+            $pet['media'] = Media::find($pet['media_id']);
+        }
         return response()->json($pet, 200);
     }
 
