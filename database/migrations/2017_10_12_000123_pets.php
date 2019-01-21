@@ -23,14 +23,11 @@ class Pets extends Migration
             )->default('found');
             $table->integer('direction_id')->unsigned()->nullable();
             $table->integer('direction_accuracy')->default(0);
-            $table->integer('media_id')->unsigned()->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')
             ->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('direction_id')->references('id')->on('directions')
-            ->onDelete('set null')->onUpdate('cascade');
-            $table->foreign('media_id')->references('id')->on('media')
             ->onDelete('set null')->onUpdate('cascade');
         });
     }

@@ -7,6 +7,7 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 use App\Models\Pet;
 use App\Models\Direction;
 use App\Models\User;
+use App\Models\PetMedia;
 use App\Models\Media;
 
 use Illuminate\Http\Request;
@@ -80,9 +81,8 @@ class PetController extends BaseController
             if ($pet['direction_id']) {
                 $pet['direction'] = Direction::find($pet['direction_id']);
             }
-            if ($pet['media_id']) {
-                $pet['media'] = Media::find($pet['media_id']);
-            }
+            $pet['media'] = PetMedia::select('media.*')->where('pet_media.pet_id', $pet['id'])
+            ->join('media', 'pet_media.media_id', 'media.id')->get();
         }
         return response()->json($pets, 200);
     }
@@ -106,7 +106,6 @@ class PetController extends BaseController
             'state' => $request->get('state'),
             'direction_id' => $request->get('direction_id'),
             'direction_accuracy' => $request->get('direction_accuracy'),
-            'media_id' => $request->get('media_id'),
         ]);
         if ($request->get('direction')) {
             $direction = Direction::create([
@@ -123,16 +122,9 @@ class PetController extends BaseController
             $pet->save();
             $pet['direction'] = $direction;
         }
-        if ($request->get('media')) {
-            $media = Media::create([
-                'url' => $request->input('media.url'),
-                'alt' => $request->input('media.alt'),
-                'width' => $request->input('media.width'),
-                'height' => $request->input('media.height'),
-            ]);
-            $pet['media_id'] = $media['id'];
-            $pet->save();
-            $pet['media'] = $media;
+        $pet['user'] = $user;
+        if ($pet['user']['media_id']) {
+            $pet['user']['media'] = Media::find($pet['user']['media_id']);
         }
         return response()->json($pet, 201);
     }
@@ -145,12 +137,19 @@ class PetController extends BaseController
      */
     public function show($id) {
         $pet = Pet::find($id);
+        $pet['user'] = User::select(
+            'id',
+            'name',
+            'media_id'
+        )->where('id', $pet['user_id'])->first();
+        if ($pet['user']['media_id']) {
+            $pet['user']['media'] = Media::find($pet['user']['media_id']);
+        }
         if ($pet['direction_id']) {
             $pet['direction'] = Direction::find($pet['direction_id']);
         }
-        if ($pet['media_id']) {
-            $pet['media'] = Media::find($pet['media_id']);
-        }
+        $pet['media'] = PetMedia::select('media.*')->where('pet_media.pet_id', $pet['id'])
+        ->join('media', 'pet_media.media_id', 'media.id')->get();
         return response()->json($pet, 200);
     }
 
@@ -243,9 +242,16 @@ class PetController extends BaseController
             if ($direction) {
                 $pet['direction'] = $direction;
             }
-            if ($pet['media_id']) {
-                $pet['media'] = Media::find($pet['media_id']);
+            $pet['user'] = User::select(
+                'id',
+                'name',
+                'media_id'
+            )->where('id', $pet['user_id'])->first();
+            if ($pet['user']['media_id']) {
+                $pet['user']['media'] = Media::find($pet['user']['media_id']);
             }
+            $pet['media'] = PetMedia::select('media.*')->where('pet_media.pet_id', $pet['id'])
+            ->join('media', 'pet_media.media_id', 'media.id')->get();
             return response()->json($pet, 201);
         } catch (Illuminate\Database\QueryException $error) {
             return response()->json($error, 406);
@@ -260,17 +266,18 @@ class PetController extends BaseController
      */
     public function destroy($id) {
         $pet = Pet::find($id);
-        if($pet['direction_id']) {
+        if ($pet['direction_id']) {
             Direction::find($pet['direction_id'])->delete();
         }
-        if ($pet['media_id']) {
-            $media = Media::find($pet['media_id']);
+        $pet['media'] = PetMedia::select('media.*')->where('pet_media.pet_id', $pet['id'])
+        ->join('media', 'pet_media.media_id', 'media.id')->get();
+        foreach ($pet['media'] as &$media) {
             if (parse_url($media['url'])['host'] == parse_url(URL::to('/'))['host']) {
                 File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($media['url'])['path']);
             }
             $media->delete();
         }
         $pet->delete();
-        return response()->json('SERVER.PET_DELETED', 200);
+        return response()->json('SERVER.PET_DELETED', 204);
     }
 }
