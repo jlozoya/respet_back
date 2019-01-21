@@ -22,8 +22,7 @@ class PetController extends BaseController
      */
     public function index(Request $request) {
         if ($request->get('search')) {
-            $pets = Pet::where('name', 'like', '%' . $request->get('search') . '%')
-            ->orWhere('description', 'like', '%' . $request->get('search') . '%')
+            $pets = Pet::where('description', 'like', '%' . $request->get('search') . '%')
             ->orWhere('state', 'like', '%' . $request->get('search') . '%')
             ->paginate(5);
             return $this->attachData($pets);
@@ -96,11 +95,10 @@ class PetController extends BaseController
     public function store(Request $request) {
         $user = $request->user();
         $this->validate($request, [
-            'name' => 'required|max:60',
+            'description' => 'required',
         ]);
         $pet = Pet::create([
             'user_id' => $user['id'],
-            'name' => $request->get('name'),
             'show_contact_information' => $request->get('show_contact_information'),
             'description' => $request->get('description'),
             'state' => $request->get('state'),
@@ -166,10 +164,6 @@ class PetController extends BaseController
             if ($request->get('user_id')) {
                 $this->validate($request, ['user_id' => 'number',]);
                 $pet['user_id'] = $request->get('user_id');
-            }
-            if ($request->get('name')) {
-                $this->validate($request, ['name' => 'max:60',]);
-                $pet['name'] = $request->get('name');
             }
             if ($request->get('show_contact_information')) {
                 $this->validate($request, ['show_contact_information' => 'max:60',]);

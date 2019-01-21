@@ -16,9 +16,8 @@ class Pets extends Migration
         Schema::create('pets', function (Blueprint $table) {
             $table->increments('id')->unique();
             $table->integer('user_id')->unsigned();
-            $table->string('name', 60);
+            $table->text('description');
             $table->boolean('show_contact_information')->default(true);
-            $table->text('description')->nullable();
             $table->enum('state', ['found', 'lost', 'on_adoption', 'on_sale', 'on_hold', 'other']
             )->default('found');
             $table->integer('direction_id')->unsigned()->nullable();
