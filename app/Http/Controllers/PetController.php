@@ -6,6 +6,7 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 
 use App\Models\Pet;
 use App\Models\Direction;
+use App\Models\User;
 use App\Models\Media;
 
 use Illuminate\Http\Request;
@@ -68,6 +69,14 @@ class PetController extends BaseController
      */
     private function attachData($pets) {
         foreach ($pets as &$pet) {
+            $pet['user'] = User::select(
+                'id',
+                'name',
+                'media_id'
+            )->where('id', $pet['user_id'])->first();
+            if ($pet['user']['media_id']) {
+                $pet['user']['media'] = Media::find($pet['user']['media_id']);
+            }
             if ($pet['direction_id']) {
                 $pet['direction'] = Direction::find($pet['direction_id']);
             }

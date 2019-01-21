@@ -484,7 +484,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      */
     $router->post('/user/pay', ['uses' => 'PayController@createPay']);
 
-    $router->get('/pets', ['uses' => 'PetController@index']);
+    $router->post('/pets', ['uses' => 'PetController@index']);
     $router->post('/pet', ['uses' => 'PetController@store']);
     $router->get('/pet/{id}', ['uses' => 'PetController@show']);
     $router->put('/pet/{id}', ['uses' => 'PetController@update']);

@@ -22,6 +22,8 @@ class Pet extends Model
         'direction_id',
         'direction_accuracy',
         'media_id',
+        'updated_at',
+        'created_at',
     ];
     /**
      * Los atributos excluidos del formulario JSON del modelo.
@@ -29,7 +31,5 @@ class Pet extends Model
      * @var array
      */
     protected $hidden = [
-        'updated_at',
-        'created_at',
     ];
 }
