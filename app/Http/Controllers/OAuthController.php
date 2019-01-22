@@ -28,7 +28,7 @@ class OAuthController extends BaseController
         }
         switch ($request->get('grant_type')) {
             case 'password': {
-                return $this->appLogin($request);
+                return $this->passwordLogin($request);
             } break;
             case 'google': {
                 return $this->googleLogin($request);
@@ -42,7 +42,7 @@ class OAuthController extends BaseController
         }
     }
     
-    private function appLogin(Request $request) {
+    private function passwordLogin(Request $request) {
         $this->validate($request, [
             'email' => 'required|email',
             'password' => 'required|min:6|max:60',
