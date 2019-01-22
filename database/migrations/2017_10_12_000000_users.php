@@ -26,9 +26,9 @@ class Users extends Migration
             $table->string('lang', 5)->default('es');
             $table->date('birthday')->nullable();
             $table->boolean('confirmed')->default(false);
-            $table->enum('source',
-                ['app', 'google', 'facebook', 'instagram', 'twitter', 'other']
-            )->default('app');
+            $table->enum('grant_type',
+                ['password', 'google', 'facebook', 'instagram', 'twitter', 'other']
+            )->default('grant_type');
             $table->enum('role', ['visitor', 'user', 'admin', 'other'])
             ->default('visitor');
             $table->integer('direction_id')->unsigned()->nullable();

@@ -41,7 +41,7 @@ class UserController extends BaseController
             $user['social_links'] = SocialLink::select(
                 'id',
                 'extern_id',
-                'source'
+                'grant_type'
             )->where('user_id', $user['id'])->get();
             return response()->json($user, 200);
         } else {
@@ -63,12 +63,11 @@ class UserController extends BaseController
             'gender',
             'email',
             'media_id',
-            'source',
+            'grant_type',
             'phone',
             'lang',
             'birthday',
             'role',
-            'source',
             'direction_id'
         )->find($id);
         if ($user) {
@@ -81,7 +80,7 @@ class UserController extends BaseController
             $user['social_links'] = SocialLink::select(
                 'id',
                 'extern_id',
-                'source'
+                'grant_type'
             )->where('user_id', $user['id'])->get();
             return response()->json($user, 200);
         } else {
@@ -103,12 +102,11 @@ class UserController extends BaseController
             'gender',
             'email',
             'media_id',
-            'users.source',
+            'grant_type',
             'phone',
             'lang',
             'birthday',
-            'role',
-            'source'
+            'role'
         )->where('name', 'like', '%' . $request->get('search') . '%')
         ->orWhere('email', 'like', '%' . $request->get('search') . '%')
         ->orWhere('phone', 'like', '%' . $request->get('search') . '%')
@@ -123,7 +121,7 @@ class UserController extends BaseController
             $user['social_links'] = SocialLink::select(
                 'id',
                 'extern_id',
-                'source'
+                'grant_type'
             )->where('user_id', $user['id'])->get();
         }
         return response()->json($users, 200);
@@ -141,174 +139,99 @@ class UserController extends BaseController
             'last_name' => 'required|max:60',
             'email' => 'required|email',
             'lang' => 'required',
-            'source' => 'required'
+            'grant_type' => 'required'
         ]);
-        if ($request->isJson()) {
-            try {
-                if ($request->get('source') == 'app') {
-                    $user = User::where([
-                        'source' => $request->get('source'), 'email' => $request->get('email')
-                    ])->first();
-                    if ($user) {
-                        return response()->json('SERVER.USER_ALREADY_EXISTS', 401);
-                    }
-                    $this->validate($request, [
-                        'password' => 'required|min:6|max:60'
-                    ]);
-                    $user = User::create([
-                        'name' => $request->get('name'),
-                        'first_name' => $request->get('first_name'),
-                        'last_name' => $request->get('last_name'),
-                        'gender' => $request->get('gender'),
-                        'email' => $request->get('email'),
-                        'password' => Hash::make($request->get('password')),
-                        'lang' => $request->get('lang'),
-                        'source' => $request->get('source'),
-                    ]);
-                    if ($request->get('media')) {
-                        $media = Media::create([
-                            'url' => $request->get('media')['url'],
-                            'alt' => $request->get('media')['alt'],
-                            'width' => $request->get('media')['width'],
-                            'height' => $request->get('media')['height'],
-                        ]);
-                        $user['media_id'] = $media['id'];
-                        $user->save();
-                    }
-                    $sesion['id'] = $user['id'];
-                    $sesion['token'] = $user->createToken(env('APP_OAUTH_PASS', 'OAuth'))->accessToken; 
-                } else {
-                    $socialLink = SocialLink::where([
-                        'source' => $request->get('source'), 'extern_id' => $request->get('extern_id')
-                    ])->first();
-                    if ($socialLink) {
-                        return response()->json('SERVER.USER_ALREADY_EXISTS', 401);
-                    }
-                    $user = User::create([
-                        'name' => $request->get('name'),
-                        'first_name' => $request->get('first_name'),
-                        'last_name' => $request->get('last_name'),
-                        'gender' => $request->get('gender'),
-                        'email' => $request->get('email'),
-                        'lang' => $request->get('lang'),
-                        'source' => $request->get('source'),
-                    ]);
-                    $socialLink = SocialLink::create([
-                        'user_id' => $user['id'],
-                        'source' => $request->get('source'),
-                        'extern_id' => $request->get('extern_id'),
-                    ]);
-                    if ($request->get('media')) {
-                        $media = Media::create([
-                            'url' => $request->get('media')['url'],
-                            'alt' => 'avatar',
-                        ]);
-                        $user['media_id'] = $media['id'];
-                        $user->save();
-                    }
-                    $sesion['id'] = $user['id'];
-                    $sesion['token'] = $user
-                    ->createToken(env('APP_OAUTH_PASS', 'OAuth'))->accessToken;  
-                }
-                $this->sendConfirmEmail($user);
-                return response()->json($sesion, 201);
-            } catch (Illuminate\Database\QueryException $error) {
-                return response()->json($error, 406);
-            }
+        $error = $this->checkClient($request);
+        if ($error) {
+            return $error;
         }
-        return response()->json('SERVER.UNAUTHORIZED', 401);
+        if ($request->get('grant_type') == 'app') {
+            $user = User::where([
+                'grant_type' => $request->get('grant_type'), 'email' => $request->get('email')
+            ])->first();
+            if ($user) {
+                return response()->json('SERVER.USER_ALREADY_EXISTS', 401);
+            }
+            $this->validate($request, [
+                'password' => 'required|min:6|max:60'
+            ]);
+            $user = User::create([
+                'name' => $request->get('name'),
+                'first_name' => $request->get('first_name'),
+                'last_name' => $request->get('last_name'),
+                'gender' => $request->get('gender'),
+                'email' => $request->get('email'),
+                'password' => Hash::make($request->get('password')),
+                'lang' => $request->get('lang'),
+                'grant_type' => $request->get('grant_type'),
+            ]);
+            if ($request->get('media')) {
+                $media = Media::create([
+                    'url' => $request->get('media')['url'],
+                    'alt' => $request->get('media')['alt'],
+                    'width' => $request->get('media')['width'],
+                    'height' => $request->get('media')['height'],
+                ]);
+                $user['media_id'] = $media['id'];
+                $user->save();
+            }
+            $sesion['id'] = $user['id'];
+            $sesion['token'] = $user->createToken(env('APP_OAUTH_PASS', 'OAuth'))->accessToken; 
+        } else {
+            $socialLink = SocialLink::where([
+                'grant_type' => $request->get('grant_type'), 'extern_id' => $request->get('extern_id')
+            ])->first();
+            if ($socialLink) {
+                return response()->json('SERVER.USER_ALREADY_EXISTS', 401);
+            }
+            $user = User::create([
+                'name' => $request->get('name'),
+                'first_name' => $request->get('first_name'),
+                'last_name' => $request->get('last_name'),
+                'gender' => $request->get('gender'),
+                'email' => $request->get('email'),
+                'lang' => $request->get('lang'),
+                'grant_type' => $request->get('grant_type'),
+            ]);
+            $socialLink = SocialLink::create([
+                'user_id' => $user['id'],
+                'grant_type' => $request->get('grant_type'),
+                'extern_id' => $request->get('extern_id'),
+            ]);
+            if ($request->get('media')) {
+                $media = Media::create([
+                    'url' => $request->get('media')['url'],
+                    'alt' => 'avatar',
+                ]);
+                $user['media_id'] = $media['id'];
+                $user->save();
+            }
+            $sesion['id'] = $user['id'];
+            $sesion['token'] = $user
+            ->createToken(env('APP_OAUTH_PASS', 'OAuth'))->accessToken;  
+        }
+        $this->sendConfirmEmail($user);
+        return response()->json($sesion, 201);
     }
     /**
-     * Valida las credenciales del usuario en caso de ser correctas devuelve la demás información del usuario.
-     *
+     * Verifica las credenciales del cliente con las ge se hace el login.
+     * 
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function login(Request $request) {
-        if ($request->isJson()) {
-            try {
-                $this->validate($request, [
-                    'source' => 'required'
-                ]);
-                switch ($request->get('source')) {
-                    case 'app': {
-                        $this->validate($request, [
-                            'email' => 'required|email',
-                            'password' => 'required|min:6|max:60',
-                        ]);
-                        $user = User::where([
-                            'email' => $request->get('email'), 'source' => $request->get('source')
-                        ])->first();
-                        if ($user && Hash::check($request->get('password'), $user['password'])) {
-                            $sesion['id'] = $user['id'];
-                            $sesion['token'] = $user
-                            ->createToken(env('APP_OAUTH_PASS', 'OAuth'))->accessToken;
-                            return response()->json($sesion, 200);
-                        } else {
-                            return response()->json('SERVER.INCORRECT_USER', 406);
-                        }
-                    }
-                    break;
-                    case 'google': {
-                        $client = new \GuzzleHttp\Client();
-                        try {
-                            $response = $client->get('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token='
-                            . $request->get('accessToken'))->getBody()->getContents();
-                            $response_decoded = json_decode($response, true);
-                            if ($response_decoded['user_id'] == $request->get('extern_id')) {
-                                $socialLink = SocialLink::where([
-                                    'extern_id' => $request->get('extern_id'), 'source' => 'google'
-                                ])->first();
-                                if ($socialLink) {
-                                    $user = User::find($socialLink['user_id']);
-                                    $sesion['id'] = $user['id'];
-                                    $sesion['token'] = $user
-                                    ->createToken(env('APP_OAUTH_PASS', 'OAuth'))->accessToken;
-                                    return response()->json($sesion, 200);
-                                } else {
-                                    return response()->json('SERVER.USER_NOT_REGISTRED', 404);
-                                }
-                            } else {
-                                return response()->json('SERVER.WRONG_USER', 404);
-                            }
-                        } catch (\GuzzleHttp\Exception\ClientException $error) {
-                            return response()->json('SERVER.WRONG_TOKEN', 406);
-                        }
-                    }
-                    break;
-                    case 'facebook': {
-                        $client = new \GuzzleHttp\Client();
-                        try {
-                            $response = $client->get('https://graph.facebook.com/me?fields=id&access_token='
-                            . $request->get('accessToken'))->getBody()->getContents();
-                            $response_decoded = json_decode($response, true);
-                            if ($response_decoded['id'] == $request->get('extern_id')) {
-                                $socialLink = SocialLink::where([
-                                    'extern_id' => $request->get('extern_id'), 'source' => 'facebook'
-                                ])->first();
-                                if ($socialLink) {
-                                    $user = User::find($socialLink['user_id']);
-                                    $sesion['id'] = $user['id'];
-                                    $sesion['token'] = $user
-                                    ->createToken(env('APP_OAUTH_PASS', 'OAuth'))->accessToken;
-                                    return response()->json($sesion, 200);
-                                } else {
-                                    return response()->json('SERVER.USER_NOT_REGISTRED', 404);
-                                }
-                            } else {
-                                return response()->json('SERVER.WRONG_USER', 404);
-                            }
-                        } catch (\GuzzleHttp\Exception\ClientException $error) {
-                            return response()->json('SERVER.WRONG_TOKEN', 406);
-                        }
-                    }
-                    break;
-                }
-            } catch (ModelNotFoundException $error) {
-                return response()->json('SERVER.WRONG_USER', 404);
-            }
+    private function checkClient(Request $request) {
+        $this->validate($request, [
+            'client_id' => 'required',
+            'client_secret' => 'required',
+        ]);
+        if (Client::where(['id' => $request->get('client_id'), 'secret' => $request->get('client_secret')])->first()) {
+            return;
+        } else {
+            return response()->json([
+                "error" => "invalid_client",
+                "message" => "Client authentication failed"
+            ], 401);
         }
-        return response()->json('SERVER.UNAUTHORIZED', 401);
     }
     /**
      * Llama la función para enviar un correo de confirmación.
@@ -394,11 +317,11 @@ class UserController extends BaseController
         try {
             $user = $request->user();
             $this->validate($request, [
-                'source' => 'required',
+                'grant_type' => 'required',
                 'extern_id' => 'required',
                 'accessToken' => 'required'
             ]);
-            switch ($request->get('source')) {
+            switch ($request->get('grant_type')) {
                 case 'google': {
                     $client = new \GuzzleHttp\Client();
                     try {
@@ -408,13 +331,13 @@ class UserController extends BaseController
                         if ($response_decoded['user_id'] == $request->get('extern_id')) {
                             $socialLink = SocialLink::where([
                                 'extern_id' => $request->get('extern_id'),
-                                'source' => $request->get('source')
+                                'grant_type' => $request->get('grant_type')
                             ])->first();
-                            if (!$socialLink && $user['source'] != $request->get('source')) {
+                            if (!$socialLink && $user['grant_type'] != $request->get('grant_type')) {
                                 $socialLink = SocialLink::create([
                                     'user_id' => $user['id'],
                                     'extern_id' => $request->get('extern_id'),
-                                    'source' => $request->get('source')
+                                    'grant_type' => $request->get('grant_type')
                                 ]);
                                 return response()->json($socialLink, 202);
                             } else {
@@ -437,13 +360,13 @@ class UserController extends BaseController
                         if ($response_decoded['id'] == $request->get('extern_id')) {
                             $socialLink = SocialLink::where([
                                 'extern_id' => $request->get('extern_id'),
-                                'source' => $request->get('source')
+                                'grant_type' => $request->get('grant_type')
                             ])->first();
-                            if (!$socialLink && $user['source'] != $request->get('source')) {
+                            if (!$socialLink && $user['grant_type'] != $request->get('grant_type')) {
                                 $socialLink = SocialLink::create([
                                     'user_id' => $user['id'],
                                     'extern_id' => $request->get('extern_id'),
-                                    'source' => $request->get('source')
+                                    'grant_type' => $request->get('grant_type')
                                 ]);
                                 return response()->json($socialLink, 202);
                             } else {
@@ -592,12 +515,11 @@ class UserController extends BaseController
             if ($request->get('email')) {
                 $this->validate($request, [
                     'email' => 'required|email',
-                    'source' => 'required',
+                    'grant_type' => 'required',
                 ]);
-                // VALIDAMOS QUE NO EXISTA EL USUARIO DEL MISMO SOURCE
                 $validate = User::where([
                     'email' => $request->get('email'),
-                    'source' => $request->get('source')
+                    'grant_type' => $request->get('grant_type')
                 ])->first();
                 if ($validate) {
                     return response()->json('SERVER.USER_EMAIL_ALREADY_EXISTS', 406);
@@ -787,11 +709,11 @@ class UserController extends BaseController
             if ($request->get('email')) {
                 $this->validate($request, [
                     'email' => 'required|email',
-                    'source' => 'required',
+                    'grant_type' => 'required',
                 ]);
                 $validate = User::where([
                     'email' => $request->get('email'),
-                    'source' => $request->get('source')
+                    'grant_type' => $request->get('grant_type')
                 ])->first();
                 if ($validate) {
                     return response()->json('SERVER.USER_EMAIL_ALREADY_EXISTS', 406);
