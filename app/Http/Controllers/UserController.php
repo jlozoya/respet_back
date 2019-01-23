@@ -9,6 +9,9 @@ use App\Models\EmailConfirm;
 use App\Models\Direction;
 use App\Models\Media;
 use App\Models\SocialLink;
+use App\Models\UserPermissions;
+
+use App\Traits\PassportToken;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -23,6 +26,8 @@ use Carbon\Carbon;
 
 class UserController extends BaseController
 {
+    use PassportToken;
+    
     /**
      * Recupera la información básica de un usuario.
      *
@@ -141,97 +146,92 @@ class UserController extends BaseController
             'lang' => 'required',
             'grant_type' => 'required'
         ]);
-        $error = $this->checkClient($request);
-        if ($error) {
-            return $error;
-        }
-        if ($request->get('grant_type') == 'app') {
-            $user = User::where([
-                'grant_type' => $request->get('grant_type'), 'email' => $request->get('email')
-            ])->first();
-            if ($user) {
-                return response()->json('SERVER.USER_ALREADY_EXISTS', 401);
+        $client = $this->checkClient($request);
+        if ($client) {
+            if ($request->get('grant_type') == 'password') {
+                $user = User::where([
+                    'grant_type' => $request->get('grant_type'), 'email' => $request->get('email')
+                ])->first();
+                if ($user) {
+                    return response()->json('SERVER.USER_ALREADY_EXISTS', 401);
+                }
+                $user = $this->passwordStore($request);
+            } else {
+                $this->validate($request, [
+                    'extern_id' => 'required',
+                ]);
+                $socialLink = SocialLink::where([
+                    'grant_type' => $request->get('grant_type'), 'extern_id' => $request->get('extern_id')
+                ])->first();
+                if ($socialLink) {
+                    return response()->json('SERVER.USER_ALREADY_EXISTS', 401);
+                } 
+                $user = $this->notPasswordStore($request);
             }
-            $this->validate($request, [
-                'password' => 'required|min:6|max:60'
-            ]);
-            $user = User::create([
-                'name' => $request->get('name'),
-                'first_name' => $request->get('first_name'),
-                'last_name' => $request->get('last_name'),
-                'gender' => $request->get('gender'),
-                'email' => $request->get('email'),
-                'password' => Hash::make($request->get('password')),
-                'lang' => $request->get('lang'),
-                'grant_type' => $request->get('grant_type'),
-            ]);
+            $user['permissions_id'] = UserPermissions::create()['id'];
             if ($request->get('media')) {
-                $media = Media::create([
+                $user['media'] = Media::create([
                     'url' => $request->get('media')['url'],
                     'alt' => $request->get('media')['alt'],
                     'width' => $request->get('media')['width'],
                     'height' => $request->get('media')['height'],
                 ]);
                 $user['media_id'] = $media['id'];
-                $user->save();
             }
-            $sesion['id'] = $user['id'];
-            $sesion['token'] = $user->createToken(env('APP_OAUTH_PASS', 'OAuth'))->accessToken; 
-        } else {
-            $socialLink = SocialLink::where([
-                'grant_type' => $request->get('grant_type'), 'extern_id' => $request->get('extern_id')
-            ])->first();
-            if ($socialLink) {
-                return response()->json('SERVER.USER_ALREADY_EXISTS', 401);
-            }
-            $user = User::create([
-                'name' => $request->get('name'),
-                'first_name' => $request->get('first_name'),
-                'last_name' => $request->get('last_name'),
-                'gender' => $request->get('gender'),
-                'email' => $request->get('email'),
-                'lang' => $request->get('lang'),
-                'grant_type' => $request->get('grant_type'),
-            ]);
-            $socialLink = SocialLink::create([
-                'user_id' => $user['id'],
-                'grant_type' => $request->get('grant_type'),
-                'extern_id' => $request->get('extern_id'),
-            ]);
-            if ($request->get('media')) {
-                $media = Media::create([
-                    'url' => $request->get('media')['url'],
-                    'alt' => 'avatar',
-                ]);
-                $user['media_id'] = $media['id'];
-                $user->save();
-            }
-            $sesion['id'] = $user['id'];
-            $sesion['token'] = $user
-            ->createToken(env('APP_OAUTH_PASS', 'OAuth'))->accessToken;  
-        }
-        $this->sendConfirmEmail($user);
-        return response()->json($sesion, 201);
-    }
-    /**
-     * Verifica las credenciales del cliente con las ge se hace el login.
-     * 
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    private function checkClient(Request $request) {
-        $this->validate($request, [
-            'client_id' => 'required',
-            'client_secret' => 'required',
-        ]);
-        if (Client::where(['id' => $request->get('client_id'), 'secret' => $request->get('client_secret')])->first()) {
-            return;
+            $user->save();
+            $sesion = $this->getBearerTokenByUser($user, $client['id'], false);
+            $this->sendConfirmEmail($user);
+            return response()->json($sesion, 201);
         } else {
             return response()->json([
                 "error" => "invalid_client",
                 "message" => "Client authentication failed"
             ], 401);
         }
+    }
+    /**
+     * Guarda un usuario con contraseña.
+     * 
+     * @param  \Illuminate\Http\Request $request
+     * @return App\Models\User $user
+     */
+    private function passwordStore(Request $request) {
+        $this->validate($request, [
+            'password' => 'required|min:6|max:60'
+        ]);
+        return User::create([
+            'name' => $request->get('name'),
+            'first_name' => $request->get('first_name'),
+            'last_name' => $request->get('last_name'),
+            'gender' => $request->get('gender'),
+            'email' => $request->get('email'),
+            'password' => Hash::make($request->get('password')),
+            'lang' => $request->get('lang'),
+            'grant_type' => $request->get('grant_type'),
+        ]);
+    }
+    /**
+     * Guarda un usuario sin contraseña.
+     * 
+     * @param  \Illuminate\Http\Request $request
+     * @return App\Models\User $user
+     */
+    private function notPasswordStore(Request $request) {
+        $user = User::create([
+            'name' => $request->get('name'),
+            'first_name' => $request->get('first_name'),
+            'last_name' => $request->get('last_name'),
+            'gender' => $request->get('gender'),
+            'email' => $request->get('email'),
+            'lang' => $request->get('lang'),
+            'grant_type' => $request->get('grant_type'),
+        ]);
+        SocialLink::create([
+            'user_id' => $user['id'],
+            'grant_type' => $request->get('grant_type'),
+            'extern_id' => $request->get('extern_id'),
+        ]);
+        return $user;
     }
     /**
      * Llama la función para enviar un correo de confirmación.
@@ -569,8 +569,9 @@ class UserController extends BaseController
         } else {
             $file = $request->file('file');
         }
-        $path = $_SERVER['DOCUMENT_ROOT'] . env('APP_PUBLIC_URL', '/app') . '/img/users_avatars/';
-        $fileUrl = URL::to('/') . '/img/users_avatars/' . $file_name;
+        $date = Carbon::now()->toDateString();
+        $path = $_SERVER['DOCUMENT_ROOT'] . env('APP_PUBLIC_URL', '/app') . '/img/users_avatars/' . $date . '/';
+        $fileUrl = URL::to('/') . '/img/users_avatars/' . $date . '/' . $file_name;
         if (!File::exists($path)) {
             File::makeDirectory($path, 2777, true);
         }
@@ -765,8 +766,9 @@ class UserController extends BaseController
         } else {
             $file = $request->file('file');
         }
-        $path = $_SERVER['DOCUMENT_ROOT'] . env('APP_PUBLIC_URL', '/app') . '/img/users_avatars/';
-        $fileUrl = URL::to('/') . '/img/users_avatars/' . $file_name;
+        $date = Carbon::now()->toDateString();
+        $path = $_SERVER['DOCUMENT_ROOT'] . env('APP_PUBLIC_URL', '/app') . '/img/users_avatars/' . $date . '/';
+        $fileUrl = URL::to('/') . '/img/users_avatars/' . $date . '/' . $file_name;
         if (!File::exists($path)) {
             File::makeDirectory($path, 2775, true);
         }

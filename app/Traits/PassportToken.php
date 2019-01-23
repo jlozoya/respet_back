@@ -18,6 +18,8 @@ use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\Exception\UniqueTokenIdentifierConstraintViolationException;
 use League\OAuth2\Server\ResponseTypes\BearerTokenResponse;
+use Illuminate\Http\Request;
+use Laravel\Passport\Client as PassportClient;
 
 # https://github.com/laravel/passport/issues/71
 
@@ -117,5 +119,22 @@ trait PassportToken {
         }
 
         return $bearerToken;
+    }
+
+    /**
+     * Verifica las credenciales del cliente con las que se hace el login.
+     * 
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    protected function checkClient(Request $request) {
+        $this->validate($request, [
+            'client_id' => 'required',
+            'client_secret' => 'required',
+        ]);
+        return PassportClient::where([
+            'id' => $request->get('client_id'),
+            'secret' => $request->get('client_secret')
+        ])->first();
     }
 }

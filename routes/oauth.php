@@ -6,8 +6,10 @@
  * @apiGroup User
  * @apiPermission none
  *
- * @apiParam {String} source Nombre de la fuente con la que
- * se inicia sesión 'facebook' | 'google' | 'app'.
+ * @apiParam {Number} client_id Id del cliente con el que se desea acceder.
+ * @apiParam {String} client_secret Contraseña del cliente con el que se desea acceder.
+ * @apiParam {String} grant_type Nombre de la fuente con la que
+ * se inicia sesión 'facebook' | 'google' | 'password'.
  * @apiParam {String} email Email del usuario.
  * @apiParam {String} password Contraseña del usuario.
  *

@@ -5,15 +5,16 @@ namespace App\Http\Controllers;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
 use App\Models\User;
-use Laravel\Passport\Client;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use App\Traits\PassportToken;
+use Laravel\Passport\Client;
 
 class OAuthController extends BaseController
 {
     use PassportToken;
+    
     /**
      * Valida las credenciales del usuario en caso de ser correctas devuelve la demás información del usuario.
      *
@@ -47,22 +48,7 @@ class OAuthController extends BaseController
             ], 401);
         }
     }
-    /**
-     * Verifica las credenciales del cliente con las ge se hace el login.
-     * 
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    private function checkClient(Request $request) {
-        $this->validate($request, [
-            'client_id' => 'required',
-            'client_secret' => 'required',
-        ]);
-        return Client::where([
-            'id' => $request->get('client_id'),
-            'secret' => $request->get('client_secret')
-        ])->first();
-    }
+
     /**
      * Verifica las credenciales del usuario con email y contraseña.
      * 
@@ -84,6 +70,7 @@ class OAuthController extends BaseController
             return response()->json('SERVER.INCORRECT_USER', 406);
         }
     }
+
     /**
      * Verifica las credenciales del ususario comprobando con google.
      * 
@@ -114,6 +101,7 @@ class OAuthController extends BaseController
             return response()->json('SERVER.WRONG_TOKEN', 406);
         }
     }
+
     /**
      * Verifica las credenciales del ususario comprobando con facebook.
      * 

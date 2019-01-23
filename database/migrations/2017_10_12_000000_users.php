@@ -28,12 +28,15 @@ class Users extends Migration
             $table->boolean('confirmed')->default(false);
             $table->enum('grant_type',
                 ['password', 'google', 'facebook', 'instagram', 'twitter', 'other']
-            )->default('grant_type');
+            )->default('password');
             $table->enum('role', ['visitor', 'user', 'admin', 'other'])
             ->default('visitor');
             $table->integer('direction_id')->unsigned()->nullable();
+            $table->integer('permissions_id')->unsigned()->nullable();
             $table->timestamps();
 
+            $table->foreign('permissions_id')->references('id')->on('user_permissions')
+            ->onDelete('set null')->onUpdate('cascade');
             $table->foreign('direction_id')->references('id')->on('directions')
             ->onDelete('set null')->onUpdate('cascade');
             $table->foreign('media_id')->references('id')->on('media')
