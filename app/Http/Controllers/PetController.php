@@ -96,10 +96,10 @@ class PetController extends BaseController
         $user = $request->user();
         $this->validate($request, [
             'description' => 'required',
+            'state' => 'required',
         ]);
         $pet = Pet::create([
             'user_id' => $user['id'],
-            'show_contact_information' => $request->get('show_contact_information'),
             'description' => $request->get('description'),
             'state' => $request->get('state'),
             'direction_id' => $request->get('direction_id'),
