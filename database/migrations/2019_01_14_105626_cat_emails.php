@@ -15,11 +15,11 @@ class CatEmails extends Migration
     {
         Schema::create('cat_emails', function (Blueprint $table) {
             $table->increments('id')->unique();
-            $table->integer('contact_information_id')->unsigned();
+            $table->integer('user_id')->unsigned();
             $table->string('email', 60);
             $table->timestamps();
             
-            $table->foreign('contact_information_id')->references('id')->on('contact_information')
+            $table->foreign('user_id')->references('id')->on('users')
             ->onDelete('cascade')->onUpdate('cascade');
         });
     }
