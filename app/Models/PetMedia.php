@@ -15,8 +15,6 @@ class PetMedia extends Model
         'id',
         'pet_id',
         'media_id',
-        'updated_at',
-        'created_at',
     ];
     /**
      * Los atributos excluidos del formulario JSON del modelo.
@@ -24,5 +22,7 @@ class PetMedia extends Model
      * @var array
      */
     protected $hidden = [
+        'updated_at',
+        'created_at',
     ];
 }

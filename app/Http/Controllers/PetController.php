@@ -10,7 +10,12 @@ use App\Models\User;
 use App\Models\PetMedia;
 use App\Models\Media;
 
+use Illuminate\Support\Facades\URL;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Intervention\Image\ImageManagerStatic as Image;
+
+use Carbon\Carbon;
 
 class PetController extends BaseController
 {
@@ -125,6 +130,43 @@ class PetController extends BaseController
             $pet['user']['media'] = Media::find($pet['user']['media_id']);
         }
         return response()->json($pet, 201);
+    }
+
+    /**
+     * Almacenar un recurso recién creado en el almacenamiento.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeFile(Request $request) {
+        $this->validate($request, [
+            'file_name' => 'required',
+            'type' => 'required',
+            'params.id' => 'required'
+        ]);
+        $fileName = $request->get('file_name');
+        if ($request->get('type') == 'base64') {
+            $file = base64_decode(explode(',', $request->get('file'))[1]);
+        } else {
+            $file = $request->file('file');
+        }
+        $date = Carbon::now()->toDateString();
+        $path = $_SERVER['DOCUMENT_ROOT'] . env('APP_PUBLIC_URL', '/app') . '/img/pets/' . $date . '/';
+        $fileUrl = URL::to('/') . '/img/pets/' . $date . '/' . $fileName;
+        if (!File::exists($path)) {
+            File::makeDirectory($path, 2777, true);
+        }
+        $image = Image::make($file)->save($path . $fileName);
+        $data = getimagesize($path . $fileName);
+        $media = Media::create([
+            'type' => $request->input('params.type') || 'img',
+            'url' => $fileUrl,
+            'alt' => $fileName,
+            'width' => $data[0],
+            'height' => $data[1],
+        ]);
+        PetMedia::create(['pet_id' => $request->input('params.id'), 'media_id' => $media['id']]);
+        return response()->json($media, 202);
     }
 
     /**

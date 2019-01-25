@@ -156,6 +156,9 @@ $router->get('/bulletins', ['uses' => 'BulletinController@getBulletins']);
  */
 $router->get('/bulletin/{id}', ['uses' => 'BulletinController@show']);
 
+$router->post('/pets', ['uses' => 'PetController@index']);
+$router->get('/pet/{id}', ['uses' => 'PetController@show']);
+
 $router->group(['middleware' => ['auth:api']], function () use ($router) {
     /**
      * @api {get} /user Obtiene la información del usuario propio.
@@ -458,9 +461,8 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      */
     $router->post('/user/pay', ['uses' => 'PayController@createPay']);
 
-    $router->post('/pets', ['uses' => 'PetController@index']);
     $router->post('/pet', ['uses' => 'PetController@store']);
-    $router->get('/pet/{id}', ['uses' => 'PetController@show']);
+    $router->put('/pet/file', ['uses' => 'PetController@storeFile']);
     $router->put('/pet/{id}', ['uses' => 'PetController@update']);
     $router->delete('/pet/{id}', ['uses' => 'PetController@destroy']);
 

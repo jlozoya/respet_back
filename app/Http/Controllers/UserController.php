@@ -563,7 +563,7 @@ class UserController extends BaseController
             'file_name' => 'required',
             'type' => 'required'
         ]);
-        $file_name = $request->get('file_name');
+        $fileName = $request->get('file_name');
         if ($request->get('type') == 'base64') {
             $file = base64_decode(explode(',', $request->get('file'))[1]);
         } else {
@@ -571,11 +571,12 @@ class UserController extends BaseController
         }
         $date = Carbon::now()->toDateString();
         $path = $_SERVER['DOCUMENT_ROOT'] . env('APP_PUBLIC_URL', '/app') . '/img/users_avatars/' . $date . '/';
-        $fileUrl = URL::to('/') . '/img/users_avatars/' . $date . '/' . $file_name;
+        $fileUrl = URL::to('/') . '/img/users_avatars/' . $date . '/' . $fileName;
         if (!File::exists($path)) {
             File::makeDirectory($path, 2777, true);
         }
-        Image::make($file)->save($path . $file_name);
+        Image::make($file)->save($path . $fileName);
+        $data = getimagesize($path . $fileName);
         $user = $request->user();
         // Evalúa si hay un archivo registrado en el servidor con el mismo nombre para eliminarlo.
         if ($user['media_id']) {
@@ -584,11 +585,15 @@ class UserController extends BaseController
                 File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($user['media']['url'])['path']);
             }
             $user['media']['url'] = $fileUrl;
+            $user['media']['width'] = $data[0];
+            $user['media']['height'] = $data[1];
             $user['media']->save();
         } else {
             $media = Media::create([
                 'url' => $fileUrl,
-                'alt' => 'avatar',
+                'alt' => $fileName,
+                'width' => $data[0],
+                'height' => $data[1],
             ]);
             $user['media_id'] = $media['id'];
             $user->save();
@@ -760,7 +765,7 @@ class UserController extends BaseController
             'file_name' => 'required',
             'type' => 'required'
         ]);
-        $file_name = $request->get('file_name');
+        $fileName = $request->get('file_name');
         if ($request['type'] == 'base64') {
             $file = base64_decode(explode(',', $request['file'])[1]);
         } else {
@@ -768,12 +773,12 @@ class UserController extends BaseController
         }
         $date = Carbon::now()->toDateString();
         $path = $_SERVER['DOCUMENT_ROOT'] . env('APP_PUBLIC_URL', '/app') . '/img/users_avatars/' . $date . '/';
-        $fileUrl = URL::to('/') . '/img/users_avatars/' . $date . '/' . $file_name;
+        $fileUrl = URL::to('/') . '/img/users_avatars/' . $date . '/' . $fileName;
         if (!File::exists($path)) {
             File::makeDirectory($path, 2775, true);
         }
-        $fileMade = Image::make($file);
-        $fileMade->save($path . $file_name);
+        $fileMade = Image::make($file)->save($path . $fileName);
+        $data = getimagesize($path . $fileName);
         $user = User::find($id);
         // Evalúa si hay un archivo registrado en el servidor con el mismo nombre para eliminarlo.
         if ($user['media_id']) {
@@ -782,15 +787,15 @@ class UserController extends BaseController
                 File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($user['media']['url'])['path']);
             }
             $user['media']['url'] = $fileUrl;
-            $user['media']['width'] = $fileMade->width();
-            $user['media']['height'] = $fileMade->height();
+            $user['media']['width'] = $data[0];
+            $user['media']['height'] = $data[1];
             $user['media']->save();
         } else {
             $media = Media::create([
                 'url' => $fileUrl,
-                'alt' => 'avatar',
-                'width' => $fileMade->width(),
-                'height' => $fileMade->height(),
+                'alt' => $fileName,
+                'width' => $data[0],
+                'height' => $data[1],
             ]);
             $user['media_id'] = $media['id'];
             $user->save();
