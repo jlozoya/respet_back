@@ -111,9 +111,9 @@ class OAuthController extends BaseController
      * @return \Illuminate\Http\Response
      */
     private function facebookLogin(Request $request, Client $client) {
-        $client = new \GuzzleHttp\Client();
+        $guzzleClient = new \GuzzleHttp\Client();
         try {
-            $response = $client->get('https://graph.facebook.com/me?fields=id&access_token='
+            $response = $guzzleClient->get('https://graph.facebook.com/me?fields=id&access_token='
             . $request->get('accessToken'))->getBody()->getContents();
             $response_decoded = json_decode($response, true);
             if ($response_decoded['id'] == $request->get('extern_id')) {
