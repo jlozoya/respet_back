@@ -16,7 +16,7 @@ class SocialLink extends Model
         'user_id',
         'extern_id',
         // 'google', 'facebook', 'instagram', 'twitter', 'other'
-        'source',
+        'grant_type',
     ];
     /**
      * Los atributos excluidos del formulario JSON del modelo.

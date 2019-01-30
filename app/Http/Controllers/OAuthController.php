@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
 use App\Models\User;
+use App\Models\SocialLink;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;

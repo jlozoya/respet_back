@@ -161,24 +161,25 @@ class UserController extends BaseController
                     'extern_id' => 'required',
                 ]);
                 $socialLink = SocialLink::where([
-                    'grant_type' => $request->get('grant_type'), 'extern_id' => $request->get('extern_id')
+                    'grant_type' => $request->get('grant_type'),
+                    'extern_id' => $request->get('extern_id')
                 ])->first();
                 if ($socialLink) {
                     return response()->json('SERVER.USER_ALREADY_EXISTS', 401);
-                } 
+                }
                 $user = $this->notPasswordStore($request);
             }
             $user['permissions_id'] = UserPermissions::create()['id'];
             if ($request->get('media')) {
-                $user['media'] = Media::create([
-                    'url' => $request->get('media')['url'],
-                    'alt' => $request->get('media')['alt'],
-                    'width' => $request->get('media')['width'],
-                    'height' => $request->get('media')['height'],
+                $media = Media::create([
+                    'url' => $request->input('media.url'),
+                    'alt' => $request->input('media.alt')? $request->input('media.alt') : 'media',
+                    'width' => $request->input('media.width'),
+                    'height' => $request->input('media.height'),
                 ]);
                 $user['media_id'] = $media['id'];
+                $user->save();
             }
-            $user->save();
             $sesion = $this->getBearerTokenByUser($user, $client['id'], false);
             $this->sendConfirmEmail($user);
             return response()->json($sesion, 201);
