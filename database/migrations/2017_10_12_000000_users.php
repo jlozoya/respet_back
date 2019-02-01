@@ -22,7 +22,7 @@ class Users extends Migration
             $table->string('email', 60)->index();
             $table->string('password')->nullable();
             $table->integer('media_id')->unsigned()->nullable();
-            $table->string('phone', 15)->nullable();
+            $table->string('phone', 20)->nullable();
             $table->string('lang', 5)->default('es');
             $table->date('birthday')->nullable();
             $table->boolean('confirmed')->default(false);

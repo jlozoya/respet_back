@@ -29,6 +29,7 @@ class PetController extends BaseController
         if ($request->get('search')) {
             $pets = Pet::where('description', 'like', '%' . $request->get('search') . '%')
             ->orWhere('state', 'like', '%' . $request->get('search') . '%')
+            ->orderBy('updated_at', 'DESC')
             ->paginate(5);
             return $this->attachData($pets);
         } else if ($request->get('direction')) {
@@ -60,9 +61,10 @@ class PetController extends BaseController
             return $this->attachData(Pet::select('pets.*')
             ->join('directions', 'pets.direction_id', '=', 'directions.id')
             ->whereRaw($where)
+            ->orderBy('updated_at', 'DESC')
             ->paginate(5));
         } else {
-            return $this->attachData(Pet::paginate(5));
+            return $this->attachData(Pet::orderBy('updated_at', 'DESC')->paginate(5));
         }
     }
 

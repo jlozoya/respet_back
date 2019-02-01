@@ -115,6 +115,7 @@ class UserController extends BaseController
         )->where('name', 'like', '%' . $request->get('search') . '%')
         ->orWhere('email', 'like', '%' . $request->get('search') . '%')
         ->orWhere('phone', 'like', '%' . $request->get('search') . '%')
+        ->orderBy('updated_at', 'DESC')
         ->paginate(15);
         foreach ($users as &$user) {
             if ($user['direction_id']) {

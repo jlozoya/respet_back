@@ -40,6 +40,7 @@ class User extends Model implements CanResetPasswordContract, AuthenticatableCon
         'grant_type',
         'role',
         'direction_id',
+        'permissions_id',
         'created_at',
     ];
     /**
