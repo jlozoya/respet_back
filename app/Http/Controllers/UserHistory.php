@@ -74,6 +74,6 @@ class UserHistory extends BaseController
             $pet['media'] = PetMedia::select('media.*')->where('pet_media.pet_id', $pet['id'])
             ->join('media', 'pet_media.media_id', 'media.id')->get();
         }
-        return response()->json($pets, 200);
+        return $pets;
     }
 }
