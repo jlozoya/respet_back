@@ -19,12 +19,12 @@ use Illuminate\Http\Request;
 class UserHistory extends BaseController
 {
     /**
-     * Recupera el historial de un usuario.
+     * Recupera la información de contacto de un usuario.
      * 
      * @param  \Illuminate\Http\Request $request
-     * @return App\Models\User $user
+     * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, $id) {
+    public function getUserContactInfo(Request $request, $id) {
         $user = User::find($id);
         $permissions = UserPermissions::find($user['permissions_id']);
         $contact;
@@ -48,9 +48,19 @@ class UserHistory extends BaseController
         return response()->json([
             'id' => $user['id'],
             'name' => $user['name'],
-            'contact' => $contact,
-            'history' => $this->attachData(Pet::where('user_id', $id)->orderBy('updated_at', 'DESC')->paginate(5))
+            'contact' => $contact
         ], 200);
+    }
+    /**
+     * Recupera el historial de un usuario.
+     * 
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request, $id) {
+        return response()->json(
+            $this->attachData(Pet::where('user_id', $id)->orderBy('updated_at', 'DESC')->paginate(5))
+        , 200);
     }
     /**
      * Agrega información a la consulta.

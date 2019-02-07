@@ -159,6 +159,7 @@ $router->get('/bulletin/{id}', ['uses' => 'BulletinController@show']);
 $router->post('/pets', ['uses' => 'PetController@index']);
 $router->get('/pet/{id}', ['uses' => 'PetController@show']);
 
+$router->get('/user/contact/{id}', ['uses' => 'UserHistory@getUserContactInfo']);
 $router->get('/user/history/{id}', ['uses' => 'UserHistory@index']);
 
 $router->group(['middleware' => ['auth:api']], function () use ($router) {
