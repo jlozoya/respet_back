@@ -45,12 +45,12 @@ class UserHistory extends BaseController
                 $contact['direction'] = Direction::find($user['direction_id']);
             }
         }
-        return response()->json(['user' => [
+        return response()->json([
             'id' => $user['id'],
             'name' => $user['name'],
             'contact' => $contact,
             'history' => $this->attachData(Pet::where('user_id', $id)->orderBy('updated_at', 'DESC')->get())
-        ]], 200);
+        ], 200);
     }
     /**
      * Agrega información a la consulta.
