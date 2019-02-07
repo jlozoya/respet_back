@@ -49,7 +49,7 @@ class UserHistory extends BaseController
             'id' => $user['id'],
             'name' => $user['name'],
             'contact' => $contact,
-            'history' => $this->attachData(Pet::where('user_id', $id)->orderBy('updated_at', 'DESC')->get())
+            'history' => $this->attachData(Pet::where('user_id', $id)->orderBy('updated_at', 'DESC')->paginate(5))
         ], 200);
     }
     /**
