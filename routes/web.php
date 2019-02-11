@@ -159,10 +159,16 @@ $router->get('/bulletin/{id}', ['uses' => 'BulletinController@show']);
 $router->post('/pets', ['uses' => 'PetController@index']);
 $router->get('/pet/{id}', ['uses' => 'PetController@show']);
 
-$router->get('/user/contact/{id}', ['uses' => 'UserHistory@getUserContactInfo']);
-$router->get('/user/history/{id}', ['uses' => 'UserHistory@index']);
+$router->get('/user/contact/{id}', ['uses' => 'UserContactController@getUserContactById']);
+
+$router->get('/user/history/{id}', ['uses' => 'UserHistoryController@index']);
 
 $router->group(['middleware' => ['auth:api']], function () use ($router) {
+
+    $router->get('/user/permissions', ['uses' => 'UserPermissionsController@getUserPermissions']);
+    $router->put('/user/permissions', ['uses' => 'UserPermissionsController@setUserPermissions']);
+
+    $router->get('/user/contact', ['uses' => 'UserContactController@getUserContact']);
     /**
      * @api {get} /user Obtiene la información del usuario propio.
      * @apiVersion 0.0.1
