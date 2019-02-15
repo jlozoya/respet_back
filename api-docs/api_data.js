@@ -42,9 +42,233 @@ define({ "api": [
         "200": [
           {
             "group": "200",
-            "type": "User",
+            "type": "Object",
             "optional": false,
             "field": "user",
+            "description": "<p>Información del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": false,
+            "field": "user.id",
+            "description": "<p>Id del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": false,
+            "field": "user.name",
+            "description": "<p>Nombre de usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": false,
+            "field": "user.first_name",
+            "description": "<p>Primer nombre del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": false,
+            "field": "user.last_name",
+            "description": "<p>Apellido del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.gender",
+            "description": "<p>Genero del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": false,
+            "field": "user.email",
+            "description": "<p>Email del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": true,
+            "field": "user.media_id",
+            "description": "<p>Id de la imagen del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Object",
+            "optional": true,
+            "field": "user.media",
+            "description": "<p>Información de la imagen del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": true,
+            "field": "user.media.id",
+            "description": "<p>Id de la imagen del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.media.type",
+            "description": "<p>Tipo de la imagen del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.media.url",
+            "description": "<p>Url de la imagen del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.media.alt",
+            "description": "<p>Alt de la imagen del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": true,
+            "field": "user.media.width",
+            "description": "<p>Ancho de la imagen del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": true,
+            "field": "user.media.height",
+            "description": "<p>Alto de la imagen del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.phone",
+            "description": "<p>Telefono del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": false,
+            "field": "user.lang",
+            "description": "<p>Idioma del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.birthday",
+            "description": "<p>Fecha de nacimiento del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Boolean",
+            "optional": true,
+            "field": "user.confirmed",
+            "description": "<p>Si el correo del usuario está confirmado.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": false,
+            "field": "user.grant_type",
+            "description": "<p>Fuente desde la que se registro el usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": false,
+            "field": "user.role",
+            "description": "<p>Rol del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": true,
+            "field": "user.direction_id",
+            "description": "<p>Id de la dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Object",
+            "optional": true,
+            "field": "user.direction",
+            "description": "<p>Dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.direction.id",
+            "description": "<p>Información del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.direction.contry",
+            "description": "<p>País de la dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.direction.administrative_area_level_1",
+            "description": "<p>Estado de la dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.direction.administrative_area_level_2",
+            "description": "<p>Municipio de la dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.direction.route",
+            "description": "<p>Calle de la dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": true,
+            "field": "user.direction.street_number",
+            "description": "<p>Numero de la dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": true,
+            "field": "user.direction.postal_code",
+            "description": "<p>Código postal de la dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": true,
+            "field": "user.direction.lat",
+            "description": "<p>Latitud de la dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": true,
+            "field": "user.direction.lng",
+            "description": "<p>Longitud postal de la dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": false,
+            "field": "user.created_at",
             "description": "<p>Información del usuario.</p>"
           }
         ]
@@ -116,10 +340,234 @@ define({ "api": [
         "200": [
           {
             "group": "200",
-            "type": "User[]",
+            "type": "Object[]",
             "optional": false,
             "field": "user",
-            "description": "<p>Lista de usuarios.</p>"
+            "description": "<p>Información del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": false,
+            "field": "user.id",
+            "description": "<p>Id del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": false,
+            "field": "user.name",
+            "description": "<p>Nombre de usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": false,
+            "field": "user.first_name",
+            "description": "<p>Primer nombre del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": false,
+            "field": "user.last_name",
+            "description": "<p>Apellido del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.gender",
+            "description": "<p>Genero del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": false,
+            "field": "user.email",
+            "description": "<p>Email del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": true,
+            "field": "user.media_id",
+            "description": "<p>Id de la imagen del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Object",
+            "optional": true,
+            "field": "user.media",
+            "description": "<p>Información de la imagen del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": true,
+            "field": "user.media.id",
+            "description": "<p>Id de la imagen del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.media.type",
+            "description": "<p>Tipo de la imagen del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.media.url",
+            "description": "<p>Url de la imagen del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.media.alt",
+            "description": "<p>Alt de la imagen del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": true,
+            "field": "user.media.width",
+            "description": "<p>Ancho de la imagen del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": true,
+            "field": "user.media.height",
+            "description": "<p>Alto de la imagen del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.phone",
+            "description": "<p>Telefono del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": false,
+            "field": "user.lang",
+            "description": "<p>Idioma del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.birthday",
+            "description": "<p>Fecha de nacimiento del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Boolean",
+            "optional": true,
+            "field": "user.confirmed",
+            "description": "<p>Si el correo del usuario está confirmado.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": false,
+            "field": "user.grant_type",
+            "description": "<p>Fuente desde la que se registro el usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": false,
+            "field": "user.role",
+            "description": "<p>Rol del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": true,
+            "field": "user.direction_id",
+            "description": "<p>Id de la dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Object",
+            "optional": true,
+            "field": "user.direction",
+            "description": "<p>Dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.direction.id",
+            "description": "<p>Información del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.direction.contry",
+            "description": "<p>País de la dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.direction.administrative_area_level_1",
+            "description": "<p>Estado de la dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.direction.administrative_area_level_2",
+            "description": "<p>Municipio de la dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.direction.route",
+            "description": "<p>Calle de la dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": true,
+            "field": "user.direction.street_number",
+            "description": "<p>Numero de la dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": true,
+            "field": "user.direction.postal_code",
+            "description": "<p>Código postal de la dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": true,
+            "field": "user.direction.lat",
+            "description": "<p>Latitud de la dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": true,
+            "field": "user.direction.lng",
+            "description": "<p>Longitud postal de la dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": false,
+            "field": "user.created_at",
+            "description": "<p>Información del usuario.</p>"
           }
         ]
       }
@@ -164,10 +612,10 @@ define({ "api": [
           },
           {
             "group": "Parameter",
-            "type": "File",
+            "type": "String",
             "optional": false,
             "field": "file",
-            "description": "<p>Es el archivo a almacenar.</p>"
+            "description": "<p>Es el archivo a almacenar, puede ser de tipo archivo se recomienda usar.</p>"
           },
           {
             "group": "Parameter",
@@ -280,9 +728,114 @@ define({ "api": [
         "201": [
           {
             "group": "201",
-            "type": "User",
+            "type": "Object",
             "optional": false,
             "field": "user",
+            "description": "<p>Información del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "Number",
+            "optional": false,
+            "field": "user.id",
+            "description": "<p>Id del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.name",
+            "description": "<p>Nombre de usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.first_name",
+            "description": "<p>Primer nombre del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.last_name",
+            "description": "<p>Apellido del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": true,
+            "field": "user.gender",
+            "description": "<p>Genero del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.email",
+            "description": "<p>Email del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "Number",
+            "optional": true,
+            "field": "user.media_id",
+            "description": "<p>Id de la imagen del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": true,
+            "field": "user.phone",
+            "description": "<p>Telefono del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.lang",
+            "description": "<p>Idioma del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": true,
+            "field": "user.birthday",
+            "description": "<p>Fecha de nacimiento del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "Boolean",
+            "optional": true,
+            "field": "user.confirmed",
+            "description": "<p>Si el correo del usuario está confirmado.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.grant_type",
+            "description": "<p>Fuente desde la que se registro el usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.role",
+            "description": "<p>Rol del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "Number",
+            "optional": true,
+            "field": "user.direction_id",
+            "description": "<p>Id de la dirección del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.created_at",
             "description": "<p>Información del usuario.</p>"
           }
         ]
@@ -354,7 +907,7 @@ define({ "api": [
         "202": [
           {
             "group": "202",
-            "type": "Direction",
+            "type": "String",
             "optional": false,
             "field": "role",
             "description": "<p>Nuevo rol del usuario.</p>"
@@ -531,13 +1084,6 @@ define({ "api": [
         "Parameter": [
           {
             "group": "Parameter",
-            "type": "Number",
-            "optional": false,
-            "field": "id",
-            "description": "<p>Id del usuario a actualizar.</p>"
-          },
-          {
-            "group": "Parameter",
             "type": "String",
             "optional": false,
             "field": "email",
@@ -547,8 +1093,8 @@ define({ "api": [
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "source",
-            "description": "<p>Nombre de la fuente con la que se inicia sesión 'facebook' | 'google' | 'app'.</p>"
+            "field": "grant_type",
+            "description": "<p>Nombre de la fuente con la que se inicia sesión 'facebook' | 'google' | 'password'.</p>"
           }
         ]
       }
@@ -558,9 +1104,114 @@ define({ "api": [
         "201": [
           {
             "group": "201",
-            "type": "User",
+            "type": "Object",
             "optional": false,
             "field": "user",
+            "description": "<p>Información del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "Number",
+            "optional": false,
+            "field": "user.id",
+            "description": "<p>Id del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.name",
+            "description": "<p>Nombre de usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.first_name",
+            "description": "<p>Primer nombre del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.last_name",
+            "description": "<p>Apellido del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": true,
+            "field": "user.gender",
+            "description": "<p>Genero del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.email",
+            "description": "<p>Email del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "Number",
+            "optional": true,
+            "field": "user.media_id",
+            "description": "<p>Id de la imagen del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": true,
+            "field": "user.phone",
+            "description": "<p>Telefono del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.lang",
+            "description": "<p>Idioma del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": true,
+            "field": "user.birthday",
+            "description": "<p>Fecha de nacimiento del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "Boolean",
+            "optional": true,
+            "field": "user.confirmed",
+            "description": "<p>Si el correo del usuario está confirmado.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.grant_type",
+            "description": "<p>Fuente desde la que se registro el usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.role",
+            "description": "<p>Rol del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "Number",
+            "optional": true,
+            "field": "user.direction_id",
+            "description": "<p>Id de la dirección del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.created_at",
             "description": "<p>Información del usuario.</p>"
           }
         ]
@@ -568,6 +1219,15 @@ define({ "api": [
     },
     "error": {
       "fields": {
+        "404": [
+          {
+            "group": "404",
+            "type": "String",
+            "optional": false,
+            "field": "SERVER.USER_NOT_FOUND",
+            "description": "<p>Cuando no se encontró</p>"
+          }
+        ],
         "406": [
           {
             "group": "406",
@@ -575,13 +1235,6 @@ define({ "api": [
             "optional": false,
             "field": "SERVER.USER_EMAIL_ALREADY_EXISTS",
             "description": "<p>Cuando un usuario ya tiene un correo registrado.</p>"
-          },
-          {
-            "group": "406",
-            "type": "QueryException",
-            "optional": false,
-            "field": "error",
-            "description": "<p>Error al ejecutar la consulta.</p>"
           }
         ]
       }
@@ -697,6 +1350,104 @@ define({ "api": [
             "optional": false,
             "field": "analytics",
             "description": "<p>Objeto con la información de los usuarios en la base de datos.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": false,
+            "field": "analytics.users_number",
+            "description": "<p>Numero de usuarios.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Object",
+            "optional": false,
+            "field": "analytics.gender",
+            "description": "<p>Objeto con la información del genero de los usuarios.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": false,
+            "field": "analytics.gender.male_number",
+            "description": "<p>Numero de hombres.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": false,
+            "field": "analytics.gender.female_number",
+            "description": "<p>Numero de mujeres.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": false,
+            "field": "analytics.supports_number",
+            "description": "<p>Numero de solicitudes de soporte.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Object",
+            "optional": false,
+            "field": "analytics.ages",
+            "description": "<p>Objeto con la información de la edad de los usuarios.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": false,
+            "field": "analytics.ages.children",
+            "description": "<p>Numero de niños.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": false,
+            "field": "analytics.ages.teens",
+            "description": "<p>Numero de adolecentes.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": false,
+            "field": "analytics.ages.young_adults",
+            "description": "<p>Numero de adultos jovenes</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": false,
+            "field": "analytics.ages.unknown",
+            "description": "<p>Numero de usuarios con edad desconocida.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Object",
+            "optional": false,
+            "field": "analytics.grant_types",
+            "description": "<p>Objeto con la información del origen desde donde se registraron los usuarios.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": false,
+            "field": "analytics.grant_types.app",
+            "description": "<p>Numero de ususarios registrados desde la aplicación.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": false,
+            "field": "analytics.grant_types.facebook",
+            "description": "<p>Numero de ususarios registrados desde facebook.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": false,
+            "field": "analytics.grant_types.google",
+            "description": "<p>Numero de ususarios registrados desde google.</p>"
           }
         ]
       }
@@ -747,10 +1498,24 @@ define({ "api": [
         "200": [
           {
             "group": "200",
-            "type": "Object",
+            "type": "Object[]",
             "optional": false,
             "field": "analytics",
             "description": "<p>Objeto con la información de los usuarios en la base de datos.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": false,
+            "field": "analytics.created_at",
+            "description": "<p>Fecha en que se registraron.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": false,
+            "field": "analytics.users",
+            "description": "<p>Numero de ususario.</p>"
           }
         ]
       }
@@ -1193,8 +1958,8 @@ define({ "api": [
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "source",
-            "description": "<p>Nombre de la fuente con la que se inicia sesión 'facebook' | 'google' | 'app'.</p>"
+            "field": "grant_type",
+            "description": "<p>Nombre de la fuente con la que se inicia sesión 'facebook' | 'google' | 'password'.</p>"
           },
           {
             "group": "Parameter",
@@ -1282,8 +2047,8 @@ define({ "api": [
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "source",
-            "description": "<p>Nombre de la fuente con la que se inicia sesión 'facebook' | 'google' | 'app'.</p>"
+            "field": "grant_type",
+            "description": "<p>Nombre de la fuente con la que se inicia sesión 'facebook' | 'google' | 'password'.</p>"
           }
         ]
       }
@@ -1533,7 +2298,7 @@ define({ "api": [
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "source",
+            "field": "grant_type",
             "description": "<p>Es el nombre de la red social a vincular.</p>"
           },
           {
@@ -1558,10 +2323,38 @@ define({ "api": [
         "202": [
           {
             "group": "202",
-            "type": "SocialLink",
+            "type": "Object",
             "optional": false,
             "field": "socialLink",
             "description": "<p>Contenido del registro del nuevo vínculo con la red social.</p>"
+          },
+          {
+            "group": "202",
+            "type": "Number",
+            "optional": false,
+            "field": "socialLink.id",
+            "description": "<p>Id del nuevo registro.</p>"
+          },
+          {
+            "group": "202",
+            "type": "Number",
+            "optional": false,
+            "field": "socialLink.user_id",
+            "description": "<p>Id del usuario.</p>"
+          },
+          {
+            "group": "202",
+            "type": "Number",
+            "optional": false,
+            "field": "socialLink.extern_id",
+            "description": "<p>Id del usuario en la red social correspondiente.</p>"
+          },
+          {
+            "group": "202",
+            "type": "String",
+            "optional": false,
+            "field": "socialLink.grant_type",
+            "description": "<p>Fuente del vinculo con la red social.</p>"
           }
         ]
       }
@@ -1670,6 +2463,60 @@ define({ "api": [
   {
     "type": "delete",
     "url": "/user",
+    "title": "Eliminar una cuenta de usuario propia.",
+    "version": "0.0.1",
+    "name": "DeleteUser",
+    "group": "User",
+    "permission": [
+      {
+        "name": "user"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Auth": [
+          {
+            "group": "Auth",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>Token de autorización.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "202": [
+          {
+            "group": "202",
+            "type": "String",
+            "optional": false,
+            "field": "SERVER.USER_DELETED",
+            "description": "<p>Cuando se eliminó un usuario correctamente.</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "404": [
+          {
+            "group": "404",
+            "type": "String",
+            "optional": false,
+            "field": "SERVER.USER_NOT_FOUND",
+            "description": "<p>Cuando no se encontró la cuenta de usuario.</p>"
+          }
+        ]
+      }
+    },
+    "filename": "./routes/web.php",
+    "groupTitle": "User"
+  },
+  {
+    "type": "delete",
+    "url": "/user",
     "title": "Eliminar una cuenta de usuario por su id.",
     "version": "0.0.1",
     "name": "DeleteUser",
@@ -1735,60 +2582,6 @@ define({ "api": [
     "groupTitle": "User"
   },
   {
-    "type": "delete",
-    "url": "/user",
-    "title": "Eliminar una cuenta de usuario propia.",
-    "version": "0.0.1",
-    "name": "DeleteUser",
-    "group": "User",
-    "permission": [
-      {
-        "name": "user"
-      }
-    ],
-    "header": {
-      "fields": {
-        "Auth": [
-          {
-            "group": "Auth",
-            "type": "String",
-            "optional": false,
-            "field": "Authorization",
-            "description": "<p>Token de autorización.</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "202": [
-          {
-            "group": "202",
-            "type": "String",
-            "optional": false,
-            "field": "SERVER.USER_DELETED",
-            "description": "<p>Cuando se eliminó un usuario correctamente.</p>"
-          }
-        ]
-      }
-    },
-    "error": {
-      "fields": {
-        "404": [
-          {
-            "group": "404",
-            "type": "String",
-            "optional": false,
-            "field": "SERVER.USER_NOT_FOUND",
-            "description": "<p>Cuando no se encontró la cuenta de usuario.</p>"
-          }
-        ]
-      }
-    },
-    "filename": "./routes/web.php",
-    "groupTitle": "User"
-  },
-  {
     "type": "post",
     "url": "/oauth/token",
     "title": "Solicita una sesión al servidor.",
@@ -1805,10 +2598,24 @@ define({ "api": [
         "Parameter": [
           {
             "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "client_id",
+            "description": "<p>Id del cliente con el que se desea acceder.</p>"
+          },
+          {
+            "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "source",
-            "description": "<p>Nombre de la fuente con la que se inicia sesión 'facebook' | 'google' | 'app'.</p>"
+            "field": "client_secret",
+            "description": "<p>Contraseña del cliente con el que se desea acceder.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "grant_type",
+            "description": "<p>Nombre de la fuente con la que se inicia sesión 'facebook' | 'google' | 'password'.</p>"
           },
           {
             "group": "Parameter",
@@ -1883,7 +2690,7 @@ define({ "api": [
         ]
       }
     },
-    "filename": "./routes/web.php",
+    "filename": "./routes/oauth.php",
     "groupTitle": "User"
   },
   {
@@ -1948,19 +2755,6 @@ define({ "api": [
             "optional": false,
             "field": "Authorization",
             "description": "<p>Token de autorización.</p>"
-          }
-        ]
-      }
-    },
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "Number",
-            "optional": false,
-            "field": "id",
-            "description": "<p>Id del usuario.</p>"
           }
         ]
       }
@@ -2125,8 +2919,8 @@ define({ "api": [
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "source",
-            "description": "<p>Fuente con la que se crea la cuenta 'facebook' | 'google' | 'app'.</p>"
+            "field": "grant_type",
+            "description": "<p>Fuente con la que se crea la cuenta 'facebook' | 'google' | 'password'.</p>"
           },
           {
             "group": "Parameter",
@@ -2275,9 +3069,114 @@ define({ "api": [
         "201": [
           {
             "group": "201",
-            "type": "User",
+            "type": "Object",
             "optional": false,
             "field": "user",
+            "description": "<p>Información del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "Number",
+            "optional": false,
+            "field": "user.id",
+            "description": "<p>Id del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.name",
+            "description": "<p>Nombre de usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.first_name",
+            "description": "<p>Primer nombre del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.last_name",
+            "description": "<p>Apellido del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": true,
+            "field": "user.gender",
+            "description": "<p>Genero del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.email",
+            "description": "<p>Email del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "Number",
+            "optional": true,
+            "field": "user.media_id",
+            "description": "<p>Id de la imagen del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": true,
+            "field": "user.phone",
+            "description": "<p>Telefono del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.lang",
+            "description": "<p>Idioma del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": true,
+            "field": "user.birthday",
+            "description": "<p>Fecha de nacimiento del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "Boolean",
+            "optional": true,
+            "field": "user.confirmed",
+            "description": "<p>Si el correo del usuario está confirmado.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.grant_type",
+            "description": "<p>Fuente desde la que se registro el usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.role",
+            "description": "<p>Rol del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "Number",
+            "optional": true,
+            "field": "user.direction_id",
+            "description": "<p>Id de la dirección del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.created_at",
             "description": "<p>Información del usuario.</p>"
           }
         ]
@@ -2391,10 +3290,73 @@ define({ "api": [
         "201": [
           {
             "group": "201",
-            "type": "Direction",
-            "optional": false,
-            "field": "userDirection",
-            "description": "<p>Información de la dirección del usuario.</p>"
+            "type": "Object",
+            "optional": true,
+            "field": "direction",
+            "description": "<p>userDirección del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": true,
+            "field": "direction.id",
+            "description": "<p>Información del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": true,
+            "field": "direction.contry",
+            "description": "<p>País de la dirección del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": true,
+            "field": "direction.administrative_area_level_1",
+            "description": "<p>Estado de la dirección del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": true,
+            "field": "direction.administrative_area_level_2",
+            "description": "<p>Municipio de la dirección del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": true,
+            "field": "direction.route",
+            "description": "<p>Calle de la dirección del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "Number",
+            "optional": true,
+            "field": "direction.street_number",
+            "description": "<p>Numero de la dirección del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "Number",
+            "optional": true,
+            "field": "direction.postal_code",
+            "description": "<p>Código postal de la dirección del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "Number",
+            "optional": true,
+            "field": "direction.lat",
+            "description": "<p>Latitud de la dirección del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "Number",
+            "optional": true,
+            "field": "direction.lng",
+            "description": "<p>Longitud postal de la dirección del usuario.</p>"
           }
         ]
       }
@@ -2454,8 +3416,8 @@ define({ "api": [
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "source",
-            "description": "<p>Nombre de la fuente con la que se inicia sesión 'facebook' | 'google' | 'app'.</p>"
+            "field": "grant_type",
+            "description": "<p>Nombre de la fuente con la que se inicia sesión 'facebook' | 'google' | 'password'.</p>"
           }
         ]
       }
@@ -2465,9 +3427,114 @@ define({ "api": [
         "201": [
           {
             "group": "201",
-            "type": "User",
+            "type": "Object",
             "optional": false,
             "field": "user",
+            "description": "<p>Información del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "Number",
+            "optional": false,
+            "field": "user.id",
+            "description": "<p>Id del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.name",
+            "description": "<p>Nombre de usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.first_name",
+            "description": "<p>Primer nombre del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.last_name",
+            "description": "<p>Apellido del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": true,
+            "field": "user.gender",
+            "description": "<p>Genero del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.email",
+            "description": "<p>Email del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "Number",
+            "optional": true,
+            "field": "user.media_id",
+            "description": "<p>Id de la imagen del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": true,
+            "field": "user.phone",
+            "description": "<p>Telefono del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.lang",
+            "description": "<p>Idioma del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": true,
+            "field": "user.birthday",
+            "description": "<p>Fecha de nacimiento del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "Boolean",
+            "optional": true,
+            "field": "user.confirmed",
+            "description": "<p>Si el correo del usuario está confirmado.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.grant_type",
+            "description": "<p>Fuente desde la que se registro el usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.role",
+            "description": "<p>Rol del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "Number",
+            "optional": true,
+            "field": "user.direction_id",
+            "description": "<p>Id de la dirección del usuario.</p>"
+          },
+          {
+            "group": "201",
+            "type": "String",
+            "optional": false,
+            "field": "user.created_at",
             "description": "<p>Información del usuario.</p>"
           }
         ]
@@ -2593,9 +3660,233 @@ define({ "api": [
         "200": [
           {
             "group": "200",
-            "type": "User",
+            "type": "Object",
             "optional": false,
             "field": "user",
+            "description": "<p>Información del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": false,
+            "field": "user.id",
+            "description": "<p>Id del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": false,
+            "field": "user.name",
+            "description": "<p>Nombre de usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": false,
+            "field": "user.first_name",
+            "description": "<p>Primer nombre del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": false,
+            "field": "user.last_name",
+            "description": "<p>Apellido del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.gender",
+            "description": "<p>Genero del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": false,
+            "field": "user.email",
+            "description": "<p>Email del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": true,
+            "field": "user.media_id",
+            "description": "<p>Id de la imagen del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Object",
+            "optional": true,
+            "field": "user.media",
+            "description": "<p>Información de la imagen del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": true,
+            "field": "user.media.id",
+            "description": "<p>Id de la imagen del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.media.type",
+            "description": "<p>Tipo de la imagen del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.media.url",
+            "description": "<p>Url de la imagen del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.media.alt",
+            "description": "<p>Alt de la imagen del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": true,
+            "field": "user.media.width",
+            "description": "<p>Ancho de la imagen del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": true,
+            "field": "user.media.height",
+            "description": "<p>Alto de la imagen del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.phone",
+            "description": "<p>Telefono del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": false,
+            "field": "user.lang",
+            "description": "<p>Idioma del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.birthday",
+            "description": "<p>Fecha de nacimiento del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Boolean",
+            "optional": true,
+            "field": "user.confirmed",
+            "description": "<p>Si el correo del usuario está confirmado.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": false,
+            "field": "user.grant_type",
+            "description": "<p>Fuente desde la que se registro el usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": false,
+            "field": "user.role",
+            "description": "<p>Rol del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": true,
+            "field": "user.direction_id",
+            "description": "<p>Id de la dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Object",
+            "optional": true,
+            "field": "user.direction",
+            "description": "<p>Dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.direction.id",
+            "description": "<p>Información del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.direction.contry",
+            "description": "<p>País de la dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.direction.administrative_area_level_1",
+            "description": "<p>Estado de la dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.direction.administrative_area_level_2",
+            "description": "<p>Municipio de la dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": true,
+            "field": "user.direction.route",
+            "description": "<p>Calle de la dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": true,
+            "field": "user.direction.street_number",
+            "description": "<p>Numero de la dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": true,
+            "field": "user.direction.postal_code",
+            "description": "<p>Código postal de la dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": true,
+            "field": "user.direction.lat",
+            "description": "<p>Latitud de la dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "Number",
+            "optional": true,
+            "field": "user.direction.lng",
+            "description": "<p>Longitud postal de la dirección del usuario.</p>"
+          },
+          {
+            "group": "200",
+            "type": "String",
+            "optional": false,
+            "field": "user.created_at",
             "description": "<p>Información del usuario.</p>"
           }
         ]
