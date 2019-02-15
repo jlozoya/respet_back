@@ -223,7 +223,7 @@ class PetController extends BaseController
                 $pet['state'] = $request->get('state');
             }
             $direction;
-            if ($request->get('direction_id')) {
+            if ($pet['direction_id']) {
                 $this->validate($request, ['direction_id' => 'numeric',]);
                 $pet['direction_id'] = $request->get('direction_id');
                 if ($request->get('direction')) {

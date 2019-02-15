@@ -22,8 +22,8 @@ $router->get('/', function () use ($router) {
  * @apiParam {String} first_name Primer nombre.
  * @apiParam {String} last_name Apellido.
  * @apiParam {String} email Email del nuevo usuario.
- * @apiParam {String} source Fuente con la que se crea
- * la cuenta 'facebook' | 'google' | 'app'.
+ * @apiParam {String} grant_type Fuente con la que se crea
+ * la cuenta 'facebook' | 'google' | 'password'.
  * @apiParam {String} [gender] Genero del usuario 'male' | 'female' | 'other'.
  * @apiParam {String} [lang] Idioma del usuario.
  * @apiParam {Media} [media] Imagen del nuevo usuario a
@@ -48,8 +48,8 @@ $router->post('/user', ['uses' => 'UserController@store']);
  * @apiGroup Password
  * @apiPermission none
  *
- * @apiParam {String} source Nombre de la fuente con la que se
- * inicia sesión 'facebook' | 'google' | 'app'.
+ * @apiParam {String} grant_type Nombre de la fuente con la que se
+ * inicia sesión 'facebook' | 'google' | 'password'.
  * @apiParam {String} email Email del usuario.
  *
  * @apiSuccess (200) {String} SERVER.EMAIL_READY Confirmación
@@ -86,8 +86,8 @@ $router->get('/password/reset/{token}', ['uses' => 'PasswordController@showReset
  * @apiParam {String} password_confirmation Confirmación de la
  * nueva contraseña el usuario.
  * @apiParam {String} token Token para resetear la contraseña.
- * @apiParam {String} source Nombre de la fuente con la que se
- * inicia sesión 'facebook' | 'google' | 'app'.
+ * @apiParam {String} grant_type Nombre de la fuente con la que se
+ * inicia sesión 'facebook' | 'google' | 'password'.
  *
  * @apiSuccess (200) {Redirect} redirect Redirección a la página principal.
  * 
@@ -202,7 +202,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * @apiSuccess (200) {String} user.lang Idioma del usuario.
      * @apiSuccess (200) {String} [user.birthday] Fecha de nacimiento del usuario.
      * @apiSuccess (200) {Boolean} [user.confirmed] Si el correo del usuario está confirmado.
-     * @apiSuccess (200) {String} user.source Fuente desde la que se registro el usuario.
+     * @apiSuccess (200) {String} user.grant_type Fuente desde la que se registro el usuario.
      * @apiSuccess (200) {String} user.role Rol del usuario.
      * @apiSuccess (200) {Number} [user.direction_id] Id de la dirección del usuario.
      * @apiSuccess (200) {Object} [user.direction] Dirección del usuario.
@@ -230,8 +230,6 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * @apiPermission user
      * 
      * @apiHeader (Auth) {String} Authorization Token de autorización.
-     *
-     * @apiParam {Number} id Id del usuario.
      * 
      * @apiSuccess (200) {String} SERVER.USER_ALREADY_CONFIRMED En caso
      * de que el email del usuario ya este confirmado.
@@ -269,7 +267,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * 
      * @apiHeader (Auth) {String} Authorization Token de autorización.
      *
-     * @apiParam {String} source Es el nombre de la red social a vincular.
+     * @apiParam {String} grant_type Es el nombre de la red social a vincular.
      * @apiParam {String} extern_id Es la id del usuario correspondiente
      * a el usuario en dicha red social.
      * @apiParam {String} accessToken Token emitido por la red social.
@@ -279,7 +277,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * @apiSuccess (202) {Number} socialLink.id Id del nuevo registro.
      * @apiSuccess (202) {Number} socialLink.user_id Id del usuario.
      * @apiSuccess (202) {Number} socialLink.extern_id Id del usuario en la red social correspondiente.
-     * @apiSuccess (202) {String} socialLink.source Fuente del vinculo con la red social.
+     * @apiSuccess (202) {String} socialLink.grant_type Fuente del vinculo con la red social.
      * 
      * @apiError (401) {String} SERVER.USER_SOCIAL_ALREADY_USED Cuando ya
      * está en uso ese vínculo por otro usuario.
@@ -315,7 +313,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * @apiSuccess (201) {String} user.lang Idioma del usuario.
      * @apiSuccess (201) {String} [user.birthday] Fecha de nacimiento del usuario.
      * @apiSuccess (201) {Boolean} [user.confirmed] Si el correo del usuario está confirmado.
-     * @apiSuccess (201) {String} user.source Fuente desde la que se registro el usuario.
+     * @apiSuccess (201) {String} user.grant_type Fuente desde la que se registro el usuario.
      * @apiSuccess (201) {String} user.role Rol del usuario.
      * @apiSuccess (201) {Number} [user.direction_id] Id de la dirección del usuario.
      * @apiSuccess (201) {String} user.created_at Información del usuario.
@@ -333,8 +331,8 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * @apiHeader (Auth) {String} Authorization Token de autorización.
      *
      * @apiParam {String} email Nuevo email del usuario.
-     * @apiParam {String} source Nombre de la fuente con la que se inicia sesión
-     * 'facebook' | 'google' | 'app'.
+     * @apiParam {String} grant_type Nombre de la fuente con la que se inicia sesión
+     * 'facebook' | 'google' | 'password'.
      * 
      * @apiSuccess (201) {Object} user Información del usuario.
      * @apiSuccess (201) {Number} user.id Id del usuario.
@@ -348,7 +346,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * @apiSuccess (201) {String} user.lang Idioma del usuario.
      * @apiSuccess (201) {String} [user.birthday] Fecha de nacimiento del usuario.
      * @apiSuccess (201) {Boolean} [user.confirmed] Si el correo del usuario está confirmado.
-     * @apiSuccess (201) {String} user.source Fuente desde la que se registro el usuario.
+     * @apiSuccess (201) {String} user.grant_type Fuente desde la que se registro el usuario.
      * @apiSuccess (201) {String} user.role Rol del usuario.
      * @apiSuccess (201) {Number} [user.direction_id] Id de la dirección del usuario.
      * @apiSuccess (201) {String} user.created_at Información del usuario.
@@ -517,7 +515,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * @apiSuccess (200) {String} user.lang Idioma del usuario.
          * @apiSuccess (200) {String} [user.birthday] Fecha de nacimiento del usuario.
          * @apiSuccess (200) {Boolean} [user.confirmed] Si el correo del usuario está confirmado.
-         * @apiSuccess (200) {String} user.source Fuente desde la que se registro el usuario.
+         * @apiSuccess (200) {String} user.grant_type Fuente desde la que se registro el usuario.
          * @apiSuccess (200) {String} user.role Rol del usuario.
          * @apiSuccess (200) {Number} [user.direction_id] Id de la dirección del usuario.
          * @apiSuccess (200) {Object} [user.direction] Dirección del usuario.
@@ -567,7 +565,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * @apiSuccess (200) {String} user.lang Idioma del usuario.
          * @apiSuccess (200) {String} [user.birthday] Fecha de nacimiento del usuario.
          * @apiSuccess (200) {Boolean} [user.confirmed] Si el correo del usuario está confirmado.
-         * @apiSuccess (200) {String} user.source Fuente desde la que se registro el usuario.
+         * @apiSuccess (200) {String} user.grant_type Fuente desde la que se registro el usuario.
          * @apiSuccess (200) {String} user.role Rol del usuario.
          * @apiSuccess (200) {Number} [user.direction_id] Id de la dirección del usuario.
          * @apiSuccess (200) {Object} [user.direction] Dirección del usuario.
@@ -611,7 +609,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * @apiSuccess (201) {String} user.lang Idioma del usuario.
          * @apiSuccess (201) {String} [user.birthday] Fecha de nacimiento del usuario.
          * @apiSuccess (201) {Boolean} [user.confirmed] Si el correo del usuario está confirmado.
-         * @apiSuccess (201) {String} user.source Fuente desde la que se registro el usuario.
+         * @apiSuccess (201) {String} user.grant_type Fuente desde la que se registro el usuario.
          * @apiSuccess (201) {String} user.role Rol del usuario.
          * @apiSuccess (201) {Number} [user.direction_id] Id de la dirección del usuario.
          * @apiSuccess (201) {String} user.created_at Información del usuario.
@@ -647,10 +645,9 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * 
          * @apiHeader (Auth) {String} Authorization Token de autorización.
          *
-         * @apiParam {Number} id Id del usuario a actualizar.
          * @apiParam {String} email Nuevo email del usuario.
-         * @apiParam {String} source Nombre de la fuente con la que se inicia sesión
-         * 'facebook' | 'google' | 'app'.
+         * @apiParam {String} grant_type Nombre de la fuente con la que se inicia sesión
+         * 'facebook' | 'google' | 'password'.
          * 
          * @apiSuccess (201) {Object} user Información del usuario.
          * @apiSuccess (201) {Number} user.id Id del usuario.
@@ -664,14 +661,14 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * @apiSuccess (201) {String} user.lang Idioma del usuario.
          * @apiSuccess (201) {String} [user.birthday] Fecha de nacimiento del usuario.
          * @apiSuccess (201) {Boolean} [user.confirmed] Si el correo del usuario está confirmado.
-         * @apiSuccess (201) {String} user.source Fuente desde la que se registro el usuario.
+         * @apiSuccess (201) {String} user.grant_type Fuente desde la que se registro el usuario.
          * @apiSuccess (201) {String} user.role Rol del usuario.
          * @apiSuccess (201) {Number} [user.direction_id] Id de la dirección del usuario.
          * @apiSuccess (201) {String} user.created_at Información del usuario.
          * 
          * @apiError (406) {String} SERVER.USER_EMAIL_ALREADY_EXISTS Cuando un usuario
          * ya tiene un correo registrado.
-         * @apiError (406) {QueryException} error Error al ejecutar la consulta.
+         * @apiError (404) {String} SERVER.USER_NOT_FOUND Cuando no se encontró
          */
         $router->put('/user/email/{id}', ['uses' => 'UserController@updateUserEmailById']);
         /**
@@ -842,11 +839,11 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * @apiSuccess (200) {Number} analytics.ages.teens Numero de adolecentes.
          * @apiSuccess (200) {Number} analytics.ages.young_adults Numero de adultos jovenes
          * @apiSuccess (200) {Number} analytics.ages.unknown Numero de usuarios con edad desconocida.
-         * @apiSuccess (200) {Object} analytics.sources Objeto con la información
+         * @apiSuccess (200) {Object} analytics.grant_types Objeto con la información
          * del origen desde donde se registraron los usuarios.
-         * @apiSuccess (200) {Number} analytics.sources.app Numero de ususarios registrados desde la aplicación.
-         * @apiSuccess (200) {Number} analytics.sources.facebook Numero de ususarios registrados desde facebook.
-         * @apiSuccess (200) {Number} analytics.sources.google Numero de ususarios registrados desde google.
+         * @apiSuccess (200) {Number} analytics.grant_types.app Numero de ususarios registrados desde la aplicación.
+         * @apiSuccess (200) {Number} analytics.grant_types.facebook Numero de ususarios registrados desde facebook.
+         * @apiSuccess (200) {Number} analytics.grant_types.google Numero de ususarios registrados desde google.
          */
         $router->get('/analytics', ['uses' => 'AnalyticController@getBasicAnalytics']);
         /**

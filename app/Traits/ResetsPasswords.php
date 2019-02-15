@@ -10,16 +10,14 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
 
-trait ResetsPasswords
-{
+trait ResetsPasswords {
     /**
      * Enviar un enlace de reinicio al usuario dado.
      *
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function postEmail(Request $request)
-    {
+    public function postEmail(Request $request) {
         $this->validate($request, [
             'email' => 'required|email',
             'source' => 'required'
@@ -56,8 +54,7 @@ trait ResetsPasswords
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    protected function getSendResetLinkEmailCredentials(Request $request)
-    {
+    protected function getSendResetLinkEmailCredentials(Request $request) {
         return $request->only('email');
     }
     /**
@@ -66,8 +63,7 @@ trait ResetsPasswords
      * @param string $response
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    protected function getSendResetLinkEmailSuccessResponse()
-    {
+    protected function getSendResetLinkEmailSuccessResponse() {
         return response()->json('SERVER.EMAIL_READY', 200);
     }
     /**
@@ -76,8 +72,7 @@ trait ResetsPasswords
      * @param string $response
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    protected function getSendResetLinkEmailFailureResponse()
-    {
+    protected function getSendResetLinkEmailFailureResponse() {
         return response()->json('SERVER.WRONG_USER', 404);
     }
     /**
@@ -87,8 +82,7 @@ trait ResetsPasswords
      * @param \Illuminate\Http\Request $request
      * @return Response
      */
-    public function showResetForm($token, Request $request)
-    {
+    public function showResetForm($token, Request $request) {
         $source = $request->get('source');
         $email = $request->get('email');
         return view('auth.emails.password')->with(compact('token', 'email', 'source'));
@@ -99,8 +93,7 @@ trait ResetsPasswords
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function postReset(Request $request)
-    {
+    public function postReset(Request $request) {
         $this->validate($request, $this->getResetValidationRules());
         $credentials = $request->only(
             'email', 'password', 'password_confirmation', 'token', 'source'
@@ -121,8 +114,7 @@ trait ResetsPasswords
      *
      * @return array
      */
-    protected function getResetValidationRules()
-    {
+    protected function getResetValidationRules() {
         return [
             'token' => 'required',
             'email' => 'required|email',
@@ -136,8 +128,7 @@ trait ResetsPasswords
      * @param  string  $password
      * @return void
      */
-    protected function resetPassword($user, $password)
-    {
+    protected function resetPassword($user, $password) {
         $user->password = Hash::make($password);
         $user->save();
         return response()->json('SERVER.SUCCESS', 200);
@@ -148,8 +139,7 @@ trait ResetsPasswords
      * @param  string  $response
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    protected function getResetSuccessResponse($response)
-    {
+    protected function getResetSuccessResponse($response) {
         return response()->json('SERVER.RESET_SUCCESS', 200);
     }
     /**
@@ -159,8 +149,7 @@ trait ResetsPasswords
      * @param  string  $response
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    protected function getResetFailureResponse(Request $request, $response)
-    {
+    protected function getResetFailureResponse(Request $request, $response) {
         return response()->json('SERVER.RESET_FAIL', 400);
     }
     /**
@@ -168,8 +157,7 @@ trait ResetsPasswords
      *
      * @return string|null
      */
-    public function getBroker()
-    {
+    public function getBroker() {
         return property_exists($this, 'broker') ? $this->broker : null;
     }
 }

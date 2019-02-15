@@ -201,7 +201,7 @@ class UserController extends BaseController
         $this->validate($request, [
             'password' => 'required|min:6|max:60'
         ]);
-        return User::create([
+        $user = User::create([
             'name' => $request->get('name'),
             'first_name' => $request->get('first_name'),
             'last_name' => $request->get('last_name'),
@@ -211,6 +211,22 @@ class UserController extends BaseController
             'lang' => $request->get('lang'),
             'grant_type' => $request->get('grant_type'),
         ]);
+        if ($request->get('direction')) {
+            $direction = Direction::create([
+                'country' => $request->input('direction.country'),
+                'administrative_area_level_1' => $request->input('direction.administrative_area_level_1'),
+                'administrative_area_level_2' => $request->input('direction.administrative_area_level_2'),
+                'route' => $request->input('direction.route'),
+                'street_number' => $request->input('direction.street_number'),
+                'postal_code' => $request->input('direction.postal_code'),
+                'lat' => $request->input('direction.lat'),
+                'lng' => $request->input('direction.lng'),
+            ]);
+            $user['direction_id'] = $direction['id'];
+            $user->save();
+            $user['direction'] = $direction;
+        }
+        return $user;
     }
     /**
      * Guarda un usuario sin contraseña.
@@ -242,10 +258,7 @@ class UserController extends BaseController
      * @return \Illuminate\Http\Response
      */
     public function reSendConfirmEmail(Request $request) {
-        $this->validate($request, [
-            'id' => 'required'
-        ]);
-        $user = User::find($request->get('id'));
+        $user = $request->user();
         if ($user) {
             if (!$user['confirmed']) {
                 return $this->sendConfirmEmail($user);
@@ -261,7 +274,7 @@ class UserController extends BaseController
      * @param $user
      * @return \Illuminate\Http\Response
      */
-    public function sendConfirmEmail($user) {
+    public function sendConfirmEmail($user, $json = true) {
         $emailConfirmData = EmailConfirm::where('user_id', $user['id'])->first();
         if ($emailConfirmData == '') {
             $emailConfirmData = EmailConfirm::create([
@@ -275,10 +288,14 @@ class UserController extends BaseController
         }
         $confirmationLink = route('user.confirm.email') . '?token=' . $emailConfirmData['token'];
         $response = $user->notify(new RegistrationConfirmation($confirmationLink, $user['lang']));
-        if ($response == '') {
-            return response()->json('SERVER.EMAIL_SEND', 200);
+        if ($json) {
+            if ($response == '') {
+                return response()->json('SERVER.EMAIL_SEND', 200);
+            } else {
+                return response()->json('SERVER.EMAIL_FAIL', 400);
+            }
         } else {
-            return response()->json('SERVER.EMAIL_FAIL', 400);
+            return $response;
         }
     }
     /**
@@ -316,75 +333,72 @@ class UserController extends BaseController
      * @return \Illuminate\Http\Response
      */
     public function createSocialLink(Request $request) {
-        try {
-            $user = $request->user();
-            $this->validate($request, [
-                'grant_type' => 'required',
-                'extern_id' => 'required',
-                'accessToken' => 'required'
-            ]);
-            switch ($request->get('grant_type')) {
-                case 'google': {
-                    $client = new \GuzzleHttp\Client();
-                    try {
-                        $response = $client->get('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token='
-                        . $request->get('accessToken'))->getBody()->getContents();
-                        $response_decoded = json_decode($response, true);
-                        if ($response_decoded['user_id'] == $request->get('extern_id')) {
-                            $socialLink = SocialLink::where([
+        $user = $request->user();
+        $this->validate($request, [
+            'grant_type' => 'required',
+            'extern_id' => 'required',
+            'accessToken' => 'required'
+        ]);
+        switch ($request->get('grant_type')) {
+            case 'google': {
+                $client = new \GuzzleHttp\Client();
+                try {
+                    $response = $client->get('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token='
+                    . $request->get('accessToken'))->getBody()->getContents();
+                    $response_decoded = json_decode($response, true);
+                    if ($response_decoded['user_id'] == $request->get('extern_id')) {
+                        $socialLink = SocialLink::where([
+                            'extern_id' => $request->get('extern_id'),
+                            'grant_type' => $request->get('grant_type')
+                        ])->first();
+                        if (!$socialLink && $user['grant_type'] != $request->get('grant_type')) {
+                            $socialLink = SocialLink::create([
+                                'user_id' => $user['id'],
                                 'extern_id' => $request->get('extern_id'),
                                 'grant_type' => $request->get('grant_type')
-                            ])->first();
-                            if (!$socialLink && $user['grant_type'] != $request->get('grant_type')) {
-                                $socialLink = SocialLink::create([
-                                    'user_id' => $user['id'],
-                                    'extern_id' => $request->get('extern_id'),
-                                    'grant_type' => $request->get('grant_type')
-                                ]);
-                                return response()->json($socialLink, 202);
-                            } else {
-                                return response()->json('SERVER.USER_SOCIAL_ALREADY_USED', 401);
-                            }
+                            ]);
+                            return response()->json($socialLink, 202);
                         } else {
-                            return response()->json('SERVER.WRONG_USER', 404);
+                            return response()->json('SERVER.USER_SOCIAL_ALREADY_USED', 401);
                         }
-                    } catch (\GuzzleHttp\Exception\ClientException $error) {
-                        return response()->json('SERVER.WRONG_TOKEN', 406);
+                    } else {
+                        return response()->json('SERVER.WRONG_USER', 404);
                     }
+                } catch (\GuzzleHttp\Exception\ClientException $error) {
+                    return response()->json('SERVER.WRONG_TOKEN', 406);
                 }
-                break;
-                case 'facebook': {
-                    $client = new \GuzzleHttp\Client();
-                    try {
-                        $response = $client->get('https://graph.facebook.com/me?fields=id&access_token='
-                        . $request->get('accessToken'))->getBody()->getContents();
-                        $response_decoded = json_decode($response, true);
-                        if ($response_decoded['id'] == $request->get('extern_id')) {
-                            $socialLink = SocialLink::where([
+            } break;
+            case 'facebook': {
+                $client = new \GuzzleHttp\Client();
+                try {
+                    $response = $client->get('https://graph.facebook.com/me?fields=id&access_token='
+                    . $request->get('accessToken'))->getBody()->getContents();
+                    $response_decoded = json_decode($response, true);
+                    if ($response_decoded['id'] == $request->get('extern_id')) {
+                        $socialLink = SocialLink::where([
+                            'extern_id' => $request->get('extern_id'),
+                            'grant_type' => $request->get('grant_type')
+                        ])->first();
+                        if (!$socialLink && $user['grant_type'] != $request->get('grant_type')) {
+                            $socialLink = SocialLink::create([
+                                'user_id' => $user['id'],
                                 'extern_id' => $request->get('extern_id'),
                                 'grant_type' => $request->get('grant_type')
-                            ])->first();
-                            if (!$socialLink && $user['grant_type'] != $request->get('grant_type')) {
-                                $socialLink = SocialLink::create([
-                                    'user_id' => $user['id'],
-                                    'extern_id' => $request->get('extern_id'),
-                                    'grant_type' => $request->get('grant_type')
-                                ]);
-                                return response()->json($socialLink, 202);
-                            } else {
-                                return response()->json('SERVER.USER_SOCIAL_ALREADY_USED', 404);
-                            }
+                            ]);
+                            return response()->json($socialLink, 202);
                         } else {
-                            return response()->json('SERVER.WRONG_USER', 404);
+                            return response()->json('SERVER.USER_SOCIAL_ALREADY_USED', 404);
                         }
-                    } catch (\GuzzleHttp\Exception\ClientException $error) {
-                        return response()->json('SERVER.WRONG_TOKEN', 406);
+                    } else {
+                        return response()->json('SERVER.WRONG_USER', 404);
                     }
+                } catch (\GuzzleHttp\Exception\ClientException $error) {
+                    return response()->json('SERVER.WRONG_TOKEN', 406);
                 }
-                break;
-            }
-        } catch (ModelNotFoundException $error) {
-            return response()->json('SERVER.WRONG_USER', 404);
+            } break;
+            default: {
+                return response()->json('SERVER.GRANT_TYPE_NOT_FOUND', 404);
+            } break;
         }
     }
     /**
@@ -512,28 +526,26 @@ class UserController extends BaseController
      * @return \Illuminate\Http\Response
      */
     public function updateUserEmail(Request $request) {
-        try {
-            $user = $request->user();
-            if ($request->get('email')) {
-                $this->validate($request, [
-                    'email' => 'required|email',
-                    'grant_type' => 'required',
-                ]);
-                $validate = User::where([
-                    'email' => $request->get('email'),
-                    'grant_type' => $request->get('grant_type')
-                ])->first();
-                if ($validate) {
-                    return response()->json('SERVER.USER_EMAIL_ALREADY_EXISTS', 406);
-                } else {
-                    $user['email'] = $request->get('email');
-                    $user->save();
-                }
+        $this->validate($request, [
+            'email' => 'required|email',
+            'grant_type' => 'required',
+        ]);
+        $user = $request->user();
+        if ($user) {
+            if (!$validate = User::where([
+                'email' => $request->get('email'),
+                'grant_type' => $request->get('grant_type')
+            ])->first()) {
+                $user['email'] = $request->get('email');
+                $user['confirmed'] = false;
+                $user->save();
+                $this->sendConfirmEmail($user, false);
+                return response()->json($user, 201);
+            } else {
+                return response()->json('SERVER.USER_EMAIL_ALREADY_EXISTS', 406);
             }
-            return response()->json($user, 201);
-        } catch (Illuminate\Database\QueryException $error) {
-            return response()->json($error, 406);
         }
+        return response()->json('SERVER.USER_NOT_FOUND', 404);
     }
     /**
      * Para actualizar el idioma de usuario registrado
@@ -712,28 +724,24 @@ class UserController extends BaseController
      * @return \Illuminate\Http\Response
      */
     public function updateUserEmailById(Request $request, $id) {
-        try {
-            $user = User::find($id);
-            if ($request->get('email')) {
-                $this->validate($request, [
-                    'email' => 'required|email',
-                    'grant_type' => 'required',
-                ]);
-                $validate = User::where([
-                    'email' => $request->get('email'),
-                    'grant_type' => $request->get('grant_type')
-                ])->first();
-                if ($validate) {
-                    return response()->json('SERVER.USER_EMAIL_ALREADY_EXISTS', 406);
-                } else {
-                    $user['email'] = $request->get('email');
-                    $user->save();
-                }
+        $this->validate($request, [
+            'email' => 'required|email',
+            'grant_type' => 'required',
+        ]);
+        $user = User::find($id);
+        if ($user) {
+            if (!User::where([
+                'email' => $request->get('email'),
+                'grant_type' => $request->get('grant_type')
+            ])->first()) {
+                $user['email'] = $request->get('email');
+                $user->save();
+                return response()->json($user, 201);
+            } else {
+                return response()->json('SERVER.USER_EMAIL_ALREADY_EXISTS', 406);
             }
-            return response()->json($user, 201);
-        } catch (Illuminate\Database\QueryException $error) {
-            return response()->json($error, 406);
         }
+        return response()->json('SERVER.USER_NOT_FOUND', 404);
     }
     /**
      * Para actualizar el idioma de usuario registrado
