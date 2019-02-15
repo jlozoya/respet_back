@@ -9,8 +9,8 @@ use App\Models\EmailConfirm;
 use App\Models\Direction;
 use App\Models\Media;
 use App\Models\UserPermissions;
-use App\Models\CatEmail;
-use App\Models\CatPhone;
+use App\Models\CatEmails;
+use App\Models\CatPhones;
 
 use Illuminate\Http\Request;
 
@@ -29,9 +29,9 @@ class UserContactController extends BaseController
             'name' => $user['name'],
             'contact' => [
                 'email' => $user['email'],
-                'emails' => CatEmail::where('user_id', $user['id'])->get(),
+                'emails' => CatEmails::where('user_id', $user['id'])->get(),
                 'phone' => $user['phone'],
-                'phones' => CatPhone::where('user_id', $user['id'])->get(),
+                'phones' => CatPhones::where('user_id', $user['id'])->get(),
             ]
         ], 200);
     }
@@ -49,13 +49,13 @@ class UserContactController extends BaseController
             $contact['email'] = $user['email'];
         }
         if ($permissions['show_alternative_emails']) {
-            $contact['emails'] = CatEmail::where('user_id', $id)->get();
+            $contact['emails'] = CatEmails::where('user_id', $id)->get();
         }
         if ($permissions['show_main_phone']) {
             $contact['phone'] = $user['phone'];
         }
         if ($permissions['show_alternative_phones']) {
-            $contact['phones'] = CatPhone::where('user_id', $id)->get();
+            $contact['phones'] = CatPhones::where('user_id', $id)->get();
         }
         if ($permissions['show_direction']) {
             if ($user['direction_id']) {

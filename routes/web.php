@@ -168,6 +168,11 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
     $router->get('/user/permissions', ['uses' => 'UserPermissionsController@getUserPermissions']);
     $router->put('/user/permissions', ['uses' => 'UserPermissionsController@setUserPermissions']);
 
+    $router->post('/user/cat/emails', ['uses' => 'UserCatEmailsPhonesController@addEmails']);
+    $router->post('/user/cat/phones', ['uses' => 'UserCatEmailsPhonesController@addPhones']);
+    $router->delete('/user/cat/email/{id}', ['uses' => 'UserCatEmailsPhonesController@deleteEmail']);
+    $router->delete('/user/cat/phone/{id}', ['uses' => 'UserCatEmailsPhonesController@deletePhone']);
+
     $router->get('/user/contact', ['uses' => 'UserContactController@getUserContact']);
     /**
      * @api {get} /user Obtiene la información del usuario propio.

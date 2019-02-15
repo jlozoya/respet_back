@@ -761,8 +761,7 @@ class UserController extends BaseController
      * @param number $id
      * @return \Illuminate\Http\Response
      */
-    public function updateAvatarById(Request $request, $id)
-    {
+    public function updateAvatarById(Request $request, $id) {
         $this->validate($request, [
             'file_name' => 'required',
             'type' => 'required'
