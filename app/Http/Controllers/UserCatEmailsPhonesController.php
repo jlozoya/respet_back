@@ -21,11 +21,11 @@ class UserCatEmailsPhonesController extends BaseController
      * @return \Illuminate\Http\Response
      */
     public function addEmails(Request $request) {
-        $this->validate($request, ['emails.*' => 'required|email',]);
+        $this->validate($request, ['emails.*' => 'required|email|max:60',]);
         $user_id = $request->user()['id'];
         $emails = $request->get('emails');
         foreach ($emails as $email) {
-            CatPhones::create([
+            CatEmails::create([
                 'user_id' => $user_id,
                 'email' => $email,
             ]);
@@ -39,7 +39,7 @@ class UserCatEmailsPhonesController extends BaseController
      * @return \Illuminate\Http\Response
      */
     public function addPhones(Request $request) {
-        $this->validate($request, ['phones.*' => 'required|numeric|min:10',]);
+        $this->validate($request, ['phones.*' => 'required|numeric|min:10|max:20',]);
         $user_id = $request->user()['id'];
         $phones = $request->get('phones');
         foreach ($phones as $phone) {

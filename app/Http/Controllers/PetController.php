@@ -9,6 +9,7 @@ use App\Models\Direction;
 use App\Models\User;
 use App\Models\PetMedia;
 use App\Models\Media;
+use DB;
 
 use Illuminate\Support\Facades\URL;
 use Illuminate\Http\Request;
@@ -63,6 +64,25 @@ class PetController extends BaseController
             ->whereRaw($where)
             ->orderBy('updated_at', 'DESC')
             ->paginate(5));
+        } else if ($request->get('latlng')) {
+            $latlng = explode(',', $request->get('latlng'));
+            $distance = 50;//Km
+            $directions = DB::table('directions')
+            ->select(DB::raw("`id`, (acos(sin(radians(`lat`)) * sin(radians($latlng[0])) + 
+            cos(radians(`lat`)) * cos(radians($latlng[0])) * 
+            cos(radians(`lng`) - radians($latlng[1]))) * 6378) as 
+            `distance`"))
+            ->havingRaw("distance <= $distance")
+            ->where('lat', '!=', 0)
+            ->get()->toArray();
+            $pets = [];
+            foreach ($directions as $direction) {
+                $pet = Pet::where('direction_id', $direction->id)->first();
+                if ($pet) {
+                    array_push($pets, $pet);
+                }
+            }
+            return $this->attachData($pets);
         } else {
             return $this->attachData(Pet::orderBy('updated_at', 'DESC')->paginate(5));
         }
