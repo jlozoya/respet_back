@@ -24,13 +24,14 @@ class UserCatEmailsPhonesController extends BaseController
         $this->validate($request, ['emails.*' => 'required|email|max:60',]);
         $user_id = $request->user()['id'];
         $emails = $request->get('emails');
+        $savedEmails = [];
         foreach ($emails as $email) {
-            CatEmails::create([
+            array_push($savedEmails, CatEmails::create([
                 'user_id' => $user_id,
                 'email' => $email,
-            ]);
+            ]));
         }
-        return response()->json($emails, 202);
+        return response()->json($savedEmails, 202);
     }
     /**
      * Almacena listas de teléfonos.
@@ -42,13 +43,14 @@ class UserCatEmailsPhonesController extends BaseController
         $this->validate($request, ['phones.*' => 'required|numeric|min:10|max:20',]);
         $user_id = $request->user()['id'];
         $phones = $request->get('phones');
+        $savedPhones = [];
         foreach ($phones as $phone) {
-            CatPhones::create([
+            array_push($savedPhones, CatPhones::create([
                 'user_id' => $user_id,
                 'phone' => $phone,
-            ]);
+            ]));
         }
-        return response()->json($phones, 202);
+        return response()->json($savedPhones, 202);
     }
     /**
      * Elimina un registro.

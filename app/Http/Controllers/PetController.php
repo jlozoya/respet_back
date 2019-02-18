@@ -64,13 +64,13 @@ class PetController extends BaseController
             ->whereRaw($where)
             ->orderBy('updated_at', 'DESC')
             ->paginate(5));
-        } else if ($request->get('latlng')) {
-            $latlng = explode(',', $request->get('latlng'));
-            $distance = 50;//Km
+        } else if ($request->get('latLng')) {
+            $latlng = explode(',', $request->get('latLng'));
+            $distance = 10;
             $directions = DB::table('directions')
-            ->select(DB::raw("`id`, (acos(sin(radians(`lat`)) * sin(radians($latlng[0])) + 
-            cos(radians(`lat`)) * cos(radians($latlng[0])) * 
-            cos(radians(`lng`) - radians($latlng[1]))) * 6378) as 
+            ->select(DB::raw("`id`, (acos(sin(radians($latlng[0])) * sin(radians(`lat`)) + 
+            cos(radians($latlng[0])) * cos(radians(`lat`)) * 
+            cos(radians($latlng[1]) - radians(`lng`))) * 6378) as 
             `distance`"))
             ->havingRaw("distance <= $distance")
             ->where('lat', '!=', 0)
