@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "description": "Api REST para ResPet",
     "title": "ResPet Back",
-    "url" : "http://localhost/respet_back",
+    "url" : "https://lozoya.biz/respet_back",
     "template": {
         "withCompare": true,
         "withGenerator": true

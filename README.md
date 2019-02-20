@@ -107,7 +107,7 @@ Ftp hostinger
 * Usuario FTP: u736574120
 
 ```bash
-git clone ssh://git-codecommit.us-east-2.amazonaws.com/v1/repos/morsleep_back
+git clone ssh://git-codecommit.us-east-2.amazonaws.com/v1/repos/respet_back
 ```
 
 ## Apidoc
