@@ -80,9 +80,9 @@ class OAuthController extends BaseController
      * @return \Illuminate\Http\Response
      */
     private function googleLogin(Request $request, Client $client) {
-        $client = new \GuzzleHttp\Client();
+        $guzzleClient = new \GuzzleHttp\Client();
         try {
-            $response = $client->get('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token='
+            $response = $guzzleClient->get('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token='
             . $request->get('accessToken'))->getBody()->getContents();
             $response_decoded = json_decode($response, true);
             if ($response_decoded['user_id'] == $request->get('extern_id')) {
