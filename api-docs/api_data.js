@@ -1659,13 +1659,13 @@ define({ "api": [
     },
     "success": {
       "fields": {
-        "202": [
+        "204": [
           {
-            "group": "202",
-            "type": "String",
+            "group": "204",
+            "type": "Null",
             "optional": false,
-            "field": "SERVER.BULLETIN_DELETED",
-            "description": "<p>Noticia creada.</p>"
+            "field": "Null",
+            "description": "<p>Noticia eliminada.</p>"
           }
         ]
       }
@@ -2001,9 +2001,9 @@ define({ "api": [
     "groupTitle": "Password"
   },
   {
-    "type": "post",
+    "type": "put",
     "url": "/password/reset",
-    "title": "Para resetear la contraseña.",
+    "title": "Para actualizar la contraseña.",
     "version": "0.0.1",
     "name": "PostReset",
     "group": "Password",
@@ -2048,7 +2048,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "grant_type",
-            "description": "<p>Nombre de la fuente con la que se inicia sesión 'facebook' | 'google' | 'password'.</p>"
+            "description": "<p>Nombre de la fuente con la que se inicia sesión 'password'.</p>"
           }
         ]
       }
@@ -2068,12 +2068,12 @@ define({ "api": [
     },
     "error": {
       "fields": {
-        "400": [
+        "200": [
           {
-            "group": "400",
-            "type": "String",
+            "group": "200",
+            "type": "View",
             "optional": false,
-            "field": "SERVER.RESET_FAIL",
+            "field": "auth.emails.password",
             "description": "<p>En caso de que falle el reseteo de la contraseña.</p>"
           }
         ]
@@ -2084,7 +2084,7 @@ define({ "api": [
   },
   {
     "type": "get",
-    "url": "/password/reset/:token Habré una vista para",
+    "url": "/password/reset Habré una vista para",
     "title": "resetear la contraseña.",
     "version": "0.0.1",
     "name": "ShowResetForm",
@@ -2433,12 +2433,12 @@ define({ "api": [
     },
     "success": {
       "fields": {
-        "202": [
+        "204": [
           {
-            "group": "202",
-            "type": "String",
+            "group": "204",
+            "type": "Null",
             "optional": false,
-            "field": "SERVER.SOCIAL_LINK_DELETED",
+            "field": "Null",
             "description": "<p>Cuando se logró eliminar un vínculo con una red social.</p>"
           }
         ]
@@ -2487,12 +2487,12 @@ define({ "api": [
     },
     "success": {
       "fields": {
-        "202": [
+        "204": [
           {
-            "group": "202",
-            "type": "String",
+            "group": "204",
+            "type": "Null",
             "optional": false,
-            "field": "SERVER.USER_DELETED",
+            "field": "Null",
             "description": "<p>Cuando se eliminó un usuario correctamente.</p>"
           }
         ]
@@ -2554,12 +2554,12 @@ define({ "api": [
     },
     "success": {
       "fields": {
-        "202": [
+        "204": [
           {
-            "group": "202",
-            "type": "String",
+            "group": "204",
+            "type": "Null",
             "optional": false,
-            "field": "SERVER.USER_DELETED",
+            "field": "Null",
             "description": "<p>Cuando se eliminó un usuario correctamente.</p>"
           }
         ]
@@ -2695,7 +2695,7 @@ define({ "api": [
   },
   {
     "type": "delete",
-    "url": "/user/logout",
+    "url": "/user/sesion",
     "title": "Eliminar un token de autorización propio.",
     "version": "0.0.1",
     "name": "Logout",
@@ -2720,12 +2720,12 @@ define({ "api": [
     },
     "success": {
       "fields": {
-        "202": [
+        "204": [
           {
-            "group": "202",
-            "type": "String",
+            "group": "204",
+            "type": "Null",
             "optional": false,
-            "field": "SERVER.LOGGEDOUT",
+            "field": "Null",
             "description": "<p>Cuando se logró eliminar un token de autorización.</p>"
           }
         ]

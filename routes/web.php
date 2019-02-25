@@ -810,7 +810,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          *
          * @apiParam {Number} id Id de la noticia.
          * 
-         * @apiSuccess (204) {Null} Null Noticia creada.
+         * @apiSuccess (204) {Null} Null Noticia eliminada.
          * 
          * @apiError (404) {String} SERVER.BULLETIN_NOT_FOUND Cuando no se
          * encontró una noticia
