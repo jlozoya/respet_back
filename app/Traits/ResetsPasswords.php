@@ -20,7 +20,7 @@ trait ResetsPasswords {
     public function postEmail(Request $request) {
         $this->validate($request, [
             'email' => 'required|email',
-            'source' => 'required'
+            'grant_type' => 'required|in:password'
         ]);
 
         /** @var PasswordBroker $broker */
@@ -30,14 +30,14 @@ trait ResetsPasswords {
         /** @var User $user */
         $user = $broker->getUser([
             'email' => $this->getSendResetLinkEmailCredentials($request),
-            'source' => $request->get('source')
+            'grant_type' => $request->get('grant_type')
         ]);
         if ($user) {
             $token = $broker->createToken(
                 $user
             );
-            $resetLink = URL::to('/') . '/password/reset/' . $token . '?email='
-            . $request->get('email') . '&source=' . $request->get('source');
+            $resetLink = URL::to('/') . '/password/reset?token=' . $token . '&email='
+            . $request->get('email') . '&grant_type=' . $request->get('grant_type');
             $response = $user->notify(new ResetPasswordNotification($resetLink, $user['lang']));
             if ($response == '') {
                 return $this->getSendResetLinkEmailSuccessResponse($response);
@@ -82,10 +82,16 @@ trait ResetsPasswords {
      * @param \Illuminate\Http\Request $request
      * @return Response
      */
-    public function showResetForm($token, Request $request) {
-        $source = $request->get('source');
+    public function showResetForm(Request $request) {
+        $this->validate($request, [
+            'token' => 'required',
+            'email' => 'required|email',
+            'grant_type' => 'required|in:password'
+        ]);
+        $token = $request->get('token');
         $email = $request->get('email');
-        return view('auth.emails.password')->with(compact('token', 'email', 'source'));
+        $grant_type = $request->get('grant_type');
+        return view('auth.emails.password')->with(compact('token', 'email', 'grant_type'));
     }
     /**
      * Restablece la contraseña del usuario dado.
@@ -96,7 +102,7 @@ trait ResetsPasswords {
     public function postReset(Request $request) {
         $this->validate($request, $this->getResetValidationRules());
         $credentials = $request->only(
-            'email', 'password', 'password_confirmation', 'token', 'source'
+            'email', 'password', 'password_confirmation', 'token', 'grant_type'
         );
         $broker = $this->getBroker();
         $response = Password::broker($broker)->reset($credentials, function ($user, $password) {

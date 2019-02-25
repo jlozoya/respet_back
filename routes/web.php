@@ -60,7 +60,7 @@ $router->post('/user', ['uses' => 'UserController@store']);
  */
 $router->post('/password/email', 'PasswordController@postEmail');
 /**
- * @api {get} /password/reset/:token Habré una vista para
+ * @api {get} /password/reset Habré una vista para
  * resetear la contraseña.
  * @apiVersion 0.0.1
  * @apiName ShowResetForm
@@ -73,7 +73,7 @@ $router->post('/password/email', 'PasswordController@postEmail');
  * @apiSuccess (200) {String} view Vista con el formulario
  * para resetear la contraseña.
  */
-$router->get('/password/reset/{token}', ['uses' => 'PasswordController@showResetForm']);
+$router->get('/password/reset', ['uses' => 'PasswordController@showResetForm']);
 /**
  * @api {post} /password/reset Para resetear la contraseña.
  * @apiVersion 0.0.1
