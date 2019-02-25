@@ -9,7 +9,7 @@
             <div class="card card-default">
                 <div class="card-header">Restablecer la contraseña</div>
                 <div class="card-body">
-                    <form method="POST" action="{{ route('password.reset') }}">
+                    <form method="PUT" action="{{ route('password.reset') }}">
 
                         <input type="hidden" name="token" value="{{ $token }}">
                         <input type="hidden" name="grant_type" value="{{ $grant_type }}">
@@ -24,14 +24,16 @@
                         <div class="form-group row">
                             <label for="password" class="col-md-4 col-form-label text-md-right">Contraseña:</label>
                             <div class="col-md-6">
-                                <input id="password" type="password" name="password" class="form-control" required autofocus>
+                                <input id="password" type="password" name="password" value="{{ $password }}"
+                                class="form-control" required autofocus>
                             </div>
                         </div>
 
                         <div class="form-group row">
                             <label for="password-confirm" class="col-md-4 col-form-label text-md-right">Confirmar contraseña:</label>
                             <div class="col-md-6">
-                                <input id="password-confirm" type="password" name="password_confirmation" class="form-control" required>
+                                <input id="password-confirm" type="password" name="password_confirmation"
+                                value="{{ $password_confirmation }}" class="form-control" required>
                             </div>
                         </div>
 
@@ -45,6 +47,11 @@
                     </form>
                 </div>
             </div>
+            @if ($error) 
+                <div class="alert alert-danger" role="alert">
+                    {{ $error }}
+                </div>
+            @endif
         </div>
     </div>
 </div>

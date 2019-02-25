@@ -75,7 +75,7 @@ $router->post('/password/email', 'PasswordController@postEmail');
  */
 $router->get('/password/reset', ['uses' => 'PasswordController@showResetForm']);
 /**
- * @api {post} /password/reset Para resetear la contraseña.
+ * @api {put} /password/reset Para actualizar la contraseña.
  * @apiVersion 0.0.1
  * @apiName PostReset
  * @apiGroup Password
@@ -87,14 +87,14 @@ $router->get('/password/reset', ['uses' => 'PasswordController@showResetForm']);
  * nueva contraseña el usuario.
  * @apiParam {String} token Token para resetear la contraseña.
  * @apiParam {String} grant_type Nombre de la fuente con la que se
- * inicia sesión 'facebook' | 'google' | 'password'.
+ * inicia sesión 'password'.
  *
  * @apiSuccess (200) {Redirect} redirect Redirección a la página principal.
  * 
- * @apiError (400) {String} SERVER.RESET_FAIL En caso de que falle
+ * @apiError (200) {View} auth.emails.password En caso de que falle
  * el reseteo de la contraseña.
  */
-$router->post('/password/reset', ['as' => 'password.reset', 'uses' => 'PasswordController@postReset']);
+$router->put('/password/reset', ['as' => 'password.reset', 'uses' => 'PasswordController@postReset']);
 /**
  * @api {get} /user/confirm/email Para confirmar una cuenta de usuario.
  * @apiVersion 0.0.1

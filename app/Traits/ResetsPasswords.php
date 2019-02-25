@@ -91,7 +91,10 @@ trait ResetsPasswords {
         $token = $request->get('token');
         $email = $request->get('email');
         $grant_type = $request->get('grant_type');
-        return view('auth.emails.password')->with(compact('token', 'email', 'grant_type'));
+        $password = $request->get('password');
+        $password_confirmation = $request->get('password_confirmation');
+        $error = '';
+        return view('auth.emails.password')->with(compact('token', 'email', 'grant_type', 'password', 'password_confirmation', 'error'));
     }
     /**
      * Restablece la contraseña del usuario dado.
@@ -100,19 +103,39 @@ trait ResetsPasswords {
      * @return \Illuminate\Http\Response
      */
     public function postReset(Request $request) {
-        $this->validate($request, $this->getResetValidationRules());
-        $credentials = $request->only(
+        $token = $request->get('token');
+        $email = $request->get('email');
+        $grant_type = $request->get('grant_type');
+        $password = $request->get('password');
+        $password_confirmation = $request->get('password_confirmation');
+        $error = '';
+        if (!$password || !$password_confirmation) {
+            $error = 'La contraseña es requerida';
+        }
+        if ($password != $password_confirmation) {
+            $error = 'La contraseña no coincide';
+        }
+        if (strlen($password) < 6) {
+            $error = 'La contraseña debe tener mínimo 6 caracteres';
+        }
+        if ($error) {
+            return view('auth.emails.password')->with(compact(
+                'token', 'email', 'grant_type', 'password', 'password_confirmation', 'error'
+            ));
+        }
+        $response = Password::broker($this->getBroker())->reset($request->only(
             'email', 'password', 'password_confirmation', 'token', 'grant_type'
-        );
-        $broker = $this->getBroker();
-        $response = Password::broker($broker)->reset($credentials, function ($user, $password) {
+        ), function ($user, $password) {
             $this->resetPassword($user, $password);
         });
         switch ($response) {
             case Password::PASSWORD_RESET:
                 return redirect(env('APP_REDIRECTS_LINK', '../'));
             default:
-                return $this->getResetFailureResponse($request, $response);
+                $error = 'Token invalido';
+                return view('auth.emails.password')->with(compact(
+                    'token', 'email', 'grant_type', 'password', 'password_confirmation', 'error'
+                ));
         }
     }
     /**
@@ -147,16 +170,6 @@ trait ResetsPasswords {
      */
     protected function getResetSuccessResponse($response) {
         return response()->json('SERVER.RESET_SUCCESS', 200);
-    }
-    /**
-     * Obtiene la respuesta después de un restablecimiento de contraseña fallido.
-     *
-     * @param  Request  $request
-     * @param  string  $response
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    protected function getResetFailureResponse(Request $request, $response) {
-        return response()->json('SERVER.RESET_FAIL', 400);
     }
     /**
      * Usa el intermediario 'broker' restablecimiento de contraseña.
