@@ -425,7 +425,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      */
     $router->delete('/user/social/link/{id}', ['uses' => 'UserController@deleteSocialLink']);
     /**
-     * @api {delete} /user/logout Eliminar un token de autorización propio.
+     * @api {delete} /user/sesion Eliminar un token de autorización propio.
      * @apiVersion 0.0.1
      * @apiName Logout
      * @apiGroup User
@@ -436,7 +436,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * @apiSuccess (202) {String} SERVER.LOGGEDOUT Cuando se logró eliminar
      * un token de autorización.
      */
-    $router->delete('/user/logout', ['uses' => 'UserController@logout']);
+    $router->delete('/user/sesion', ['uses' => 'UserController@logout']);
     /**
      * @api {delete} /user Eliminar una cuenta de usuario propia.
      * @apiVersion 0.0.1
