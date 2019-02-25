@@ -336,6 +336,6 @@ class PetController extends BaseController
             $media->delete();
         }
         $pet->delete();
-        return response()->json('SERVER.PET_DELETED', 204);
+        return response()->json(null, 204);
     }
 }

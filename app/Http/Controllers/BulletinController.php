@@ -113,7 +113,7 @@ class BulletinController extends BaseController
                 $media->delete();
             }
             $bulletin->delete();
-            return response()->json('SERVER.BULLETIN_DELETED', 202);
+            return response()->json(null, 204);
         }
         return response()->json('SERVER.BULLETIN_NOT_FOUND', 404);
     }

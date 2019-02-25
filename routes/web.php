@@ -417,7 +417,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      *
      * @apiParam {Number} id Id del registro del vínculo con la red social.
      * 
-     * @apiSuccess (202) {String} SERVER.SOCIAL_LINK_DELETED Cuando se
+     * @apiSuccess (204) {Null} Null Cuando se
      * logró eliminar un vínculo con una red social.
      * 
      * @apiError (404) {String} SERVER.WRONG_SOCIAL_LINK_ID Cuando no se
@@ -433,7 +433,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * 
      * @apiHeader (Auth) {String} Authorization Token de autorización.
      *
-     * @apiSuccess (202) {String} SERVER.LOGGEDOUT Cuando se logró eliminar
+     * @apiSuccess (204) {Null} Null Cuando se logró eliminar
      * un token de autorización.
      */
     $router->delete('/user/sesion', ['uses' => 'UserController@logout']);
@@ -446,7 +446,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * 
      * @apiHeader (Auth) {String} Authorization Token de autorización.
      *
-     * @apiSuccess (202) {String} SERVER.USER_DELETED Cuando se eliminó un
+     * @apiSuccess (204) {Null} Null Cuando se eliminó un
      * usuario correctamente.
      * 
      * @apiError (404) {String} SERVER.USER_NOT_FOUND Cuando no se encontró
@@ -742,7 +742,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          *
          * @apiParam {Number} id Id del usuario a actualizar.
          * 
-         * @apiSuccess (202) {String} SERVER.USER_DELETED Cuando se eliminó un
+         * @apiSuccess (204) {Null} Null Cuando se eliminó un
          * usuario correctamente.
          * 
          * @apiError (404) {String} SERVER.USER_NOT_FOUND Cuando no se encontró
@@ -810,7 +810,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          *
          * @apiParam {Number} id Id de la noticia.
          * 
-         * @apiSuccess (202) {String} SERVER.BULLETIN_DELETED Noticia creada.
+         * @apiSuccess (204) {Null} Null Noticia creada.
          * 
          * @apiError (404) {String} SERVER.BULLETIN_NOT_FOUND Cuando no se
          * encontró una noticia

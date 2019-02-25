@@ -414,7 +414,7 @@ class UserController extends BaseController
         ])->first();
         if ($socialLink) {
             $socialLink->delete();
-            return response()->json('SERVER.SOCIAL_LINK_DELETED', 202);
+            return response()->json(null, 204);
         }
         return response()->json('SERVER.WRONG_SOCIAL_LINK_ID', 404);
     }
@@ -838,7 +838,7 @@ class UserController extends BaseController
     public function logout(Request $request) {
         $request->user()->token()->revoke();
         $request->user()->token()->delete();
-        return response()->json('SERVER.LOGGEDOUT', 202);
+        return response()->json(null, 204);
     }
     /**
      * Elimina un usuario
@@ -861,7 +861,7 @@ class UserController extends BaseController
                 }
             }    
             $user->delete();
-            return response()->json('SERVER.USER_DELETED', 202);
+            return response()->json(null, 204);
         } else {
             return response()->json('SERVER.USER_NOT_FOUND', 404);
         }
@@ -874,17 +874,20 @@ class UserController extends BaseController
      */
     public function deleteUserById($id) {
         $user = User::find($id);
-        if ($user['direction_id']) {
-            Direction::find($user['direction_id'])->delete();
-        }
-        if ($user['media_id']) {
-            $media = Media::find($user['media_id']);
-            if (parse_url($media['url'])['host'] == parse_url(URL::to('/'))['host']) {
-                File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($media['url'])['path']);
+        if ($user) {
+            if ($user['direction_id']) {
+                Direction::find($user['direction_id'])->delete();
             }
-            $media->delete();
+            if ($user['media_id']) {
+                $media = Media::find($user['media_id']);
+                if (parse_url($media['url'])['host'] == parse_url(URL::to('/'))['host']) {
+                    File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($media['url'])['path']);
+                }
+                $media->delete();
+            }
+            $user->delete();
+            return response()->json(null, 204);
         }
-        $user->delete();
-        return response()->json('SERVER.USER_DELETED', 200);
+        return response()->json('SERVER.USER_NOT_FOUND', 404);
     }
 }
