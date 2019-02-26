@@ -223,15 +223,11 @@ class PetController extends BaseController
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
-        try {
-            $pet = Pet::find($id);
+        $pet = Pet::find($id);
+        if ($pet['user_id'] == $request->user()['id']) {
             if ($request->get('user_id')) {
                 $this->validate($request, ['user_id' => 'number',]);
                 $pet['user_id'] = $request->get('user_id');
-            }
-            if ($request->get('show_contact_information')) {
-                $this->validate($request, ['show_contact_information' => 'max:60',]);
-                $pet['show_contact_information'] = $request->get('show_contact_information');
             }
             if ($request->get('description')) {
                 $this->validate($request, ['description' => 'string',]);
@@ -245,7 +241,6 @@ class PetController extends BaseController
             $direction;
             if ($pet['direction_id']) {
                 $this->validate($request, ['direction_id' => 'numeric',]);
-                $pet['direction_id'] = $request->get('direction_id');
                 if ($request->get('direction')) {
                     $direction = Direction::find($pet['direction_id']);
                     if ($request->get('direction')['country']) {
@@ -311,8 +306,8 @@ class PetController extends BaseController
             $pet['media'] = PetMedia::select('media.*')->where('pet_media.pet_id', $pet['id'])
             ->join('media', 'pet_media.media_id', 'media.id')->get();
             return response()->json($pet, 201);
-        } catch (Illuminate\Database\QueryException $error) {
-            return response()->json($error, 406);
+        } else {
+            return response()->json('SERVER.WRONG_USER', 404);
         }
     }
 
