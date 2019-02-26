@@ -94,7 +94,7 @@ $router->get('/password/reset', ['uses' => 'PasswordController@showResetForm']);
  * @apiError (200) {View} auth.emails.password En caso de que falle
  * el reseteo de la contraseña.
  */
-$router->put('/password/reset', ['as' => 'password.reset', 'uses' => 'PasswordController@postReset']);
+$router->post('/password/reset', ['as' => 'password.reset', 'uses' => 'PasswordController@putReset']);
 /**
  * @api {get} /user/confirm/email Para confirmar una cuenta de usuario.
  * @apiVersion 0.0.1
@@ -474,6 +474,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
     $router->post('/user/pay', ['uses' => 'PayController@createPay']);
 
     $router->post('/pet', ['uses' => 'PetController@store']);
+    $router->delete('/pet/file/{id}', ['uses' => 'PetController@destroyFile']);
     $router->put('/pet/file', ['uses' => 'PetController@storeFile']);
     $router->put('/pet/{id}', ['uses' => 'PetController@update']);
     $router->delete('/pet/{id}', ['uses' => 'PetController@destroy']);

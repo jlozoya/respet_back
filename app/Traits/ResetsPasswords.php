@@ -102,7 +102,7 @@ trait ResetsPasswords {
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function postReset(Request $request) {
+    public function putReset(Request $request) {
         $token = $request->get('token');
         $email = $request->get('email');
         $grant_type = $request->get('grant_type');
@@ -118,7 +118,7 @@ trait ResetsPasswords {
         if (strlen($password) < 6) {
             $error = 'La contraseña debe tener mínimo 6 caracteres';
         }
-        if ($error) {
+        if ($error != '') {
             return view('auth.emails.password')->with(compact(
                 'token', 'email', 'grant_type', 'password', 'password_confirmation', 'error'
             ));

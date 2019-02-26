@@ -9,7 +9,7 @@
             <div class="card card-default">
                 <div class="card-header">Restablecer la contraseña</div>
                 <div class="card-body">
-                    <form method="PUT" action="{{ route('password.reset') }}">
+                    <form method="POST" action="{{ route('password.reset') }}">
 
                         <input type="hidden" name="token" value="{{ $token }}">
                         <input type="hidden" name="grant_type" value="{{ $grant_type }}">

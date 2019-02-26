@@ -310,27 +310,53 @@ class PetController extends BaseController
             return response()->json('SERVER.WRONG_USER', 404);
         }
     }
-
     /**
      * Eliminar el recurso especificado del almacenamiento.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  number  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id) {
-        $pet = Pet::find($id);
-        if ($pet['direction_id']) {
-            Direction::find($pet['direction_id'])->delete();
-        }
-        $pet['media'] = PetMedia::select('media.*')->where('pet_media.pet_id', $pet['id'])
-        ->join('media', 'pet_media.media_id', 'media.id')->get();
-        foreach ($pet['media'] as &$media) {
+    public function destroyFile(Request $request, $id) {
+        $petMedia = PetMedia::where('media_id', $id)->first();
+        $pet = Pet::find($petMedia['pet_id']);
+        if ($pet['user_id'] == $request->user()['id']) {
+            $media = Media::find($petMedia['media_id']);
             if (parse_url($media['url'])['host'] == parse_url(URL::to('/'))['host']) {
                 File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($media['url'])['path']);
             }
+            $petMedia->delete();
             $media->delete();
+            return response()->json(null, 204);
+        } else {
+            return response()->json('SERVER.WRONG_USER', 404);
         }
-        $pet->delete();
-        return response()->json(null, 204);
+    }
+    /**
+     * Eliminar el recurso especificado del almacenamiento.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  number  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Request $request, $id) {
+        $pet = Pet::find($id);
+        if ($pet['user_id'] == $request->user()['id']) {
+            if ($pet['direction_id']) {
+                Direction::find($pet['direction_id'])->delete();
+            }
+            $pet['media'] = PetMedia::select('media.*')->where('pet_media.pet_id', $pet['id'])
+            ->join('media', 'pet_media.media_id', 'media.id')->get();
+            foreach ($pet['media'] as &$media) {
+                if (parse_url($media['url'])['host'] == parse_url(URL::to('/'))['host']) {
+                    File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($media['url'])['path']);
+                }
+                $media->delete();
+            }
+            $pet->delete();
+            return response()->json(null, 204);
+        } else {
+            return response()->json('SERVER.WRONG_USER', 404);
+        }
     }
 }
