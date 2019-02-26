@@ -44,7 +44,7 @@ class UserContactController extends BaseController
     public function getUserContactById(Request $request, $id) {
         $user = User::find($id);
         $permissions = UserPermissions::find($user['permissions_id']);
-        $contact;
+        $contact = null;
         if ($permissions['show_main_email']) {
             $contact['email'] = $user['email'];
         }

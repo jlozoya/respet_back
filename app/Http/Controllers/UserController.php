@@ -859,7 +859,10 @@ class UserController extends BaseController
                 if (parse_url($user['media']['url'])['host'] == parse_url(URL::to('/'))['host']) {
                     File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($user['media']['url'])['path']);
                 }
-            }    
+            }
+            if ($user['permissions_id']) {
+                UserPermissions::find($user['permissions_id'])->delete();
+            }
             $user->delete();
             return response()->json(null, 204);
         } else {
@@ -884,6 +887,9 @@ class UserController extends BaseController
                     File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($media['url'])['path']);
                 }
                 $media->delete();
+            }
+            if ($user['permissions_id']) {
+                UserPermissions::find($user['permissions_id'])->delete();
             }
             $user->delete();
             return response()->json(null, 204);
