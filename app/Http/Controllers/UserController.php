@@ -6,7 +6,7 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 
 use App\Models\User;
 use App\Models\EmailConfirm;
-use App\Models\Direction;
+use App\Models\Address;
 use App\Models\Media;
 use App\Models\SocialLink;
 use App\Models\UserPermissions;
@@ -37,8 +37,8 @@ class UserController extends BaseController
     public function index(Request $request) {
         $user = $request->user();
         if ($user) {
-            if ($user['direction_id']) {
-                $user['direction'] = Direction::find($user['direction_id']);
+            if ($user['address_id']) {
+                $user['address'] = Address::find($user['address_id']);
             }
             if ($user['media_id']) {
                 $user['media'] = Media::find($user['media_id']);
@@ -73,11 +73,11 @@ class UserController extends BaseController
             'lang',
             'birthday',
             'role',
-            'direction_id'
+            'address_id'
         )->find($id);
         if ($user) {
-            if ($user['direction_id']) {
-                $user['direction'] = Direction::find($user['direction_id']);
+            if ($user['address_id']) {
+                $user['address'] = Address::find($user['address_id']);
             }
             if ($user['media_id']) {
                 $user['media'] = Media::find($user['media_id']);
@@ -118,8 +118,8 @@ class UserController extends BaseController
         ->orderBy('updated_at', 'DESC')
         ->paginate(15);
         foreach ($users as &$user) {
-            if ($user['direction_id']) {
-                $user['direction'] = Direction::find($user['direction_id']);
+            if ($user['address_id']) {
+                $user['address'] = Address::find($user['address_id']);
             }
             if ($user['media_id']) {
                 $user['media'] = Media::find($user['media_id']);
@@ -211,20 +211,20 @@ class UserController extends BaseController
             'lang' => $request->get('lang'),
             'grant_type' => $request->get('grant_type'),
         ]);
-        if ($request->get('direction')) {
-            $direction = Direction::create([
-                'country' => $request->input('direction.country'),
-                'administrative_area_level_1' => $request->input('direction.administrative_area_level_1'),
-                'administrative_area_level_2' => $request->input('direction.administrative_area_level_2'),
-                'route' => $request->input('direction.route'),
-                'street_number' => $request->input('direction.street_number'),
-                'postal_code' => $request->input('direction.postal_code'),
-                'lat' => $request->input('direction.lat'),
-                'lng' => $request->input('direction.lng'),
+        if ($request->get('address')) {
+            $address = Address::create([
+                'country' => $request->input('address.country'),
+                'administrative_area_level_1' => $request->input('address.administrative_area_level_1'),
+                'administrative_area_level_2' => $request->input('address.administrative_area_level_2'),
+                'route' => $request->input('address.route'),
+                'street_number' => $request->input('address.street_number'),
+                'postal_code' => $request->input('address.postal_code'),
+                'lat' => $request->input('address.lat'),
+                'lng' => $request->input('address.lng'),
             ]);
-            $user['direction_id'] = $direction['id'];
+            $user['address_id'] = $address['id'];
             $user->save();
-            $user['direction'] = $direction;
+            $user['address'] = $address;
         }
         return $user;
     }
@@ -424,46 +424,46 @@ class UserController extends BaseController
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function updateUserDirection(Request $request) {
+    public function updateUserAddress(Request $request) {
         try {
             $user = $request->user();
-            $direction = Direction::find($user['direction_id']);
-            if ($direction) {
+            $address = Address::find($user['address_id']);
+            if ($address) {
                 if ($request->get('country')) {
                     $this->validate($request, ['country' => 'required|max:60',]);
-                    $direction['country'] = $request->get('country');
+                    $address['country'] = $request->get('country');
                 }
                 if ($request->get('administrative_area_level_1')) {
                     $this->validate($request, ['administrative_area_level_1' => 'required|max:60',]);
-                    $direction['administrative_area_level_1'] = $request->get('administrative_area_level_1');
+                    $address['administrative_area_level_1'] = $request->get('administrative_area_level_1');
                 }
                 if ($request->get('administrative_area_level_2')) {
                     $this->validate($request, ['administrative_area_level_2' => 'required|max:60',]);
-                    $direction['administrative_area_level_2'] = $request->get('administrative_area_level_2');
+                    $address['administrative_area_level_2'] = $request->get('administrative_area_level_2');
                 }
                 if ($request->get('route')) {
                     $this->validate($request, ['route' => 'required|max:60',]);
-                    $direction['route'] = $request->get('route');
+                    $address['route'] = $request->get('route');
                 }
                 if ($request->get('street_number')) {
                     $this->validate($request, ['street_number' => 'required',]);
-                    $direction['street_number'] = $request->get('street_number');
+                    $address['street_number'] = $request->get('street_number');
                 }
                 if ($request->get('postal_code')) {
                     $this->validate($request, ['postal_code' => 'required|numeric',]);
-                    $direction['postal_code'] = $request->get('postal_code');
+                    $address['postal_code'] = $request->get('postal_code');
                 }
                 if ($request->get('lat')) {
                     $this->validate($request, ['lat' => 'required|numeric',]);
-                    $direction['lat'] = $request->get('lat');
+                    $address['lat'] = $request->get('lat');
                 }
                 if ($request->get('lng')) {
                     $this->validate($request, ['lng' => 'required|numeric',]);
-                    $direction['lng'] = $request->get('lng');
+                    $address['lng'] = $request->get('lng');
                 }
-                $direction->save();
+                $address->save();
             } else {
-                $direction = Direction::create([
+                $address = Address::create([
                     'country' => $request->get('country'),
                     'administrative_area_level_1' => $request->get('administrative_area_level_1'),
                     'administrative_area_level_2' => $request->get('administrative_area_level_2'),
@@ -473,10 +473,10 @@ class UserController extends BaseController
                     'lat' => $request->get('lat'),
                     'lng' => $request->get('lng'),
                 ]);
-                $user['direction_id'] = $direction['id'];
+                $user['address_id'] = $address['id'];
                 $user->save();
             }
-            return response()->json($direction, 201);
+            return response()->json($address, 201);
         } catch (Illuminate\Database\QueryException $error) {
             return response()->json($error, 406);
         }
@@ -621,45 +621,45 @@ class UserController extends BaseController
      * @param  number $id
      * @return \Illuminate\Http\Response
      */
-    public function updateUserDirectionById(Request $request, $id) {
+    public function updateUserAddressById(Request $request, $id) {
         try {
             $user = User::find($id);
-            $direction = Direction::find($user['direction_id']);
-            if ($direction) {
+            $address = Address::find($user['address_id']);
+            if ($address) {
                 if ($request->get('country')) {
                     $this->validate($request, ['country' => 'max:60',]);
-                    $direction['country'] = $request->get('country');
+                    $address['country'] = $request->get('country');
                 }
                 if ($request->get('administrative_area_level_1')) {
                     $this->validate($request, ['administrative_area_level_1' => 'max:60',]);
-                    $direction['administrative_area_level_1'] = $request->get('administrative_area_level_1');
+                    $address['administrative_area_level_1'] = $request->get('administrative_area_level_1');
                 }
                 if ($request->get('administrative_area_level_2')) {
                     $this->validate($request, ['administrative_area_level_2' => 'max:60',]);
-                    $direction['administrative_area_level_2'] = $request->get('administrative_area_level_2');
+                    $address['administrative_area_level_2'] = $request->get('administrative_area_level_2');
                 }
                 if ($request->get('route')) {
                     $this->validate($request, ['route' => 'max:60',]);
-                    $direction['route'] = $request->get('route');
+                    $address['route'] = $request->get('route');
                 }
                 if ($request->get('street_number')) {
-                    $direction['street_number'] = $request->get('street_number');
+                    $address['street_number'] = $request->get('street_number');
                 }
                 if ($request->get('postal_code')) {
                     $this->validate($request, ['postal_code' => 'numeric',]);
-                    $direction['postal_code'] = $request->get('postal_code');
+                    $address['postal_code'] = $request->get('postal_code');
                 }
                 if ($request->get('lat')) {
                     $this->validate($request, ['lat' => 'numeric',]);
-                    $direction['lat'] = $request->get('lat');
+                    $address['lat'] = $request->get('lat');
                 }
                 if ($request->get('lng')) {
                     $this->validate($request, ['lng' => 'numeric',]);
-                    $direction['lng'] = $request->get('lng');
+                    $address['lng'] = $request->get('lng');
                 }
-                $direction->save();
+                $address->save();
             } else {
-                $direction = Direction::create([
+                $address = Address::create([
                     'country' => $request->get('country'),
                     'administrative_area_level_1' => $request->get('administrative_area_level_1'),
                     'administrative_area_level_2' => $request->get('administrative_area_level_2'),
@@ -669,10 +669,10 @@ class UserController extends BaseController
                     'lat' => $request->get('lat'),
                     'lng' => $request->get('lng'),
                 ]);
-                $user['direction_id'] = $direction['id'];
+                $user['address_id'] = $address['id'];
                 $user->save();
             }
-            return response()->json($direction, 201);
+            return response()->json($address, 201);
         } catch (Illuminate\Database\QueryException $error) {
             return response()->json($error, 406);
         }
@@ -851,8 +851,8 @@ class UserController extends BaseController
         if ($user) {
             $request->user()->token()->revoke();
             $request->user()->token()->delete();
-            if ($user['direction_id']) {
-                Direction::find($user['direction_id'])->delete();
+            if ($user['address_id']) {
+                Address::find($user['address_id'])->delete();
             }
             if ($user['media_id']) {
                 $user['media'] = Media::find($user['media_id']);
@@ -878,8 +878,8 @@ class UserController extends BaseController
     public function deleteUserById($id) {
         $user = User::find($id);
         if ($user) {
-            if ($user['direction_id']) {
-                Direction::find($user['direction_id'])->delete();
+            if ($user['address_id']) {
+                Address::find($user['address_id'])->delete();
             }
             if ($user['media_id']) {
                 $media = Media::find($user['media_id']);

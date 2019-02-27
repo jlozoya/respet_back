@@ -6,7 +6,7 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 
 use App\Models\User;
 use App\Models\EmailConfirm;
-use App\Models\Direction;
+use App\Models\Address;
 use App\Models\Media;
 use App\Models\UserPermissions;
 use App\Models\CatEmails;
@@ -57,9 +57,9 @@ class UserContactController extends BaseController
         if ($permissions['show_alternative_phones']) {
             $contact['phones'] = CatPhones::where('user_id', $id)->get();
         }
-        if ($permissions['show_direction']) {
-            if ($user['direction_id']) {
-                $contact['direction'] = Direction::find($user['direction_id']);
+        if ($permissions['show_address']) {
+            if ($user['address_id']) {
+                $contact['address'] = Address::find($user['address_id']);
             }
         }
         return response()->json([

@@ -204,17 +204,17 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * @apiSuccess (200) {Boolean} [user.confirmed] Si el correo del usuario está confirmado.
      * @apiSuccess (200) {String} user.grant_type Fuente desde la que se registro el usuario.
      * @apiSuccess (200) {String} user.role Rol del usuario.
-     * @apiSuccess (200) {Number} [user.direction_id] Id de la dirección del usuario.
-     * @apiSuccess (200) {Object} [user.direction] Dirección del usuario.
-     * @apiSuccess (200) {String} [user.direction.id] Información del usuario.
-     * @apiSuccess (200) {String} [user.direction.contry] País de la dirección del usuario.
-     * @apiSuccess (200) {String} [user.direction.administrative_area_level_1] Estado de la dirección del usuario.
-     * @apiSuccess (200) {String} [user.direction.administrative_area_level_2] Municipio de la dirección del usuario.
-     * @apiSuccess (200) {String} [user.direction.route] Calle de la dirección del usuario.
-     * @apiSuccess (200) {Number} [user.direction.street_number] Numero de la dirección del usuario.
-     * @apiSuccess (200) {Number} [user.direction.postal_code] Código postal de la dirección del usuario.
-     * @apiSuccess (200) {Number} [user.direction.lat] Latitud de la dirección del usuario.
-     * @apiSuccess (200) {Number} [user.direction.lng] Longitud postal de la dirección del usuario.
+     * @apiSuccess (200) {Number} [user.address_id] Id de la dirección del usuario.
+     * @apiSuccess (200) {Object} [user.address] Dirección del usuario.
+     * @apiSuccess (200) {String} [user.address.id] Información del usuario.
+     * @apiSuccess (200) {String} [user.address.contry] País de la dirección del usuario.
+     * @apiSuccess (200) {String} [user.address.administrative_area_level_1] Estado de la dirección del usuario.
+     * @apiSuccess (200) {String} [user.address.administrative_area_level_2] Municipio de la dirección del usuario.
+     * @apiSuccess (200) {String} [user.address.route] Calle de la dirección del usuario.
+     * @apiSuccess (200) {Number} [user.address.street_number] Numero de la dirección del usuario.
+     * @apiSuccess (200) {Number} [user.address.postal_code] Código postal de la dirección del usuario.
+     * @apiSuccess (200) {Number} [user.address.lat] Latitud de la dirección del usuario.
+     * @apiSuccess (200) {Number} [user.address.lng] Longitud postal de la dirección del usuario.
      * @apiSuccess (200) {String} user.created_at Información del usuario.
      * 
      * @apiError (406) {String} SERVER.USER_NOT_FOUND En caso de que
@@ -315,7 +315,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * @apiSuccess (201) {Boolean} [user.confirmed] Si el correo del usuario está confirmado.
      * @apiSuccess (201) {String} user.grant_type Fuente desde la que se registro el usuario.
      * @apiSuccess (201) {String} user.role Rol del usuario.
-     * @apiSuccess (201) {Number} [user.direction_id] Id de la dirección del usuario.
+     * @apiSuccess (201) {Number} [user.address_id] Id de la dirección del usuario.
      * @apiSuccess (201) {String} user.created_at Información del usuario.
      * 
      * @apiError (406) {QueryException} error Error al ejecutar la consulta.
@@ -348,7 +348,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * @apiSuccess (201) {Boolean} [user.confirmed] Si el correo del usuario está confirmado.
      * @apiSuccess (201) {String} user.grant_type Fuente desde la que se registro el usuario.
      * @apiSuccess (201) {String} user.role Rol del usuario.
-     * @apiSuccess (201) {Number} [user.direction_id] Id de la dirección del usuario.
+     * @apiSuccess (201) {Number} [user.address_id] Id de la dirección del usuario.
      * @apiSuccess (201) {String} user.created_at Información del usuario.
      * 
      * @apiError (406) {String} SERVER.USER_EMAIL_ALREADY_EXISTS Cuando un usuario
@@ -374,9 +374,9 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      */
     $router->put('/user/lang', ['uses' => 'UserController@updateUserLang']);
     /**
-     * @api {put} /user/direction Actualizar la dirección del usuario propio.
+     * @api {put} /user/address Actualizar la dirección del usuario propio.
      * @apiVersion 0.0.1
-     * @apiName UpdateUserDirection
+     * @apiName UpdateUserAddress
      * @apiGroup User
      * @apiPermission user
      * 
@@ -391,20 +391,20 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * @apiParam {String} [lat] Latitud del usuario.
      * @apiParam {String} [lng] Longitud del usuario.
      * 
-     * @apiSuccess (201) {Object} [direction] userDirección del usuario.
-     * @apiSuccess (201) {String} [direction.id] Información del usuario.
-     * @apiSuccess (201) {String} [direction.contry] País de la dirección del usuario.
-     * @apiSuccess (201) {String} [direction.administrative_area_level_1] Estado de la dirección del usuario.
-     * @apiSuccess (201) {String} [direction.administrative_area_level_2] Municipio de la dirección del usuario.
-     * @apiSuccess (201) {String} [direction.route] Calle de la dirección del usuario.
-     * @apiSuccess (201) {Number} [direction.street_number] Numero de la dirección del usuario.
-     * @apiSuccess (201) {Number} [direction.postal_code] Código postal de la dirección del usuario.
-     * @apiSuccess (201) {Number} [direction.lat] Latitud de la dirección del usuario.
-     * @apiSuccess (201) {Number} [direction.lng] Longitud postal de la dirección del usuario.
+     * @apiSuccess (201) {Object} [address] userDirección del usuario.
+     * @apiSuccess (201) {String} [address.id] Información del usuario.
+     * @apiSuccess (201) {String} [address.contry] País de la dirección del usuario.
+     * @apiSuccess (201) {String} [address.administrative_area_level_1] Estado de la dirección del usuario.
+     * @apiSuccess (201) {String} [address.administrative_area_level_2] Municipio de la dirección del usuario.
+     * @apiSuccess (201) {String} [address.route] Calle de la dirección del usuario.
+     * @apiSuccess (201) {Number} [address.street_number] Numero de la dirección del usuario.
+     * @apiSuccess (201) {Number} [address.postal_code] Código postal de la dirección del usuario.
+     * @apiSuccess (201) {Number} [address.lat] Latitud de la dirección del usuario.
+     * @apiSuccess (201) {Number} [address.lng] Longitud postal de la dirección del usuario.
      * 
      * @apiError (406) {QueryException} error Error al ejecutar la consulta.
      */
-    $router->put('/user/direction', ['uses' => 'UserController@updateUserDirection']);
+    $router->put('/user/address', ['uses' => 'UserController@updateUserAddress']);
     /**
      * @api {delete} /user/social/link/:id Eliminar un vínculo propio
      * con una red social.
@@ -518,17 +518,17 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * @apiSuccess (200) {Boolean} [user.confirmed] Si el correo del usuario está confirmado.
          * @apiSuccess (200) {String} user.grant_type Fuente desde la que se registro el usuario.
          * @apiSuccess (200) {String} user.role Rol del usuario.
-         * @apiSuccess (200) {Number} [user.direction_id] Id de la dirección del usuario.
-         * @apiSuccess (200) {Object} [user.direction] Dirección del usuario.
-         * @apiSuccess (200) {String} [user.direction.id] Información del usuario.
-         * @apiSuccess (200) {String} [user.direction.contry] País de la dirección del usuario.
-         * @apiSuccess (200) {String} [user.direction.administrative_area_level_1] Estado de la dirección del usuario.
-         * @apiSuccess (200) {String} [user.direction.administrative_area_level_2] Municipio de la dirección del usuario.
-         * @apiSuccess (200) {String} [user.direction.route] Calle de la dirección del usuario.
-         * @apiSuccess (200) {Number} [user.direction.street_number] Numero de la dirección del usuario.
-         * @apiSuccess (200) {Number} [user.direction.postal_code] Código postal de la dirección del usuario.
-         * @apiSuccess (200) {Number} [user.direction.lat] Latitud de la dirección del usuario.
-         * @apiSuccess (200) {Number} [user.direction.lng] Longitud postal de la dirección del usuario.
+         * @apiSuccess (200) {Number} [user.address_id] Id de la dirección del usuario.
+         * @apiSuccess (200) {Object} [user.address] Dirección del usuario.
+         * @apiSuccess (200) {String} [user.address.id] Información del usuario.
+         * @apiSuccess (200) {String} [user.address.contry] País de la dirección del usuario.
+         * @apiSuccess (200) {String} [user.address.administrative_area_level_1] Estado de la dirección del usuario.
+         * @apiSuccess (200) {String} [user.address.administrative_area_level_2] Municipio de la dirección del usuario.
+         * @apiSuccess (200) {String} [user.address.route] Calle de la dirección del usuario.
+         * @apiSuccess (200) {Number} [user.address.street_number] Numero de la dirección del usuario.
+         * @apiSuccess (200) {Number} [user.address.postal_code] Código postal de la dirección del usuario.
+         * @apiSuccess (200) {Number} [user.address.lat] Latitud de la dirección del usuario.
+         * @apiSuccess (200) {Number} [user.address.lng] Longitud postal de la dirección del usuario.
          * @apiSuccess (200) {String} user.created_at Información del usuario.
          * 
          * @apiError (406) {String} SERVER.USER_NOT_FOUND En caso de que no se
@@ -568,17 +568,17 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * @apiSuccess (200) {Boolean} [user.confirmed] Si el correo del usuario está confirmado.
          * @apiSuccess (200) {String} user.grant_type Fuente desde la que se registro el usuario.
          * @apiSuccess (200) {String} user.role Rol del usuario.
-         * @apiSuccess (200) {Number} [user.direction_id] Id de la dirección del usuario.
-         * @apiSuccess (200) {Object} [user.direction] Dirección del usuario.
-         * @apiSuccess (200) {String} [user.direction.id] Información del usuario.
-         * @apiSuccess (200) {String} [user.direction.contry] País de la dirección del usuario.
-         * @apiSuccess (200) {String} [user.direction.administrative_area_level_1] Estado de la dirección del usuario.
-         * @apiSuccess (200) {String} [user.direction.administrative_area_level_2] Municipio de la dirección del usuario.
-         * @apiSuccess (200) {String} [user.direction.route] Calle de la dirección del usuario.
-         * @apiSuccess (200) {Number} [user.direction.street_number] Numero de la dirección del usuario.
-         * @apiSuccess (200) {Number} [user.direction.postal_code] Código postal de la dirección del usuario.
-         * @apiSuccess (200) {Number} [user.direction.lat] Latitud de la dirección del usuario.
-         * @apiSuccess (200) {Number} [user.direction.lng] Longitud postal de la dirección del usuario.
+         * @apiSuccess (200) {Number} [user.address_id] Id de la dirección del usuario.
+         * @apiSuccess (200) {Object} [user.address] Dirección del usuario.
+         * @apiSuccess (200) {String} [user.address.id] Información del usuario.
+         * @apiSuccess (200) {String} [user.address.contry] País de la dirección del usuario.
+         * @apiSuccess (200) {String} [user.address.administrative_area_level_1] Estado de la dirección del usuario.
+         * @apiSuccess (200) {String} [user.address.administrative_area_level_2] Municipio de la dirección del usuario.
+         * @apiSuccess (200) {String} [user.address.route] Calle de la dirección del usuario.
+         * @apiSuccess (200) {Number} [user.address.street_number] Numero de la dirección del usuario.
+         * @apiSuccess (200) {Number} [user.address.postal_code] Código postal de la dirección del usuario.
+         * @apiSuccess (200) {Number} [user.address.lat] Latitud de la dirección del usuario.
+         * @apiSuccess (200) {Number} [user.address.lng] Longitud postal de la dirección del usuario.
          * @apiSuccess (200) {String} user.created_at Información del usuario.
          */
         $router->post('/users', ['uses' => 'UserController@getUsers']);
@@ -612,7 +612,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * @apiSuccess (201) {Boolean} [user.confirmed] Si el correo del usuario está confirmado.
          * @apiSuccess (201) {String} user.grant_type Fuente desde la que se registro el usuario.
          * @apiSuccess (201) {String} user.role Rol del usuario.
-         * @apiSuccess (201) {Number} [user.direction_id] Id de la dirección del usuario.
+         * @apiSuccess (201) {Number} [user.address_id] Id de la dirección del usuario.
          * @apiSuccess (201) {String} user.created_at Información del usuario.
          * 
          * @apiError (406) {QueryException} error Error al ejecutar la consulta.
@@ -664,7 +664,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * @apiSuccess (201) {Boolean} [user.confirmed] Si el correo del usuario está confirmado.
          * @apiSuccess (201) {String} user.grant_type Fuente desde la que se registro el usuario.
          * @apiSuccess (201) {String} user.role Rol del usuario.
-         * @apiSuccess (201) {Number} [user.direction_id] Id de la dirección del usuario.
+         * @apiSuccess (201) {Number} [user.address_id] Id de la dirección del usuario.
          * @apiSuccess (201) {String} user.created_at Información del usuario.
          * 
          * @apiError (406) {String} SERVER.USER_EMAIL_ALREADY_EXISTS Cuando un usuario
@@ -691,9 +691,9 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          */
         $router->put('/user/lang/{id}', ['uses' => 'UserController@updateUserLangById']);
         /**
-         * @api {put} /user/direction/:id Actualizar la dirección de un usuario por su id.
+         * @api {put} /user/address/:id Actualizar la dirección de un usuario por su id.
          * @apiVersion 0.0.1
-         * @apiName UpdateUserDirectionById
+         * @apiName UpdateUserAddressById
          * @apiGroup Admin
          * @apiPermission admin
          * 
@@ -709,16 +709,16 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * @apiParam {String} [lat] Latitud del usuario.
          * @apiParam {String} [lng] Longitud del usuario.
          * 
-         * @apiSuccess (201) {Direction} userDirection Información de la
+         * @apiSuccess (201) {Address} userAddress Información de la
          * dirección del usuario.
          * 
          * @apiError (406) {QueryException} error Error al ejecutar la consulta.
          */
-        $router->put('/user/direction/{id}', ['uses' => 'UserController@updateUserDirectionById']);
+        $router->put('/user/address/{id}', ['uses' => 'UserController@updateUserAddressById']);
         /**
          * @api {put} /user/role/:id Actualizar el rol del usuario por su id.
          * @apiVersion 0.0.1
-         * @apiName UpdateUserDirectionById
+         * @apiName UpdateUserAddressById
          * @apiGroup Admin
          * @apiPermission admin
          * 

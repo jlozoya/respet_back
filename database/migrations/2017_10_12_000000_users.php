@@ -31,13 +31,13 @@ class Users extends Migration
             )->default('password');
             $table->enum('role', ['visitor', 'user', 'admin', 'other'])
             ->default('visitor');
-            $table->integer('direction_id')->unsigned()->nullable();
+            $table->integer('address_id')->unsigned()->nullable();
             $table->integer('permissions_id')->unsigned()->nullable();
             $table->timestamps();
 
             $table->foreign('permissions_id')->references('id')->on('user_permissions')
             ->onDelete('set null')->onUpdate('cascade');
-            $table->foreign('direction_id')->references('id')->on('directions')
+            $table->foreign('address_id')->references('id')->on('addresses')
             ->onDelete('set null')->onUpdate('cascade');
             $table->foreign('media_id')->references('id')->on('media')
             ->onDelete('set null')->onUpdate('cascade');
