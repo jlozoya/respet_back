@@ -191,77 +191,77 @@ define({ "api": [
             "group": "200",
             "type": "Number",
             "optional": true,
-            "field": "user.direction_id",
+            "field": "user.address_id",
             "description": "<p>Id de la dirección del usuario.</p>"
           },
           {
             "group": "200",
             "type": "Object",
             "optional": true,
-            "field": "user.direction",
+            "field": "user.address",
             "description": "<p>Dirección del usuario.</p>"
           },
           {
             "group": "200",
             "type": "String",
             "optional": true,
-            "field": "user.direction.id",
+            "field": "user.address.id",
             "description": "<p>Información del usuario.</p>"
           },
           {
             "group": "200",
             "type": "String",
             "optional": true,
-            "field": "user.direction.contry",
+            "field": "user.address.contry",
             "description": "<p>País de la dirección del usuario.</p>"
           },
           {
             "group": "200",
             "type": "String",
             "optional": true,
-            "field": "user.direction.administrative_area_level_1",
+            "field": "user.address.administrative_area_level_1",
             "description": "<p>Estado de la dirección del usuario.</p>"
           },
           {
             "group": "200",
             "type": "String",
             "optional": true,
-            "field": "user.direction.administrative_area_level_2",
+            "field": "user.address.administrative_area_level_2",
             "description": "<p>Municipio de la dirección del usuario.</p>"
           },
           {
             "group": "200",
             "type": "String",
             "optional": true,
-            "field": "user.direction.route",
+            "field": "user.address.route",
             "description": "<p>Calle de la dirección del usuario.</p>"
           },
           {
             "group": "200",
             "type": "Number",
             "optional": true,
-            "field": "user.direction.street_number",
+            "field": "user.address.street_number",
             "description": "<p>Numero de la dirección del usuario.</p>"
           },
           {
             "group": "200",
             "type": "Number",
             "optional": true,
-            "field": "user.direction.postal_code",
+            "field": "user.address.postal_code",
             "description": "<p>Código postal de la dirección del usuario.</p>"
           },
           {
             "group": "200",
             "type": "Number",
             "optional": true,
-            "field": "user.direction.lat",
+            "field": "user.address.lat",
             "description": "<p>Latitud de la dirección del usuario.</p>"
           },
           {
             "group": "200",
             "type": "Number",
             "optional": true,
-            "field": "user.direction.lng",
+            "field": "user.address.lng",
             "description": "<p>Longitud postal de la dirección del usuario.</p>"
           },
           {
@@ -489,77 +489,77 @@ define({ "api": [
             "group": "200",
             "type": "Number",
             "optional": true,
-            "field": "user.direction_id",
+            "field": "user.address_id",
             "description": "<p>Id de la dirección del usuario.</p>"
           },
           {
             "group": "200",
             "type": "Object",
             "optional": true,
-            "field": "user.direction",
+            "field": "user.address",
             "description": "<p>Dirección del usuario.</p>"
           },
           {
             "group": "200",
             "type": "String",
             "optional": true,
-            "field": "user.direction.id",
+            "field": "user.address.id",
             "description": "<p>Información del usuario.</p>"
           },
           {
             "group": "200",
             "type": "String",
             "optional": true,
-            "field": "user.direction.contry",
+            "field": "user.address.contry",
             "description": "<p>País de la dirección del usuario.</p>"
           },
           {
             "group": "200",
             "type": "String",
             "optional": true,
-            "field": "user.direction.administrative_area_level_1",
+            "field": "user.address.administrative_area_level_1",
             "description": "<p>Estado de la dirección del usuario.</p>"
           },
           {
             "group": "200",
             "type": "String",
             "optional": true,
-            "field": "user.direction.administrative_area_level_2",
+            "field": "user.address.administrative_area_level_2",
             "description": "<p>Municipio de la dirección del usuario.</p>"
           },
           {
             "group": "200",
             "type": "String",
             "optional": true,
-            "field": "user.direction.route",
+            "field": "user.address.route",
             "description": "<p>Calle de la dirección del usuario.</p>"
           },
           {
             "group": "200",
             "type": "Number",
             "optional": true,
-            "field": "user.direction.street_number",
+            "field": "user.address.street_number",
             "description": "<p>Numero de la dirección del usuario.</p>"
           },
           {
             "group": "200",
             "type": "Number",
             "optional": true,
-            "field": "user.direction.postal_code",
+            "field": "user.address.postal_code",
             "description": "<p>Código postal de la dirección del usuario.</p>"
           },
           {
             "group": "200",
             "type": "Number",
             "optional": true,
-            "field": "user.direction.lat",
+            "field": "user.address.lat",
             "description": "<p>Latitud de la dirección del usuario.</p>"
           },
           {
             "group": "200",
             "type": "Number",
             "optional": true,
-            "field": "user.direction.lng",
+            "field": "user.address.lng",
             "description": "<p>Longitud postal de la dirección del usuario.</p>"
           },
           {
@@ -643,6 +643,203 @@ define({ "api": [
             "optional": false,
             "field": "fileUrl",
             "description": "<p>Url donde se almaceno el archivo.</p>"
+          }
+        ]
+      }
+    },
+    "filename": "./routes/web.php",
+    "groupTitle": "Admin"
+  },
+  {
+    "type": "put",
+    "url": "/user/role/:id",
+    "title": "Actualizar el rol del usuario por su id.",
+    "version": "0.0.1",
+    "name": "UpdateUserAddressById",
+    "group": "Admin",
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Auth": [
+          {
+            "group": "Auth",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>Token de autorización.</p>"
+          }
+        ]
+      }
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Id del usuario a actualizar.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "role",
+            "description": "<p>Nuevo rol del usuario.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "202": [
+          {
+            "group": "202",
+            "type": "String",
+            "optional": false,
+            "field": "role",
+            "description": "<p>Nuevo rol del usuario.</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "404": [
+          {
+            "group": "404",
+            "type": "String",
+            "optional": false,
+            "field": "SERVER.USER_NOT_REGISTRED",
+            "description": "<p>Cuando el usuario no está registrado.</p>"
+          }
+        ]
+      }
+    },
+    "filename": "./routes/web.php",
+    "groupTitle": "Admin"
+  },
+  {
+    "type": "put",
+    "url": "/user/address/:id",
+    "title": "Actualizar la dirección de un usuario por su id.",
+    "version": "0.0.1",
+    "name": "UpdateUserAddressById",
+    "group": "Admin",
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Auth": [
+          {
+            "group": "Auth",
+            "type": "String",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>Token de autorización.</p>"
+          }
+        ]
+      }
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Id del usuario a actualizar.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "country",
+            "description": "<p>País del usuario.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "administrative_area_level_1",
+            "description": "<p>Estado del ususario.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "administrative_area_level_2",
+            "description": "<p>Ciudad del usuario.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "route",
+            "description": "<p>Calle del usuario.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "street_number",
+            "description": "<p>Número del domicilio del usuario.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "postal_code",
+            "description": "<p>Código postal del usuario.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "lat",
+            "description": "<p>Latitud del usuario.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "lng",
+            "description": "<p>Longitud del usuario.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "201": [
+          {
+            "group": "201",
+            "type": "Address",
+            "optional": false,
+            "field": "userAddress",
+            "description": "<p>Información de la dirección del usuario.</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "406": [
+          {
+            "group": "406",
+            "type": "QueryException",
+            "optional": false,
+            "field": "error",
+            "description": "<p>Error al ejecutar la consulta.</p>"
           }
         ]
       }
@@ -828,7 +1025,7 @@ define({ "api": [
             "group": "201",
             "type": "Number",
             "optional": true,
-            "field": "user.direction_id",
+            "field": "user.address_id",
             "description": "<p>Id de la dirección del usuario.</p>"
           },
           {
@@ -837,203 +1034,6 @@ define({ "api": [
             "optional": false,
             "field": "user.created_at",
             "description": "<p>Información del usuario.</p>"
-          }
-        ]
-      }
-    },
-    "error": {
-      "fields": {
-        "406": [
-          {
-            "group": "406",
-            "type": "QueryException",
-            "optional": false,
-            "field": "error",
-            "description": "<p>Error al ejecutar la consulta.</p>"
-          }
-        ]
-      }
-    },
-    "filename": "./routes/web.php",
-    "groupTitle": "Admin"
-  },
-  {
-    "type": "put",
-    "url": "/user/role/:id",
-    "title": "Actualizar el rol del usuario por su id.",
-    "version": "0.0.1",
-    "name": "UpdateUserDirectionById",
-    "group": "Admin",
-    "permission": [
-      {
-        "name": "admin"
-      }
-    ],
-    "header": {
-      "fields": {
-        "Auth": [
-          {
-            "group": "Auth",
-            "type": "String",
-            "optional": false,
-            "field": "Authorization",
-            "description": "<p>Token de autorización.</p>"
-          }
-        ]
-      }
-    },
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "Number",
-            "optional": false,
-            "field": "id",
-            "description": "<p>Id del usuario a actualizar.</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": true,
-            "field": "role",
-            "description": "<p>Nuevo rol del usuario.</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "202": [
-          {
-            "group": "202",
-            "type": "String",
-            "optional": false,
-            "field": "role",
-            "description": "<p>Nuevo rol del usuario.</p>"
-          }
-        ]
-      }
-    },
-    "error": {
-      "fields": {
-        "404": [
-          {
-            "group": "404",
-            "type": "String",
-            "optional": false,
-            "field": "SERVER.USER_NOT_REGISTRED",
-            "description": "<p>Cuando el usuario no está registrado.</p>"
-          }
-        ]
-      }
-    },
-    "filename": "./routes/web.php",
-    "groupTitle": "Admin"
-  },
-  {
-    "type": "put",
-    "url": "/user/direction/:id",
-    "title": "Actualizar la dirección de un usuario por su id.",
-    "version": "0.0.1",
-    "name": "UpdateUserDirectionById",
-    "group": "Admin",
-    "permission": [
-      {
-        "name": "admin"
-      }
-    ],
-    "header": {
-      "fields": {
-        "Auth": [
-          {
-            "group": "Auth",
-            "type": "String",
-            "optional": false,
-            "field": "Authorization",
-            "description": "<p>Token de autorización.</p>"
-          }
-        ]
-      }
-    },
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "Number",
-            "optional": false,
-            "field": "id",
-            "description": "<p>Id del usuario a actualizar.</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": true,
-            "field": "country",
-            "description": "<p>País del usuario.</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": true,
-            "field": "administrative_area_level_1",
-            "description": "<p>Estado del ususario.</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": true,
-            "field": "administrative_area_level_2",
-            "description": "<p>Ciudad del usuario.</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": true,
-            "field": "route",
-            "description": "<p>Calle del usuario.</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": true,
-            "field": "street_number",
-            "description": "<p>Número del domicilio del usuario.</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": true,
-            "field": "postal_code",
-            "description": "<p>Código postal del usuario.</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": true,
-            "field": "lat",
-            "description": "<p>Latitud del usuario.</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": true,
-            "field": "lng",
-            "description": "<p>Longitud del usuario.</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "201": [
-          {
-            "group": "201",
-            "type": "Direction",
-            "optional": false,
-            "field": "userDirection",
-            "description": "<p>Información de la dirección del usuario.</p>"
           }
         ]
       }
@@ -1204,7 +1204,7 @@ define({ "api": [
             "group": "201",
             "type": "Number",
             "optional": true,
-            "field": "user.direction_id",
+            "field": "user.address_id",
             "description": "<p>Id de la dirección del usuario.</p>"
           },
           {
@@ -3169,7 +3169,7 @@ define({ "api": [
             "group": "201",
             "type": "Number",
             "optional": true,
-            "field": "user.direction_id",
+            "field": "user.address_id",
             "description": "<p>Id de la dirección del usuario.</p>"
           },
           {
@@ -3200,10 +3200,10 @@ define({ "api": [
   },
   {
     "type": "put",
-    "url": "/user/direction",
+    "url": "/user/address",
     "title": "Actualizar la dirección del usuario propio.",
     "version": "0.0.1",
-    "name": "UpdateUserDirection",
+    "name": "UpdateUserAddress",
     "group": "User",
     "permission": [
       {
@@ -3292,70 +3292,70 @@ define({ "api": [
             "group": "201",
             "type": "Object",
             "optional": true,
-            "field": "direction",
+            "field": "address",
             "description": "<p>userDirección del usuario.</p>"
           },
           {
             "group": "201",
             "type": "String",
             "optional": true,
-            "field": "direction.id",
+            "field": "address.id",
             "description": "<p>Información del usuario.</p>"
           },
           {
             "group": "201",
             "type": "String",
             "optional": true,
-            "field": "direction.contry",
+            "field": "address.contry",
             "description": "<p>País de la dirección del usuario.</p>"
           },
           {
             "group": "201",
             "type": "String",
             "optional": true,
-            "field": "direction.administrative_area_level_1",
+            "field": "address.administrative_area_level_1",
             "description": "<p>Estado de la dirección del usuario.</p>"
           },
           {
             "group": "201",
             "type": "String",
             "optional": true,
-            "field": "direction.administrative_area_level_2",
+            "field": "address.administrative_area_level_2",
             "description": "<p>Municipio de la dirección del usuario.</p>"
           },
           {
             "group": "201",
             "type": "String",
             "optional": true,
-            "field": "direction.route",
+            "field": "address.route",
             "description": "<p>Calle de la dirección del usuario.</p>"
           },
           {
             "group": "201",
             "type": "Number",
             "optional": true,
-            "field": "direction.street_number",
+            "field": "address.street_number",
             "description": "<p>Numero de la dirección del usuario.</p>"
           },
           {
             "group": "201",
             "type": "Number",
             "optional": true,
-            "field": "direction.postal_code",
+            "field": "address.postal_code",
             "description": "<p>Código postal de la dirección del usuario.</p>"
           },
           {
             "group": "201",
             "type": "Number",
             "optional": true,
-            "field": "direction.lat",
+            "field": "address.lat",
             "description": "<p>Latitud de la dirección del usuario.</p>"
           },
           {
             "group": "201",
             "type": "Number",
             "optional": true,
-            "field": "direction.lng",
+            "field": "address.lng",
             "description": "<p>Longitud postal de la dirección del usuario.</p>"
           }
         ]
@@ -3527,7 +3527,7 @@ define({ "api": [
             "group": "201",
             "type": "Number",
             "optional": true,
-            "field": "user.direction_id",
+            "field": "user.address_id",
             "description": "<p>Id de la dirección del usuario.</p>"
           },
           {
@@ -3809,77 +3809,77 @@ define({ "api": [
             "group": "200",
             "type": "Number",
             "optional": true,
-            "field": "user.direction_id",
+            "field": "user.address_id",
             "description": "<p>Id de la dirección del usuario.</p>"
           },
           {
             "group": "200",
             "type": "Object",
             "optional": true,
-            "field": "user.direction",
+            "field": "user.address",
             "description": "<p>Dirección del usuario.</p>"
           },
           {
             "group": "200",
             "type": "String",
             "optional": true,
-            "field": "user.direction.id",
+            "field": "user.address.id",
             "description": "<p>Información del usuario.</p>"
           },
           {
             "group": "200",
             "type": "String",
             "optional": true,
-            "field": "user.direction.contry",
+            "field": "user.address.contry",
             "description": "<p>País de la dirección del usuario.</p>"
           },
           {
             "group": "200",
             "type": "String",
             "optional": true,
-            "field": "user.direction.administrative_area_level_1",
+            "field": "user.address.administrative_area_level_1",
             "description": "<p>Estado de la dirección del usuario.</p>"
           },
           {
             "group": "200",
             "type": "String",
             "optional": true,
-            "field": "user.direction.administrative_area_level_2",
+            "field": "user.address.administrative_area_level_2",
             "description": "<p>Municipio de la dirección del usuario.</p>"
           },
           {
             "group": "200",
             "type": "String",
             "optional": true,
-            "field": "user.direction.route",
+            "field": "user.address.route",
             "description": "<p>Calle de la dirección del usuario.</p>"
           },
           {
             "group": "200",
             "type": "Number",
             "optional": true,
-            "field": "user.direction.street_number",
+            "field": "user.address.street_number",
             "description": "<p>Numero de la dirección del usuario.</p>"
           },
           {
             "group": "200",
             "type": "Number",
             "optional": true,
-            "field": "user.direction.postal_code",
+            "field": "user.address.postal_code",
             "description": "<p>Código postal de la dirección del usuario.</p>"
           },
           {
             "group": "200",
             "type": "Number",
             "optional": true,
-            "field": "user.direction.lat",
+            "field": "user.address.lat",
             "description": "<p>Latitud de la dirección del usuario.</p>"
           },
           {
             "group": "200",
             "type": "Number",
             "optional": true,
-            "field": "user.direction.lng",
+            "field": "user.address.lng",
             "description": "<p>Longitud postal de la dirección del usuario.</p>"
           },
           {
