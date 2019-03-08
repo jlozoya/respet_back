@@ -156,7 +156,7 @@ $router->get('/bulletins', ['uses' => 'BulletinController@getBulletins']);
  */
 $router->get('/bulletin/{id}', ['uses' => 'BulletinController@show']);
 
-$router->post('/pets', ['uses' => 'PetController@index']);
+$router->get('/pets', ['uses' => 'PetController@index']);
 $router->get('/pet/{id}', ['uses' => 'PetController@show']);
 
 $router->get('/user/contact/{id}', ['uses' => 'UserContactController@getUserContactById']);
@@ -581,7 +581,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * @apiSuccess (200) {Number} [user.address.lng] Longitud postal de la dirección del usuario.
          * @apiSuccess (200) {String} user.created_at Información del usuario.
          */
-        $router->post('/users', ['uses' => 'UserController@getUsers']);
+        $router->get('/users', ['uses' => 'UserController@getUsers']);
         /**
          * @api {put} /user/:id Actualizar la información de un usuario por su id.
          * @apiVersion 0.0.1
@@ -864,6 +864,6 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * @apiSuccess (200) {String} analytics.created_at Fecha en que se registraron.
          * @apiSuccess (200) {Number} analytics.users Numero de ususario.
          */
-        $router->post('/analytics/users/registration', ['uses' => 'AnalyticController@getUsersRegistration']);
+        $router->get('/analytics/users/registration', ['uses' => 'AnalyticController@getUsersRegistration']);
     });
 });
