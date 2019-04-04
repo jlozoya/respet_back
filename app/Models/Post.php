@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Pet extends Model
+class Post extends Model
 {
     /**
      * Los atributos que son asignados en masa.

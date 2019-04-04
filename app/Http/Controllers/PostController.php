@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use Laravel\Lumen\Routing\Controller as BaseController;
 
-use App\Models\Pet;
+use App\Models\Post;
 use App\Models\Direction;
 use App\Models\User;
-use App\Models\PetMedia;
+use App\Models\PostMedia;
 use App\Models\Media;
 use DB;
 
@@ -18,7 +18,7 @@ use Intervention\Image\ImageManagerStatic as Image;
 
 use Carbon\Carbon;
 
-class PetController extends BaseController
+class PostController extends BaseController
 {
     /**
      * Muestra una lista del recurso.
@@ -28,11 +28,11 @@ class PetController extends BaseController
      */
     public function index(Request $request) {
         if ($request->get('search')) {
-            $pets = Pet::where('description', 'like', '%' . $request->get('search') . '%')
+            $posts = Post::where('description', 'like', '%' . $request->get('search') . '%')
             ->orWhere('state', 'like', '%' . $request->get('search') . '%')
             ->orderBy('updated_at', 'DESC')
             ->paginate(5);
-            return $this->attachData($pets);
+            return $this->attachData($posts);
         } else if ($request->get('direction')) {
             $where = "";
             if ($request->input('direction.country')) {
@@ -59,8 +59,8 @@ class PetController extends BaseController
             if ($request->input('direction.lng')) {
                 $where .= " `directions`.`lng` LIKE '%" . $request->input('direction.lng') . "%'";
             }
-            return $this->attachData(Pet::select('pets.*')
-            ->join('directions', 'pets.direction_id', '=', 'directions.id')
+            return $this->attachData(Post::select('posts.*')
+            ->join('directions', 'posts.direction_id', '=', 'directions.id')
             ->whereRaw($where)
             ->orderBy('updated_at', 'DESC')
             ->paginate(5));
@@ -75,42 +75,42 @@ class PetController extends BaseController
             ->havingRaw("distance <= $distance")
             ->where('lat', '!=', 0)
             ->get()->toArray();
-            $pets = [];
+            $posts = [];
             foreach ($directions as $direction) {
-                $pet = Pet::where('direction_id', $direction->id)->first();
-                if ($pet) {
-                    array_push($pets, $pet);
+                $post = Post::where('direction_id', $direction->id)->first();
+                if ($post) {
+                    array_push($posts, $post);
                 }
             }
-            return $this->attachData($pets);
+            return $this->attachData($posts);
         } else {
-            return $this->attachData(Pet::orderBy('updated_at', 'DESC')->paginate(5));
+            return $this->attachData(Post::orderBy('updated_at', 'DESC')->paginate(5));
         }
     }
 
     /**
      * Agrega información a la consulta.
      * 
-     * @param $pets
+     * @param $posts
      * @return \Illuminate\Http\Response
      */
-    private function attachData($pets) {
-        foreach ($pets as &$pet) {
-            $pet['user'] = User::select(
+    private function attachData($posts) {
+        foreach ($posts as &$post) {
+            $post['user'] = User::select(
                 'id',
                 'name',
                 'media_id'
-            )->where('id', $pet['user_id'])->first();
-            if ($pet['user']['media_id']) {
-                $pet['user']['media'] = Media::find($pet['user']['media_id']);
+            )->where('id', $post['user_id'])->first();
+            if ($post['user']['media_id']) {
+                $post['user']['media'] = Media::find($post['user']['media_id']);
             }
-            if ($pet['direction_id']) {
-                $pet['direction'] = Direction::find($pet['direction_id']);
+            if ($post['direction_id']) {
+                $post['direction'] = Direction::find($post['direction_id']);
             }
-            $pet['media'] = PetMedia::select('media.*')->where('pet_media.pet_id', $pet['id'])
-            ->join('media', 'pet_media.media_id', 'media.id')->get();
+            $post['media'] = PostMedia::select('media.*')->where('post_media.post_id', $post['id'])
+            ->join('media', 'post_media.media_id', 'media.id')->get();
         }
-        return response()->json($pets, 200);
+        return response()->json($posts, 200);
     }
 
     /**
@@ -125,7 +125,7 @@ class PetController extends BaseController
             'description' => 'required',
             'state' => 'required',
         ]);
-        $pet = Pet::create([
+        $post = Post::create([
             'user_id' => $user['id'],
             'description' => $request->get('description'),
             'state' => $request->get('state'),
@@ -143,15 +143,15 @@ class PetController extends BaseController
                 'lat' => $request->input('direction.lat'),
                 'lng' => $request->input('direction.lng'),
             ]);
-            $pet['direction_id'] = $direction['id'];
-            $pet->save();
-            $pet['direction'] = $direction;
+            $post['direction_id'] = $direction['id'];
+            $post->save();
+            $post['direction'] = $direction;
         }
-        $pet['user'] = $user;
-        if ($pet['user']['media_id']) {
-            $pet['user']['media'] = Media::find($pet['user']['media_id']);
+        $post['user'] = $user;
+        if ($post['user']['media_id']) {
+            $post['user']['media'] = Media::find($post['user']['media_id']);
         }
-        return response()->json($pet, 201);
+        return response()->json($post, 201);
     }
 
     /**
@@ -173,8 +173,8 @@ class PetController extends BaseController
             $file = $request->file('file');
         }
         $date = Carbon::now()->toDateString();
-        $path = $_SERVER['DOCUMENT_ROOT'] . env('APP_PUBLIC_URL', '/app') . '/img/pets/' . $date . '/';
-        $fileUrl = URL::to('/') . '/img/pets/' . $date . '/' . $fileName;
+        $path = $_SERVER['DOCUMENT_ROOT'] . env('APP_PUBLIC_URL', '/app') . '/img/posts/' . $date . '/';
+        $fileUrl = URL::to('/') . '/img/posts/' . $date . '/' . $fileName;
         if (!File::exists($path)) {
             File::makeDirectory($path, 2777, true);
         }
@@ -187,7 +187,7 @@ class PetController extends BaseController
             'width' => $data[0],
             'height' => $data[1],
         ]);
-        PetMedia::create(['pet_id' => $request->input('params.id'), 'media_id' => $media['id']]);
+        PostMedia::create(['post_id' => $request->input('params.id'), 'media_id' => $media['id']]);
         return response()->json($media, 202);
     }
 
@@ -198,21 +198,21 @@ class PetController extends BaseController
      * @return \Illuminate\Http\Response
      */
     public function show($id) {
-        $pet = Pet::find($id);
-        $pet['user'] = User::select(
+        $post = Post::find($id);
+        $post['user'] = User::select(
             'id',
             'name',
             'media_id'
-        )->where('id', $pet['user_id'])->first();
-        if ($pet['user']['media_id']) {
-            $pet['user']['media'] = Media::find($pet['user']['media_id']);
+        )->where('id', $post['user_id'])->first();
+        if ($post['user']['media_id']) {
+            $post['user']['media'] = Media::find($post['user']['media_id']);
         }
-        if ($pet['direction_id']) {
-            $pet['direction'] = Direction::find($pet['direction_id']);
+        if ($post['direction_id']) {
+            $post['direction'] = Direction::find($post['direction_id']);
         }
-        $pet['media'] = PetMedia::select('media.*')->where('pet_media.pet_id', $pet['id'])
-        ->join('media', 'pet_media.media_id', 'media.id')->get();
-        return response()->json($pet, 200);
+        $post['media'] = PostMedia::select('media.*')->where('post_media.post_id', $post['id'])
+        ->join('media', 'post_media.media_id', 'media.id')->get();
+        return response()->json($post, 200);
     }
 
     /**
@@ -223,26 +223,26 @@ class PetController extends BaseController
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
-        $pet = Pet::find($id);
-        if ($pet['user_id'] == $request->user()['id']) {
+        $post = Post::find($id);
+        if ($post['user_id'] == $request->user()['id']) {
             if ($request->get('user_id')) {
                 $this->validate($request, ['user_id' => 'number',]);
-                $pet['user_id'] = $request->get('user_id');
+                $post['user_id'] = $request->get('user_id');
             }
             if ($request->get('description')) {
                 $this->validate($request, ['description' => 'string',]);
-                $pet['description'] = $request->get('description');
+                $post['description'] = $request->get('description');
             }
             // 'found' | 'lost' | 'on_adoption' | 'on_sale' | 'on_hold' | 'other'
             if ($request->get('state')) {
                 $this->validate($request, ['state' => 'string',]);
-                $pet['state'] = $request->get('state');
+                $post['state'] = $request->get('state');
             }
             $direction;
-            if ($pet['direction_id']) {
+            if ($post['direction_id']) {
                 $this->validate($request, ['direction_id' => 'numeric',]);
                 if ($request->get('direction')) {
-                    $direction = Direction::find($pet['direction_id']);
+                    $direction = Direction::find($post['direction_id']);
                     if ($request->get('direction')['country']) {
                         $this->validate($request, ['direction.country' => 'max:60',]);
                         $direction['country'] = $request->get('direction')['country'];
@@ -288,24 +288,24 @@ class PetController extends BaseController
                         'lat' => $request->input('direction.lat'),
                         'lng' => $request->input('direction.lng'),
                     ]);
-                    $pet['direction_id'] = $direction['id'];
+                    $post['direction_id'] = $direction['id'];
                 }
             }
-            $pet->save();
+            $post->save();
             if ($direction) {
-                $pet['direction'] = $direction;
+                $post['direction'] = $direction;
             }
-            $pet['user'] = User::select(
+            $post['user'] = User::select(
                 'id',
                 'name',
                 'media_id'
-            )->where('id', $pet['user_id'])->first();
-            if ($pet['user']['media_id']) {
-                $pet['user']['media'] = Media::find($pet['user']['media_id']);
+            )->where('id', $post['user_id'])->first();
+            if ($post['user']['media_id']) {
+                $post['user']['media'] = Media::find($post['user']['media_id']);
             }
-            $pet['media'] = PetMedia::select('media.*')->where('pet_media.pet_id', $pet['id'])
-            ->join('media', 'pet_media.media_id', 'media.id')->get();
-            return response()->json($pet, 201);
+            $post['media'] = PostMedia::select('media.*')->where('post_media.post_id', $post['id'])
+            ->join('media', 'post_media.media_id', 'media.id')->get();
+            return response()->json($post, 201);
         } else {
             return response()->json('SERVER.WRONG_USER', 404);
         }
@@ -318,14 +318,14 @@ class PetController extends BaseController
      * @return \Illuminate\Http\Response
      */
     public function destroyFile(Request $request, $id) {
-        $petMedia = PetMedia::where('media_id', $id)->first();
-        $pet = Pet::find($petMedia['pet_id']);
-        if ($pet['user_id'] == $request->user()['id']) {
-            $media = Media::find($petMedia['media_id']);
+        $postMedia = PostMedia::where('media_id', $id)->first();
+        $post = Post::find($postMedia['post_id']);
+        if ($post['user_id'] == $request->user()['id']) {
+            $media = Media::find($postMedia['media_id']);
             if (parse_url($media['url'])['host'] == parse_url(URL::to('/'))['host']) {
                 File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($media['url'])['path']);
             }
-            $petMedia->delete();
+            $postMedia->delete();
             $media->delete();
             return response()->json(null, 204);
         } else {
@@ -340,20 +340,20 @@ class PetController extends BaseController
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request, $id) {
-        $pet = Pet::find($id);
-        if ($pet['user_id'] == $request->user()['id']) {
-            if ($pet['direction_id']) {
-                Direction::find($pet['direction_id'])->delete();
+        $post = Post::find($id);
+        if ($post['user_id'] == $request->user()['id']) {
+            if ($post['direction_id']) {
+                Direction::find($post['direction_id'])->delete();
             }
-            $pet['media'] = PetMedia::select('media.*')->where('pet_media.pet_id', $pet['id'])
-            ->join('media', 'pet_media.media_id', 'media.id')->get();
-            foreach ($pet['media'] as &$media) {
+            $post['media'] = PostMedia::select('media.*')->where('post_media.post_id', $post['id'])
+            ->join('media', 'post_media.media_id', 'media.id')->get();
+            foreach ($post['media'] as &$media) {
                 if (parse_url($media['url'])['host'] == parse_url(URL::to('/'))['host']) {
                     File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($media['url'])['path']);
                 }
                 $media->delete();
             }
-            $pet->delete();
+            $post->delete();
             return response()->json(null, 204);
         } else {
             return response()->json('SERVER.WRONG_USER', 404);

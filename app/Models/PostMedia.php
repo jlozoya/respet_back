@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PetMedia extends Model
+class PostMedia extends Model
 {
     /**
      * Los atributos que son asignados en masa.
@@ -13,7 +13,7 @@ class PetMedia extends Model
      */
     protected $fillable = [
         'id',
-        'pet_id',
+        'post_id',
         'media_id',
     ];
     /**

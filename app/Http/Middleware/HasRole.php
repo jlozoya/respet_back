@@ -3,24 +3,25 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use App\Models\User;
 
-class IsAdmin
+class HasRole
 {
     /**
-     * Este middleware valida que los usuarios tengan permisos nivel uno para para ejecutar
-     * las funciones de las rutas en este nivel.
+     * Este middleware valida que el usuario disponga de determinados roles
+     * para perimir su acceso.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
+     * @param  String ... $roles
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle($request, Closure $next, ... $roles)
     {
         $user = $request->user();
         if ($user) {
-            if ($user['role'] == 'admin') {
-                return $next($request);
+            foreach ($roles as $role) {
+                if ($user['role'] == ($role))
+                    return $next($request);
             }
             return response()->json('SERVER.NOT_ENOUGH_RIGHTS', 406);
         }

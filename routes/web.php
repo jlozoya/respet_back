@@ -156,8 +156,8 @@ $router->get('/bulletins', ['uses' => 'BulletinController@getBulletins']);
  */
 $router->get('/bulletin/{id}', ['uses' => 'BulletinController@show']);
 
-$router->get('/pets', ['uses' => 'PetController@index']);
-$router->get('/pet/{id}', ['uses' => 'PetController@show']);
+$router->get('/posts', ['uses' => 'PostController@index']);
+$router->get('/post/{id}', ['uses' => 'PostController@show']);
 
 $router->get('/user/contact/{id}', ['uses' => 'UserContactController@getUserContactById']);
 
@@ -473,11 +473,11 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      */
     $router->post('/user/pay', ['uses' => 'PayController@createPay']);
 
-    $router->post('/pet', ['uses' => 'PetController@store']);
-    $router->delete('/pet/file/{id}', ['uses' => 'PetController@destroyFile']);
-    $router->put('/pet/file', ['uses' => 'PetController@storeFile']);
-    $router->put('/pet/{id}', ['uses' => 'PetController@update']);
-    $router->delete('/pet/{id}', ['uses' => 'PetController@destroy']);
+    $router->post('/post', ['uses' => 'PostController@store']);
+    $router->delete('/post/file/{id}', ['uses' => 'PostController@destroyFile']);
+    $router->put('/post/file', ['uses' => 'PostController@storeFile']);
+    $router->put('/post/{id}', ['uses' => 'PostController@update']);
+    $router->delete('/post/{id}', ['uses' => 'PostController@destroy']);
 
     $router->get('/health_stats', ['uses' => 'HealthStatController@index']);
     $router->post('/health_stat', ['uses' => 'HealthStatController@store']);
@@ -485,7 +485,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
     $router->put('/health_stat/{id}', ['uses' => 'HealthStatController@update']);
     $router->delete('/health_stat/{id}', ['uses' => 'HealthStatController@destroy']);
 
-    $router->group(['middleware' => ['isAdmin']], function () use ($router) {
+    $router->group(['middleware' => ['hasRole:admin']], function () use ($router) {
         /**
          * @api {get} /user/:id Obtiene la información de un usuario por su id.
          * @apiVersion 0.0.1

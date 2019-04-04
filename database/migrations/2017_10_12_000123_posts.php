@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Pets extends Migration
+class Posts extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class Pets extends Migration
      */
     public function up()
     {
-        Schema::create('pets', function (Blueprint $table) {
+        Schema::create('posts', function (Blueprint $table) {
             $table->increments('id')->unique();
             $table->integer('user_id')->unsigned();
             $table->text('description');
@@ -38,7 +38,7 @@ class Pets extends Migration
     public function down()
     {
         \DB::statement('SET FOREIGN_KEY_CHECKS = 0');
-        Schema::dropIfExists('pets');
+        Schema::dropIfExists('posts');
         \DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
 }
