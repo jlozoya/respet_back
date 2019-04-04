@@ -33,6 +33,8 @@ class PostController extends BaseController
             ->orderBy('updated_at', 'DESC')
             ->paginate(5);
             return $this->attachData($posts);
+        } else if ($request->get('user_id')) {
+            return $this->attachData(Post::where('user_id', $id)->orderBy('updated_at', 'DESC')->paginate(5));
         } else if ($request->get('direction')) {
             $where = "";
             if ($request->input('direction.country')) {

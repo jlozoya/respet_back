@@ -161,8 +161,6 @@ $router->get('/post/{id}', ['uses' => 'PostController@show']);
 
 $router->get('/user/contact/{id}', ['uses' => 'UserContactController@getUserContactById']);
 
-$router->get('/user/history/{id}', ['uses' => 'UserHistoryController@index']);
-
 $router->group(['middleware' => ['auth:api']], function () use ($router) {
 
     $router->get('/user/permissions', ['uses' => 'UserPermissionsController@getUserPermissions']);
