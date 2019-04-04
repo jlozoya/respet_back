@@ -28,6 +28,16 @@ class PostController extends BaseController
      */
     public function index(Request $request) {
         if ($request->get('search')) {
+            if ($request->get('user_id')) {
+                $posts = Post::where('user_id', $id)
+                ->where(function ($query) use ($request) {
+                    $search = $request->get('search');
+                    $query->where('state', 'like', "%$search%");
+                    $query->orWhere('description', 'like', "%$search%");
+                })->orderBy('updated_at', 'DESC')
+                ->paginate(5);
+                return $this->attachData($posts);
+            }
             $posts = Post::where('description', 'like', '%' . $request->get('search') . '%')
             ->orWhere('state', 'like', '%' . $request->get('search') . '%')
             ->orderBy('updated_at', 'DESC')
