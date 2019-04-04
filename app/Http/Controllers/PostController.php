@@ -29,7 +29,7 @@ class PostController extends BaseController
     public function index(Request $request) {
         if ($request->get('search')) {
             if ($request->get('user_id')) {
-                $posts = Post::where('user_id', $id)
+                $posts = Post::where('user_id', $request->get('user_id'))
                 ->where(function ($query) use ($request) {
                     $search = $request->get('search');
                     $query->where('state', 'like', "%$search%");
@@ -44,7 +44,7 @@ class PostController extends BaseController
             ->paginate(5);
             return $this->attachData($posts);
         } else if ($request->get('user_id')) {
-            return $this->attachData(Post::where('user_id', $id)->orderBy('updated_at', 'DESC')->paginate(5));
+            return $this->attachData(Post::where('user_id', $request->get('user_id'))->orderBy('updated_at', 'DESC')->paginate(5));
         } else if ($request->get('direction')) {
             $where = "";
             if ($request->input('direction.country')) {
