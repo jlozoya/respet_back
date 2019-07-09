@@ -112,10 +112,13 @@ class UserController extends BaseController
             'lang',
             'birthday',
             'role'
-        )->where('name', 'like', '%' . $request->get('search') . '%')
-        ->orWhere('email', 'like', '%' . $request->get('search') . '%')
-        ->orWhere('phone', 'like', '%' . $request->get('search') . '%')
-        ->orderBy('updated_at', 'DESC')
+        )->where('role', 'like', '%' . $request->get('role') . '%')
+        ->where(function ($query) use ($request) {
+            $search = $request->get('search');
+            $query->where('name', 'like', "%$search%");
+            $query->orWhere('email', 'like', "%$search%");
+            $query->orWhere('phone', 'like', "%$search%");
+        })->orderBy('updated_at', 'DESC')
         ->paginate(15);
         foreach ($users as &$user) {
             if ($user['address_id']) {
@@ -153,8 +156,19 @@ class UserController extends BaseController
                 $user = User::where([
                     'grant_type' => $request->get('grant_type'), 'email' => $request->get('email')
                 ])->first();
-                if ($user) {
+                if ($user && $user['confirmed']) {
                     return response()->json('SERVER.USER_ALREADY_EXISTS', 401);
+                }
+                if ($user && !$user['confirmed']) {
+                    $emailConfirm = EmailConfirm::where('user_id', $user['id'])->first();
+                    $dateTimeNow = Carbon::now();
+                    if ($emailConfirm) {
+                        $dateTimeCreatedAt = Carbon::parse($emailConfirm['created_at']);
+                        if ($dateTimeNow->diffInDays($dateTimeCreatedAt) <= 5) {
+                            return response()->json('SERVER.USER_ALREADY_EXISTS', 401);
+                        }
+                    }
+                    $this->deleteUserById($user['id']);
                 }
                 $user = $this->passwordStore($request);
             } else {
@@ -171,6 +185,7 @@ class UserController extends BaseController
                 $user = $this->notPasswordStore($request);
             }
             $user['permissions_id'] = UserPermissions::create()['id'];
+            $user->save();
             if ($request->get('media')) {
                 $media = Media::create([
                     'url' => $request->input('media.url'),
@@ -185,10 +200,7 @@ class UserController extends BaseController
             $this->sendConfirmEmail($user);
             return response()->json($sesion, 201);
         } else {
-            return response()->json([
-                "error" => "invalid_client",
-                "message" => "Client authentication failed"
-            ], 401);
+            return response()->json("SERVER.WRONG_CLIENT", 401);
         }
     }
     /**
@@ -312,12 +324,17 @@ class UserController extends BaseController
         if ($emailConfirmData) {
             $dateTimeNow = Carbon::now();
             $dateTimeCreatedAt = Carbon::parse($emailConfirmData['created_at']);
-            if ($dateTimeNow->diffInDays($dateTimeCreatedAt) <= 30) {
-                $user = User::where('id', $emailConfirmData['user_id'])->first();
-                $user['confirmed'] = true;
-                $user->save();
+            if ($dateTimeNow->diffInDays($dateTimeCreatedAt) <= 5) {
+                if (!User::where('id' , '!=', $emailConfirmData['user_id'])->where('email', $emailConfirmData['email'])->first()) {
+                    $user = User::find($emailConfirmData['user_id']);
+                    $user['confirmed'] = true;
+                    $user['email'] = $emailConfirmData['email'];
+                    $user->save();
+                    $emailConfirmData->delete();
+                    return redirect(env('APP_REDIRECTS_LINK', '../'));
+                }
                 $emailConfirmData->delete();
-                return redirect(env('APP_REDIRECTS_LINK', '../'));
+                return response()->json('SERVER.EMAIL_HAS_TAKEN', 406);
             } else {
                 $emailConfirmData->delete();
                 return response()->json('SERVER.TOKEN_EXPIRED', 406);
@@ -735,7 +752,6 @@ class UserController extends BaseController
                 'grant_type' => $request->get('grant_type')
             ])->first()) {
                 $user['email'] = $request->get('email');
-                $user->save();
                 return response()->json($user, 201);
             } else {
                 return response()->json('SERVER.USER_EMAIL_ALREADY_EXISTS', 406);
@@ -795,12 +811,14 @@ class UserController extends BaseController
             if (parse_url($user['media']['url'])['host'] == parse_url(URL::to('/'))['host']) {
                 File::delete($_SERVER['DOCUMENT_ROOT'] . parse_url($user['media']['url'])['path']);
             }
+            $user['media']['type'] = $request->input('params.type') || 'img';
             $user['media']['url'] = $fileUrl;
             $user['media']['width'] = $data[0];
             $user['media']['height'] = $data[1];
             $user['media']->save();
         } else {
             $media = Media::create([
+                'type' => $request->input('params.type') || 'img',
                 'url' => $fileUrl,
                 'alt' => $fileName,
                 'width' => $data[0],
