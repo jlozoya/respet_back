@@ -26,3 +26,57 @@
  * enviado es incorrecto.
  */
 $router->post('/oauth/token', ['uses' => 'OAuthController@issueToken']);
+/**
+ * @api {post} /password/email Recupera una contraseña con un email.
+ * @apiVersion 0.0.1
+ * @apiName PostEmail
+ * @apiGroup Password
+ * @apiPermission none
+ *
+ * @apiParam {String} grant_type Nombre de la fuente con la que se
+ * inicia sesión 'facebook' | 'google' | 'password'.
+ * @apiParam {String} email Email del usuario.
+ *
+ * @apiSuccess (200) {String} SERVER.EMAIL_READY Confirmación
+ * de que se envió un correo para recuperar la contraseña.
+ * 
+ * @apiError (404) {String} SERVER.WRONG_USER Cuando no se
+ * encontró la información del usuario.
+ */
+$router->post('/password/email', 'PasswordController@postEmail');
+/**
+ * @api {get} /password/reset Habré una vista para
+ * resetear la contraseña.
+ * @apiVersion 0.0.1
+ * @apiName ShowResetForm
+ * @apiGroup Password
+ * @apiPermission none
+ *
+ * @apiParam {String} token Token para resetear la contraseña.
+ * @apiParam {String} email Email del usuario.
+ *
+ * @apiSuccess (200) {String} view Vista con el formulario
+ * para resetear la contraseña.
+ */
+$router->get('/password/reset', ['uses' => 'PasswordController@showResetForm']);
+/**
+ * @api {put} /password/reset Para actualizar la contraseña.
+ * @apiVersion 0.0.1
+ * @apiName PostReset
+ * @apiGroup Password
+ * @apiPermission none
+ * 
+ * @apiParam {String} email Email del usuario.
+ * @apiParam {String} password Nueva contraseña el usuario.
+ * @apiParam {String} password_confirmation Confirmación de la
+ * nueva contraseña el usuario.
+ * @apiParam {String} token Token para resetear la contraseña.
+ * @apiParam {String} grant_type Nombre de la fuente con la que se
+ * inicia sesión 'password'.
+ *
+ * @apiSuccess (200) {Redirect} redirect Redirección a la página principal.
+ * 
+ * @apiError (200) {View} auth.emails.password En caso de que falle
+ * el reseteo de la contraseña.
+ */
+$router->post('/password/reset', ['as' => 'password.reset', 'uses' => 'PasswordController@putReset']);

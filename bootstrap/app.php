@@ -2,13 +2,12 @@
 
 require_once __DIR__.'/../vendor/autoload.php';
 
-use Dusterio\LumenPassport\LumenPassport;
+use App\LumenPassport\LumenPassport;
+use App\LumenPassport\PassportServiceProvider;
 
-try {
-    (new Dotenv\Dotenv(__DIR__.'/../'))->load();
-} catch (Dotenv\Exception\InvalidPathException $e) {
-    //
-}
+(new Laravel\Lumen\Bootstrap\LoadEnvironmentVariables(
+    dirname(__DIR__)
+))->bootstrap();
 
 /*
 |--------------------------------------------------------------------------
@@ -22,7 +21,7 @@ try {
 */
 
 $app = new Laravel\Lumen\Application(
-    realpath(__DIR__.'/../')
+    dirname(__DIR__)
 );
 
 $app->withFacades();
@@ -99,7 +98,7 @@ $app->configure('auth');
 
 $app->register(Laravel\Passport\PassportServiceProvider::class);
 
-$app->register(Dusterio\LumenPassport\PassportServiceProvider::class);
+$app->register(PassportServiceProvider::class);
 
 LumenPassport::allowMultipleTokens();
 /*
@@ -134,6 +133,7 @@ $app->router->group([
     'namespace' => 'App\Http\Controllers',
 ], function ($router) {
     require __DIR__.'/../routes/web.php';
+    require __DIR__.'/../routes/user.php';
     require __DIR__.'/../routes/oauth.php';
 });
 
