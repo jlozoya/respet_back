@@ -25,7 +25,7 @@
  * @apiError (406) {String} SERVER.WRONG_TOKEN Cuando el token
  * enviado es incorrecto.
  */
-$router->post('/oauth/token', ['uses' => 'OAuthController@issueToken']);
+$router->post('/oauth/token', ['uses' => 'OAuth\OAuthController@issueToken']);
 /**
  * @api {post} /password/email Recupera una contraseña con un email.
  * @apiVersion 0.0.1
@@ -43,7 +43,7 @@ $router->post('/oauth/token', ['uses' => 'OAuthController@issueToken']);
  * @apiError (404) {String} SERVER.WRONG_USER Cuando no se
  * encontró la información del usuario.
  */
-$router->post('/password/email', 'PasswordController@postEmail');
+$router->post('/password/email', 'OAuth\PasswordController@postEmail');
 /**
  * @api {get} /password/reset Habré una vista para
  * resetear la contraseña.
@@ -58,7 +58,7 @@ $router->post('/password/email', 'PasswordController@postEmail');
  * @apiSuccess (200) {String} view Vista con el formulario
  * para resetear la contraseña.
  */
-$router->get('/password/reset', ['uses' => 'PasswordController@showResetForm']);
+$router->get('/password/reset', ['uses' => 'OAuth\PasswordController@showResetForm']);
 /**
  * @api {put} /password/reset Para actualizar la contraseña.
  * @apiVersion 0.0.1
@@ -79,4 +79,4 @@ $router->get('/password/reset', ['uses' => 'PasswordController@showResetForm']);
  * @apiError (200) {View} auth.emails.password En caso de que falle
  * el reseteo de la contraseña.
  */
-$router->post('/password/reset', ['as' => 'password.reset', 'uses' => 'PasswordController@putReset']);
+$router->post('/password/reset', ['as' => 'password.reset', 'uses' => 'OAuth\PasswordController@putReset']);

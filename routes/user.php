@@ -28,7 +28,7 @@
  * @apiError (406) {QueryException} error Error al
  * ejecutar la consulta.
  */
-$router->post('/user', ['uses' => 'UserController@store']);
+$router->post('/user', ['uses' => 'User\UserController@store']);
 /**
  * @api {get} /user/confirm/email Para confirmar una cuenta de usuario.
  * @apiVersion 0.0.1
@@ -46,20 +46,20 @@ $router->post('/user', ['uses' => 'UserController@store']);
  * @apiError (406) {String} SERVER.WRONG_TOKEN En caso de que lo
  * token sea invalido.
  */
-$router->get('/user/confirm/email', ['as' => 'user.confirm.email', 'uses' => 'UserController@confirmEmail']);
+$router->get('/user/confirm/email', ['as' => 'user.confirm.email', 'uses' => 'User\UserController@confirmEmail']);
 
-$router->get('/user/contact/{id}', ['uses' => 'UserContactController@getUserContactById']);
+$router->get('/user/contact/{id}', ['uses' => 'User\UserContactController@getUserContactById']);
 
 $router->group(['middleware' => ['auth:api']], function () use ($router) {
-    $router->get('/user/permissions', ['uses' => 'UserPermissionsController@getUserPermissions']);
-    $router->put('/user/permissions', ['uses' => 'UserPermissionsController@setUserPermissions']);
+    $router->get('/user/permissions', ['uses' => 'User\UserPermissionsController@getUserPermissions']);
+    $router->put('/user/permissions', ['uses' => 'User\UserPermissionsController@setUserPermissions']);
 
-    $router->post('/user/cat/emails', ['uses' => 'UserCatEmailsPhonesController@addEmails']);
-    $router->post('/user/cat/phones', ['uses' => 'UserCatEmailsPhonesController@addPhones']);
-    $router->delete('/user/cat/email/{id}', ['uses' => 'UserCatEmailsPhonesController@deleteEmail']);
-    $router->delete('/user/cat/phone/{id}', ['uses' => 'UserCatEmailsPhonesController@deletePhone']);
+    $router->post('/user/cat/emails', ['uses' => 'User\UserCatEmailsPhonesController@addEmails']);
+    $router->post('/user/cat/phones', ['uses' => 'User\UserCatEmailsPhonesController@addPhones']);
+    $router->delete('/user/cat/email/{id}', ['uses' => 'User\UserCatEmailsPhonesController@deleteEmail']);
+    $router->delete('/user/cat/phone/{id}', ['uses' => 'User\UserCatEmailsPhonesController@deletePhone']);
 
-    $router->get('/user/contact', ['uses' => 'UserContactController@getUserContact']);
+    $router->get('/user/contact', ['uses' => 'User\UserContactController@getUserContact']);
     /**
      * @api {get} /user Obtiene la información del usuario propio.
      * @apiVersion 0.0.1
@@ -106,7 +106,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * @apiError (406) {String} SERVER.USER_NOT_FOUND En caso de que
      * no se encuentre el usuario relacionado el token.
      */
-    $router->get('/user', ['uses' => 'UserController@index']);
+    $router->get('/user', ['uses' => 'User\UserController@index']);
     /**
      * @api {post} /user/confirm/email Re enviar un correo para
      * confirmar la dirección de correo.
@@ -126,7 +126,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * @apiError (400) {String} SERVER.EMAIL_FAIL Cuando no se logra
      * enviar le email.
      */
-    $router->post('/user/confirm/email', ['uses' => 'UserController@reSendConfirmEmail']);
+    $router->post('/user/confirm/email', ['uses' => 'User\UserController@reSendConfirmEmail']);
     /**
      * @api {put} /user/avatar Establecer el avatar del usuario propio.
      * @apiVersion 0.0.1
@@ -143,7 +143,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * 
      * @apiSuccess (202) {String} fileUrl Url donde se almaceno el archivo.
      */
-    $router->put('/user/avatar', ['uses' => 'UserController@updateAvatar']);
+    $router->put('/user/avatar', ['uses' => 'User\UserController@updateAvatar']);
     /**
      * @api {put} /user/social/link Establecer el avatar del usuario propio.
      * @apiVersion 0.0.1
@@ -171,7 +171,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * @apiError (406) {String} SERVER.WRONG_TOKEN Cuando el token de la red
      * social es invalido.
      */
-    $router->put('/user/social/link', ['uses' => 'UserController@createSocialLink']);
+    $router->put('/user/social/link', ['uses' => 'User\UserController@createSocialLink']);
     /**
      * @api {put} /user Actualizar la información del usuario propio.
      * @apiVersion 0.0.1
@@ -206,7 +206,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * 
      * @apiError (406) {QueryException} error Error al ejecutar la consulta.
      */
-    $router->put('/user', ['uses' => 'UserController@updateUser']);
+    $router->put('/user', ['uses' => 'User\UserController@updateUser']);
     /**
      * @api {put} /user/email Actualizar el email del usuario propio.
      * @apiVersion 0.0.1
@@ -241,7 +241,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * ya tiene un correo registrado.
      * @apiError (406) {QueryException} error Error al ejecutar la consulta.
      */
-    $router->put('/user/email', ['uses' => 'UserController@updateUserEmail']);
+    $router->put('/user/email', ['uses' => 'User\UserController@updateUserEmail']);
     /**
      * @api {put} /user/lang Actualizar el idioma del usuario propio.
      * @apiVersion 0.0.1
@@ -258,7 +258,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * @apiError (404) {String} SERVER.USER_NOT_REGISTRED Cuando el
      * usuario no fue localizado.
      */
-    $router->put('/user/lang', ['uses' => 'UserController@updateUserLang']);
+    $router->put('/user/lang', ['uses' => 'User\UserController@updateUserLang']);
     /**
      * @api {put} /user/address Actualizar la dirección del usuario propio.
      * @apiVersion 0.0.1
@@ -290,7 +290,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * 
      * @apiError (406) {QueryException} error Error al ejecutar la consulta.
      */
-    $router->put('/user/address', ['uses' => 'UserController@updateUserAddress']);
+    $router->put('/user/address', ['uses' => 'User\UserController@updateUserAddress']);
     /**
      * @api {delete} /user/social/link/:id Eliminar un vínculo propio
      * con una red social.
@@ -309,7 +309,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * @apiError (404) {String} SERVER.WRONG_SOCIAL_LINK_ID Cuando no se
      * localizó el vínculo con una red social.
      */
-    $router->delete('/user/social/link/{id}', ['uses' => 'UserController@deleteSocialLink']);
+    $router->delete('/user/social/link/{id}', ['uses' => 'User\UserController@deleteSocialLink']);
     /**
      * @api {delete} /user/sesion Eliminar un token de autorización propio.
      * @apiVersion 0.0.1
@@ -322,7 +322,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * @apiSuccess (204) {Null} Null Cuando se logró eliminar
      * un token de autorización.
      */
-    $router->delete('/user/sesion', ['uses' => 'UserController@logout']);
+    $router->delete('/user/sesion', ['uses' => 'User\UserController@logout']);
     /**
      * @api {delete} /user Eliminar una cuenta de usuario propia.
      * @apiVersion 0.0.1
@@ -338,26 +338,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
      * @apiError (404) {String} SERVER.USER_NOT_FOUND Cuando no se encontró
      * la cuenta de usuario.
      */
-    $router->delete('/user', ['uses' => 'UserController@deleteUser']);
-    /**
-     * @api {post} /pay Para emitir pagos.
-     * @apiVersion 0.0.1
-     * @apiName CreatePay
-     * @apiGroup Pay
-     * @apiPermission none
-     * 
-     * @apiParam {String} id Token de la tarjeta emitidito por mercado pago.
-     * @apiParam {Number} installments Numero de plazos.
-     * @apiParam {Number} issuer_id Id del banco emisor.
-     * @apiParam {Number} payment_method_id Id del método de pago.
-     *
-     * @apiSuccess (202) {MercadoPagoPayResponse} response Objeto de respuesta
-     * emitido por mercado pago.
-     * 
-     * @apiError (406) {BadResponseException} error Un error obtenido del api
-     * del mercado pago en caso de una solicitud errónea.
-     */
-    $router->post('/user/pay', ['uses' => 'PayController@createPay']);
+    $router->delete('/user', ['uses' => 'User\UserController@deleteUser']);
 
     $router->group(['middleware' => ['hasRole:admin']], function () use ($router) {
         /**
@@ -408,7 +389,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * @apiError (406) {String} SERVER.USER_NOT_FOUND En caso de que no se
          * encuentre el usuario relacionado el token.
          */
-        $router->get('/user/{id}', ['uses' => 'UserController@getUserById']);
+        $router->get('/user/{id}', ['uses' => 'User\UserController@getUserById']);
         /**
          * @api {post} /users Obtiene la lista de usuario.
          * @apiVersion 0.0.1
@@ -455,7 +436,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * @apiSuccess (200) {Number} [user.address.lng] Longitud postal de la dirección del usuario.
          * @apiSuccess (200) {String} user.created_at Información del usuario.
          */
-        $router->get('/users', ['uses' => 'UserController@getUsers']);
+        $router->get('/users', ['uses' => 'User\UserController@getUsers']);
         /**
          * @api {put} /user/:id Actualizar la información de un usuario por su id.
          * @apiVersion 0.0.1
@@ -491,7 +472,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * 
          * @apiError (406) {QueryException} error Error al ejecutar la consulta.
          */
-        $router->put('/user/{id}', ['uses' => 'UserController@updateUserById']);
+        $router->put('/user/{id}', ['uses' => 'User\UserController@updateUserById']);
         /**
          * @api {put} /user/avatar/:id Establecer el avatar de un usuario por su id.
          * @apiVersion 0.0.1
@@ -510,7 +491,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * 
          * @apiSuccess (202) {String} fileUrl Url donde se almaceno el archivo.
          */
-        $router->put('/user/avatar/{id}', ['uses' => 'UserController@updateAvatarById']);
+        $router->put('/user/avatar/{id}', ['uses' => 'User\UserController@updateAvatarById']);
         /**
          * @api {put} /user/email/:id Actualizar el email de un usuario por su id.
          * @apiVersion 0.0.1
@@ -545,7 +526,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * ya tiene un correo registrado.
          * @apiError (404) {String} SERVER.USER_NOT_FOUND Cuando no se encontró
          */
-        $router->put('/user/email/{id}', ['uses' => 'UserController@updateUserEmailById']);
+        $router->put('/user/email/{id}', ['uses' => 'User\UserController@updateUserEmailById']);
         /**
          * @api {put} /user/lang/:id Actualizar el idioma de un usuario por su id.
          * @apiVersion 0.0.1
@@ -563,7 +544,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * @apiError (404) {String} SERVER.USER_NOT_REGISTRED Cuando el
          * usuario no fue localizado.
          */
-        $router->put('/user/lang/{id}', ['uses' => 'UserController@updateUserLangById']);
+        $router->put('/user/lang/{id}', ['uses' => 'User\UserController@updateUserLangById']);
         /**
          * @api {put} /user/address/:id Actualizar la dirección de un usuario por su id.
          * @apiVersion 0.0.1
@@ -588,7 +569,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * 
          * @apiError (406) {QueryException} error Error al ejecutar la consulta.
          */
-        $router->put('/user/address/{id}', ['uses' => 'UserController@updateUserAddressById']);
+        $router->put('/user/address/{id}', ['uses' => 'User\UserController@updateUserAddressById']);
         /**
          * @api {put} /user/role/:id Actualizar el rol del usuario por su id.
          * @apiVersion 0.0.1
@@ -605,7 +586,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * 
          * @apiError (404) {String} SERVER.USER_NOT_REGISTRED Cuando el usuario no está registrado.
          */
-        $router->put('/user/role/{id}', ['uses' => 'UserController@setUserRoleById']);
+        $router->put('/user/role/{id}', ['uses' => 'User\UserController@setUserRoleById']);
         /**
          * @api {delete} /user Eliminar una cuenta de usuario por su id.
          * @apiVersion 0.0.1
@@ -623,6 +604,6 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * @apiError (404) {String} SERVER.USER_NOT_FOUND Cuando no se encontró
          * la cuenta de usuario.
          */
-        $router->delete('/user/{id}', ['uses' => 'UserController@deleteUserById']);
+        $router->delete('/user/{id}', ['uses' => 'User\UserController@deleteUserById']);
     });
 });

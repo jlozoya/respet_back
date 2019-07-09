@@ -11,8 +11,6 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
-
-
 /**
  * @api {post} /contact/send Enviar un correo de contacto a administradores.
  * @apiVersion 0.0.1
@@ -28,7 +26,7 @@ $router->get('/', function () use ($router) {
  * @apiSuccess (201) {User} user Es la información del usuario
  * que envió la solicitud.
  */
-$router->post('/support', ['uses' => 'SupportController@create']);
+$router->post('/support', ['uses' => 'Service\SupportController@create']);
 
 /**
  * @api {get} /bulletins Consultar noticias por pagina.
@@ -41,7 +39,7 @@ $router->post('/support', ['uses' => 'SupportController@create']);
  *
  * @apiSuccess (200) {Pagination} pagination Noticias paginadas.
  */
-$router->get('/bulletins', ['uses' => 'BulletinController@getBulletins']);
+$router->get('/bulletins', ['uses' => 'Service\BulletinController@getBulletins']);
 
 /**
  * @api {get} /bulletins Consultar noticias por id.
@@ -54,24 +52,18 @@ $router->get('/bulletins', ['uses' => 'BulletinController@getBulletins']);
  *
  * @apiSuccess (200) {Bulletin} bulletin Una noticia.
  */
-$router->get('/bulletin/{id}', ['uses' => 'BulletinController@show']);
+$router->get('/bulletin/{id}', ['uses' => 'Service\BulletinController@show']);
 
-$router->get('/posts', ['uses' => 'PostController@index']);
-$router->get('/post/{id}', ['uses' => 'PostController@show']);
+$router->get('/posts', ['uses' => 'Service\PostController@index']);
+$router->get('/post/{id}', ['uses' => 'Service\PostController@show']);
 
 $router->group(['middleware' => ['auth:api']], function () use ($router) {
 
-    $router->post('/post', ['uses' => 'PostController@store']);
-    $router->delete('/post/file/{id}', ['uses' => 'PostController@destroyFile']);
-    $router->put('/post/file', ['uses' => 'PostController@storeFile']);
-    $router->put('/post/{id}', ['uses' => 'PostController@update']);
-    $router->delete('/post/{id}', ['uses' => 'PostController@destroy']);
-
-    $router->get('/health_stats', ['uses' => 'HealthStatController@index']);
-    $router->post('/health_stat', ['uses' => 'HealthStatController@store']);
-    $router->get('/health_stat/{id}', ['uses' => 'HealthStatController@show']);
-    $router->put('/health_stat/{id}', ['uses' => 'HealthStatController@update']);
-    $router->delete('/health_stat/{id}', ['uses' => 'HealthStatController@destroy']);
+    $router->post('/post', ['uses' => 'Service\PostController@store']);
+    $router->delete('/post/file/{id}', ['uses' => 'Service\PostController@destroyFile']);
+    $router->put('/post/file', ['uses' => 'Service\PostController@storeFile']);
+    $router->put('/post/{id}', ['uses' => 'Service\PostController@update']);
+    $router->delete('/post/{id}', ['uses' => 'Service\PostController@destroy']);
 
     $router->group(['middleware' => ['hasRole:admin']], function () use ($router) {
 
@@ -90,7 +82,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * 
          * @apiSuccess (202) {Bulletin} bulletin Noticia creada.
          */
-        $router->post('/bulletin', ['uses' => 'BulletinController@create']);
+        $router->post('/bulletin', ['uses' => 'Service\BulletinController@create']);
         /**
          * @api {put} /bulletin/img Establece la imagen de la noticia.
          * @apiVersion 0.0.1
@@ -107,7 +99,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * 
          * @apiSuccess (202) {Bulletin} bulletin Noticia creada.
          */
-        $router->put('/bulletin/img', ['uses' => 'BulletinController@setImg']);
+        $router->put('/bulletin/img', ['uses' => 'Service\BulletinController@setImg']);
         /**
          * @api {put} /bulletin Actualizar una noticia.
          * @apiVersion 0.0.1
@@ -124,7 +116,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * 
          * @apiSuccess (202) {Bulletin} bulletin Noticia creada.
          */
-        $router->put('/bulletin', ['uses' => 'BulletinController@updateBulletin']);
+        $router->put('/bulletin', ['uses' => 'Service\BulletinController@updateBulletin']);
         /**
          * @api {delete} /bulletin/:id Eliminar una noticia por su id.
          * @apiVersion 0.0.1
@@ -141,7 +133,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * @apiError (404) {String} SERVER.BULLETIN_NOT_FOUND Cuando no se
          * encontró una noticia
          */
-        $router->delete('/bulletin/{id}', ['uses' => 'BulletinController@deleteBulletin']);
+        $router->delete('/bulletin/{id}', ['uses' => 'Service\BulletinController@deleteBulletin']);
         /**
          * @api {get} /analytics Obtener las analíticas de los usuario en la base de datos.
          * @apiVersion 0.0.1
@@ -171,7 +163,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * @apiSuccess (200) {Number} analytics.grant_types.facebook Numero de ususarios registrados desde facebook.
          * @apiSuccess (200) {Number} analytics.grant_types.google Numero de ususarios registrados desde google.
          */
-        $router->get('/analytics', ['uses' => 'AnalyticController@getBasicAnalytics']);
+        $router->get('/analytics', ['uses' => 'Service\AnalyticController@getBasicAnalytics']);
         /**
          * @api {post} /analytics/users/registration Obtener la cantidad de usuario
          * registrados en la base de datos.
@@ -189,6 +181,6 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * @apiSuccess (200) {String} analytics.created_at Fecha en que se registraron.
          * @apiSuccess (200) {Number} analytics.users Numero de ususario.
          */
-        $router->get('/analytics/users/registration', ['uses' => 'AnalyticController@getUsersRegistration']);
+        $router->get('/analytics/users/registration', ['uses' => 'Service\AnalyticController@getUsersRegistration']);
     });
 });

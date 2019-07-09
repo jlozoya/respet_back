@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\OAuth;
 
 use Laravel\Lumen\Routing\Controller as BaseController;
 use App\Traits\ResetsPasswords;
