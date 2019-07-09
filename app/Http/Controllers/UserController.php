@@ -752,6 +752,7 @@ class UserController extends BaseController
                 'grant_type' => $request->get('grant_type')
             ])->first()) {
                 $user['email'] = $request->get('email');
+                $this->sendConfirmEmail($user);
                 return response()->json($user, 201);
             } else {
                 return response()->json('SERVER.USER_EMAIL_ALREADY_EXISTS', 406);
