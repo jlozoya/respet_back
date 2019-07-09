@@ -57,7 +57,7 @@ class RouteRegistrar
      */
     public function forAccessTokens()
     {
-        $this->app->post('/token', ['uses' => 'App\Http\Controllers\OAuthController@issueToken']);
+        $this->app->post('/token', ['uses' => 'App\Http\Controllers\OAuth\OAuthController@issueToken']);
 
         $this->app->group(['middleware' => ['auth']], function () {
             $this->app->get('/tokens', $this->prefix('AuthorizedAccessTokenController@forUser'));
