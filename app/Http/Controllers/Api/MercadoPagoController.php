@@ -44,9 +44,11 @@ class MercadoPagoController extends BaseController
     {
         MercadoPago\SDK::setClientId(env('MP_CLIENT_ID'));
         MercadoPago\SDK::setClientSecret(env('MP_CLIENT_SECRET'));
+        MercadoPago\SDK::setAccessToken(env('MP_ACCESS_TOKEN'));
 
         // $user = $request->user();
         $payer = new MercadoPago\Payer();
+        $payer->name = 'APRO';
         $payer->email = 'jlozoya1995@gmail.com';
         
         $preference = new MercadoPago\Preference();
