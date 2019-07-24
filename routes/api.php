@@ -13,6 +13,7 @@ $router->get('/', function () use ($router) {
 });
 
 $router->get('/webcheckout', ['uses' => 'Api\MercadoPagoController@generatePaymentGateway']);
+$router->get('/ipnNotification', ['uses' => 'Api\MercadoPagoController@ipnNotification']);
 
 /**
  * @api {post} /contact/send Enviar un correo de contacto a administradores.
