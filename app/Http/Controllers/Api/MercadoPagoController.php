@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use Laravel\Lumen\Routing\Controller as BaseController;
-
 use App\Models\User;
-
 use Illuminate\Http\Request;
+use MercadoPago;
 
 class MercadoPagoController extends BaseController
 {
@@ -41,41 +40,39 @@ class MercadoPagoController extends BaseController
         }
     }
 
-    public function generatePaymentGateway()
+    public function generatePaymentGateway(Request $request)
     {
-        $mp = new MP (env('MP_ACCESS_TOKEN'), env('MP_CLIENT_SECRET'));
+        MercadoPago\SDK::setClientId(env('MP_CLIENT_ID'));
+        MercadoPago\SDK::setClientSecret(env('MP_CLIENT_SECRET'));
 
-        $current_user = auth()->user();
+        // $user = $request->user();
+        $payer = new MercadoPago\Payer();
+        $payer->email = 'jlozoya1995@gmail.com';
+        
+        $preference = new MercadoPago\Preference();
+        $preference->external_reference = '1';
+        $preference->payer = $payer;
+        $preference->back_urls = [];
+        $preference->notification_url = env('MP_NOTIFICATION_URL');
 
-        $preferenceData = [
-            'external_reference' => $this->id,
-            // also you can do this
-            'external_reference' => $this->prefix . $this->id,
-            'payer'              => [
-                //
-            ],
-            'back_urls'          => [
-                //
-            ],
-            'notification_url'   => env('MP_NOTIFICATION_URL')
-        ];
+        $items = [];
 
-        // add items
-        foreach ($this->items as $item) {
-            $preferenceData['items'][] = [
-                'id'          => '...',
-                'category_id' => '...',
-                'title'       => '...',      
-                'description' => '...',
-                'picture_url' => '...',
-                'quantity'    => '...',
-                'currency_id' => '...',
-                'unit_price'  => '...',
-            ];
-        }
-        $preference = $mp->create_preference($preferenceData);
-        // return init point to be redirected
-        return $preference['response']['init_point'];
+        $item = new MercadoPago\Item();
+        $item->id = '1';
+        $item->category_id = '1';
+        $item->title = 'Item'; 
+        $item->description = 'Un item';
+        $item->picture_url = 'https://lozoya.biz';
+        $item->quantity = 1;
+        $item->currency_id = 'MXN';
+        $item->unit_price = 5.00;
+        array_push($items, $item);
+
+        $preference->items = $items;
+    
+        $preference->save();
+
+        return $preference->init_point;
     }
 
     public function ipnNotification(Request $request)
