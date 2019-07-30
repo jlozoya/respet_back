@@ -91,35 +91,3 @@ composer require nesbot/carbon
 composer require laravel/passport
 composer require dusterio/lumen-passport
 ```
-
-## Credenciales
-
-Ssh hostinger
-
-```bash
-ssh -i ~/.ssh/amazon-pakal ubuntu@35.172.109.59
-```
-
-Ftp hostinger
-
-* IP FTP: 31.170.166.184
-* Puerto FTP: 21
-* Usuario FTP: u736574120
-
-```bash
-git clone ssh://git-codecommit.us-east-2.amazonaws.com/v1/repos/respet_back
-```
-
-## Apidoc
-
-Para generar la documentación de la api instala [Apidoc](http://apidocjs.com/)
-
-```bash
-npm install apidoc -g
-```
-
-Ejecuta:
-
-```bash
-apidoc -o api-docs
-```
