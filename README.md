@@ -4,6 +4,8 @@
 
 La documentación para Lumen puede encontrar en el [sitio web de Lumen](http://lumen.laravel.com/docs).
 
+Puedes encontrar la documentación de este api [aquí](https://lozoya.biz/respet-api-docs/), y un ejemplo de la interfaz relacionada [aquí](https://lozoya.biz/respet).
+
 ### Licencia
 
 Lumen es un software de código abierto con licencia bajo [licencia MIT](http://opensource.org/licenses/MIT)
