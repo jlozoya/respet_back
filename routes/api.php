@@ -12,8 +12,8 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->get('/webcheckout', ['uses' => 'Api\MercadoPagoController@generatePaymentGateway']);
-$router->get('/ipnNotification', ['uses' => 'Api\MercadoPagoController@ipnNotification']);
+$router->get('/webcheckout', ['uses' => 'Api\PayPalController@webcheckout']);
+$router->get('/ipnNotification', ['uses' => 'Api\PayPalController@ipnNotification']);
 
 /**
  * @api {post} /contact/send Enviar un correo de contacto a administradores.
