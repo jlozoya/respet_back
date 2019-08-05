@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use Laravel\Lumen\Routing\Controller as BaseController;
 use App\Models\Invoice;
-use App\IPNStatus;
-use App\Item;
+use App\Models\IPNStatus;
+use App\Models\Item;
 use Illuminate\Http\Request;
 use Srmklive\PayPal\Services\AdaptivePayments;
 use Srmklive\PayPal\Services\ExpressCheckout;
@@ -48,8 +48,8 @@ class PayPalController extends BaseController
         $cart = $this->getCheckoutData($recurring);
 
         try {
-            $response = $this->provider->setExpressCheckout($cart, $recurring);        return ($cart);
-            return redirect($response['paypal_link']);
+            $response = $this->provider->setExpressCheckout($cart, $recurring);
+            return redirect()->route($response['paypal_link']);
         } catch (\Exception $e) {
             $invoice = $this->createInvoice($cart, 'Invalid');
             session()->put(['code' => 'danger', 'message' => "Error processing PayPal payment for Order $invoice->id!"]);
