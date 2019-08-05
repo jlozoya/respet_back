@@ -44,6 +44,8 @@ $app->register(\Illuminate\Mail\MailServiceProvider::class);
 
 $app->register(Intervention\Image\ImageServiceProvider::class);
 
+$app->register(Srmklive\PayPal\Providers\PayPalServiceProvider::class);
+
 /*
 |--------------------------------------------------------------------------
 | Registrar enlaces de contenedor

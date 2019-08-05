@@ -61,6 +61,11 @@ $router->get('/bulletin/{id}', ['uses' => 'Api\BulletinController@show']);
 $router->get('/posts', ['uses' => 'Api\PostController@index']);
 $router->get('/post/{id}', ['uses' => 'Api\PostController@show']);
 
+$router->get('/paypal/checkout', 'Api\PayPalController@getExpressCheckout');
+$router->get('/paypal/checkout-success', 'Api\PayPalController@getExpressCheckoutSuccess');
+$router->get('/paypal/adaptive-pay', 'Api\PayPalController@getAdaptivePay');
+$router->post('/paypal/notify', 'Api\PayPalController@notify');
+
 $router->group(['middleware' => ['auth:api']], function () use ($router) {
 
     $router->post('/post', ['uses' => 'Api\PostController@store']);

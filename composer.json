@@ -17,8 +17,8 @@
         "laravel/passport": "^7.2.2",
         "laravelcollective/html": "^5.6",
         "nesbot/carbon": "^2.22",
-        "paypal/paypal-checkout-sdk": "^1.0",
         "ramsey/uuid": "^3.8",
+        "srmklive/paypal": "^1.6",
         "vlucas/phpdotenv": "^3.3",
         "vluzrmos/lumen-cors": "^2.1"
     },
