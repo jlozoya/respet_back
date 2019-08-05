@@ -20,5 +20,5 @@ return [
     'currency'       => env('PAYPAL_CURRENCY', 'MXN'),
     'notify_url'     => env('PAYPAL_NOTIFICATION_URL', ''), // Cambie esto en consecuencia para su aplicación.
     'locale'         => env('PAYPAL_LOCALE', 'es_ES'), // forzar el idioma de la puerta de enlace, es decir, it_IT, es_ES, en_US ... (solo para check-out rápido)
-    'validate_ssl'   => true, // Valide SSL al crear un cliente api.
+    'validate_ssl'   => env('PAYPAL_VALIDATE_SSL', true), // Valide SSL al crear un cliente api.
 ];
