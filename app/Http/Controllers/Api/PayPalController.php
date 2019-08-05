@@ -58,7 +58,7 @@ class PayPalController extends BaseController
         }
     }
     /**
-     * Process payment on PayPal.
+     * Procesar el pago en PayPal.
      *
      * @param \Illuminate\Http\Request $request
      *
@@ -74,7 +74,7 @@ class PayPalController extends BaseController
         
         $invoice = Invoice::find($response['INVNUM']);
         $cart = $this->getCheckoutData($invoice);
-        // Verify Express Checkout Token
+        // Verificar token de Express Checkout
         if (in_array(strtoupper($response['ACK']), ['SUCCESS', 'SUCCESSWITHWARNING'])) {
             if ($recurring === true) {
                 $response = $this->provider->createMonthlySubscription($response['TOKEN'], 9.99, $cart['subscription_desc']);
@@ -84,12 +84,12 @@ class PayPalController extends BaseController
                     $status = 'Invalid';
                 }
             } else {
-                // Perform transaction on PayPal
+                // Realizar transacción en PayPal
                 $payment_status = $this->provider->doExpressCheckoutPayment($cart, $token, $PayerID);
                 $status = $payment_status['PAYMENTINFO_0_PAYMENTSTATUS'];
             }
             $invoice = $this->updateInvoice($invoice, $status);
-            return redirect('/');
+            return redirect(env('APP_REDIRECTS_LINK', '../'));
         }
     }
     
@@ -117,7 +117,7 @@ class PayPalController extends BaseController
         dd($response);
     }
     /**
-     * Parse PayPal IPN.
+     * Analizar PayPal IPN.
      *
      * @param \Illuminate\Http\Request $request
      */
@@ -140,7 +140,7 @@ class PayPalController extends BaseController
         $ipn->save();
     }
     /**
-     * Set cart data for processing payment on PayPal.
+     * Configure los datos del carrito para procesar el pago en PayPal.
      *
      * @param bool $recurring
      *
@@ -192,7 +192,7 @@ class PayPalController extends BaseController
         return $cart;
     }
     /**
-     * Create invoice.
+     * Crear factura.
      *
      * @param array  $cart
      * @param string $status
