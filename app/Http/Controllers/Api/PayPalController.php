@@ -169,12 +169,14 @@ class PayPalController extends BaseController
             $data['return_url'] = url('/paypal/checkout-success?mode=recurring');
             $data['subscription_desc'] = 'Monthly Subscription '.config('paypal.invoice_prefix').' #'.$invoice['id'];
         } else {
-            array_push($data['items'], Item::create([
+            $data['items'] = [];
+            $item = Item::create([
                 'invoice_id' => $invoice['id'],
                 'name' => 'Product 1 '.config('paypal.invoice_prefix').' #'.$invoice['id'],
                 'price' => 1,
                 'qty' => 1,
-            ]));
+            ]);
+            array_push($data['items'], $item);
             $data['return_url'] = url('/paypal/checkout-success');
         }
         $data['invoice_id'] = config('paypal.invoice_prefix').'_'.$invoice['id'];
