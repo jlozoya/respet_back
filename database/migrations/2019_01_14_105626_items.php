@@ -16,9 +16,9 @@ class Items extends Migration
         Schema::create('items', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('invoice_id')->unsigned();
-            $table->string('item_name');
-            $table->double('item_price', 2);
-            $table->integer('item_qty');
+            $table->string('name');
+            $table->double('price', 2);
+            $table->integer('qty');
             $table->timestamps();
             $table->foreign('invoice_id')->references('id')->on('invoices')
             ->onUpdate('cascade')->onDelete('cascade');

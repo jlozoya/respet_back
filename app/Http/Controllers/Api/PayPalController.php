@@ -49,8 +49,9 @@ class PayPalController extends BaseController
 
         try {
             $response = $this->provider->setExpressCheckout($cart, $recurring);
-            return redirect()->route($response['paypal_link']);
+            return redirect($response['paypal_link']);
         } catch (\Exception $e) {
+            return $e;
             $invoice = $this->createInvoice($cart, 'Invalid');
             session()->put(['code' => 'danger', 'message' => "Error processing PayPal payment for Order $invoice->id!"]);
         }
@@ -86,13 +87,16 @@ class PayPalController extends BaseController
             }
             $invoice = $this->createInvoice($cart, $status);
             if ($invoice->paid) {
-                session()->put(['code' => 'success', 'message' => "Order $invoice->id has been paid successfully!"]);
+                // Paid
+                return $invoice;
             } else {
-                session()->put(['code' => 'danger', 'message' => "Error processing PayPal payment for Order $invoice->id!"]);
+                // Not Paid
+                return $invoice;
             }
             return redirect('/');
         }
     }
+    
     public function getAdaptivePay()
     {
         $this->provider = new AdaptivePayments();
@@ -149,34 +153,32 @@ class PayPalController extends BaseController
     protected function getCheckoutData($recurring = false)
     {
         $data = [];
-        $order_id = Invoice::all()->count() + 1;
+        $invoice = Invoice::create([
+            'title' => 'Paypal',
+            'price' => 0,
+            'paid' => false
+        ]);
         if ($recurring === true) {
-            $data['items'] = [
-                [
-                    'name' => 'Monthly Subscription '.config('paypal.invoice_prefix').' #'.$order_id,
-                    'price' => 0,
-                    'qty' => 1,
-                ],
-            ];
+            $item = Item::create([
+                'invoice_id' => $invoice['id'],
+                'name' => 'Monthly Subscription '.config('paypal.invoice_prefix').' #'.$invoice['id'],
+                'price' => 1,
+                'qty' => 1,
+            ]);
+            $data['items'] = [$item];
             $data['return_url'] = url('/paypal/checkout-success?mode=recurring');
-            $data['subscription_desc'] = 'Monthly Subscription '.config('paypal.invoice_prefix').' #'.$order_id;
+            $data['subscription_desc'] = 'Monthly Subscription '.config('paypal.invoice_prefix').' #'.$invoice['id'];
         } else {
-            $data['items'] = [
-                [
-                    'name' => 'Product 1',
-                    'price' => 9.99,
-                    'qty' => 1,
-                ],
-                [
-                    'name'  => 'Product 2',
-                    'price' => 4.99,
-                    'qty'   => 2,
-                ],
-            ];
+            array_push($data['items'], Item::create([
+                'invoice_id' => $invoice['id'],
+                'name' => 'Product 1 '.config('paypal.invoice_prefix').' #'.$invoice['id'],
+                'price' => 1,
+                'qty' => 1,
+            ]));
             $data['return_url'] = url('/paypal/checkout-success');
         }
-        $data['invoice_id'] = config('paypal.invoice_prefix').'_'.$order_id;
-        $data['invoice_description'] = "Order #$order_id Invoice";
+        $data['invoice_id'] = config('paypal.invoice_prefix').'_'.$invoice['id'];
+        $data['invoice_description'] = "Order #".$invoice['id']." Invoice";
         $data['cancel_url'] = url('/');
         $total = 0;
         foreach ($data['items'] as $item) {
