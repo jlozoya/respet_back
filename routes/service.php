@@ -3,7 +3,7 @@
  * @api {get} / Obtiene la versión de laravel lumen.
  * @apiVersion 0.0.1
  * @apiName Version
- * @apiGroup Api
+ * @apiGroup Service
  * @apiPermission none
  *
  * @apiSuccess (200) {String} version Versión de laravel lumen.
@@ -12,8 +12,8 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->get('/webcheckout', ['uses' => 'Api\PayPalController@webcheckout']);
-$router->get('/ipnNotification', ['uses' => 'Api\PayPalController@ipnNotification']);
+$router->get('/webcheckout', ['uses' => 'Service\PayPalController@webcheckout']);
+$router->get('/ipnNotification', ['uses' => 'Service\PayPalController@ipnNotification']);
 
 /**
  * @api {post} /contact/send Enviar un correo de contacto a administradores.
@@ -30,7 +30,7 @@ $router->get('/ipnNotification', ['uses' => 'Api\PayPalController@ipnNotificatio
  * @apiSuccess (201) {User} user Es la información del usuario
  * que envió la solicitud.
  */
-$router->post('/support', ['uses' => 'Api\SupportController@create']);
+$router->post('/support', ['uses' => 'Service\SupportController@create']);
 
 /**
  * @api {get} /bulletins Consultar noticias por pagina.
@@ -43,7 +43,7 @@ $router->post('/support', ['uses' => 'Api\SupportController@create']);
  *
  * @apiSuccess (200) {Pagination} pagination Noticias paginadas.
  */
-$router->get('/bulletins', ['uses' => 'Api\BulletinController@getBulletins']);
+$router->get('/bulletins', ['uses' => 'Service\BulletinController@getBulletins']);
 
 /**
  * @api {get} /bulletins Consultar noticias por id.
@@ -56,23 +56,23 @@ $router->get('/bulletins', ['uses' => 'Api\BulletinController@getBulletins']);
  *
  * @apiSuccess (200) {Bulletin} bulletin Una noticia.
  */
-$router->get('/bulletin/{id}', ['uses' => 'Api\BulletinController@show']);
+$router->get('/bulletin/{id}', ['uses' => 'Service\BulletinController@show']);
 
-$router->get('/posts', ['uses' => 'Api\PostController@index']);
-$router->get('/post/{id}', ['uses' => 'Api\PostController@show']);
+$router->get('/posts', ['uses' => 'Service\WallController@index']);
+$router->get('/post/{id}', ['uses' => 'Service\WallController@show']);
 
-$router->get('/paypal/checkout', 'Api\PayPalController@getExpressCheckout');
-$router->get('/paypal/checkout-success', 'Api\PayPalController@getExpressCheckoutSuccess');
-$router->get('/paypal/adaptive-pay', 'Api\PayPalController@getAdaptivePay');
-$router->post('/paypal/notify', 'Api\PayPalController@notify');
+$router->get('/paypal/checkout', 'Service\PayPalController@getExpressCheckout');
+$router->get('/paypal/checkout-success', 'Service\PayPalController@getExpressCheckoutSuccess');
+$router->get('/paypal/adaptive-pay', 'Service\PayPalController@getAdaptivePay');
+$router->post('/paypal/notify', 'Service\PayPalController@notify');
 
 $router->group(['middleware' => ['auth:api']], function () use ($router) {
 
-    $router->post('/post', ['uses' => 'Api\PostController@store']);
-    $router->delete('/post/file/{id}', ['uses' => 'Api\PostController@destroyFile']);
-    $router->put('/post/file', ['uses' => 'Api\PostController@storeFile']);
-    $router->put('/post/{id}', ['uses' => 'Api\PostController@update']);
-    $router->delete('/post/{id}', ['uses' => 'Api\PostController@destroy']);
+    $router->post('/post', ['uses' => 'Service\WallController@store']);
+    $router->delete('/post/file/{id}', ['uses' => 'Service\WallController@destroyFile']);
+    $router->put('/post/file', ['uses' => 'Service\WallController@storeFile']);
+    $router->put('/post/{id}', ['uses' => 'Service\WallController@update']);
+    $router->delete('/post/{id}', ['uses' => 'Service\WallController@destroy']);
 
     $router->group(['middleware' => ['hasRole:admin']], function () use ($router) {
 
@@ -91,7 +91,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * 
          * @apiSuccess (202) {Bulletin} bulletin Noticia creada.
          */
-        $router->post('/bulletin', ['uses' => 'Api\BulletinController@create']);
+        $router->post('/bulletin', ['uses' => 'Service\BulletinController@create']);
         /**
          * @api {put} /bulletin/img Establece la imagen de la noticia.
          * @apiVersion 0.0.1
@@ -108,7 +108,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * 
          * @apiSuccess (202) {Bulletin} bulletin Noticia creada.
          */
-        $router->put('/bulletin/img', ['uses' => 'Api\BulletinController@setImg']);
+        $router->put('/bulletin/img', ['uses' => 'Service\BulletinController@setImg']);
         /**
          * @api {put} /bulletin Actualizar una noticia.
          * @apiVersion 0.0.1
@@ -125,7 +125,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * 
          * @apiSuccess (202) {Bulletin} bulletin Noticia creada.
          */
-        $router->put('/bulletin', ['uses' => 'Api\BulletinController@updateBulletin']);
+        $router->put('/bulletin', ['uses' => 'Service\BulletinController@updateBulletin']);
         /**
          * @api {delete} /bulletin/:id Eliminar una noticia por su id.
          * @apiVersion 0.0.1
@@ -142,7 +142,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * @apiError (404) {String} SERVER.BULLETIN_NOT_FOUND Cuando no se
          * encontró una noticia
          */
-        $router->delete('/bulletin/{id}', ['uses' => 'Api\BulletinController@deleteBulletin']);
+        $router->delete('/bulletin/{id}', ['uses' => 'Service\BulletinController@deleteBulletin']);
         /**
          * @api {get} /analytics Obtener las analíticas de los usuario en la base de datos.
          * @apiVersion 0.0.1
@@ -172,7 +172,7 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * @apiSuccess (200) {Number} analytics.grant_types.facebook Numero de ususarios registrados desde facebook.
          * @apiSuccess (200) {Number} analytics.grant_types.google Numero de ususarios registrados desde google.
          */
-        $router->get('/analytics', ['uses' => 'Api\AnalyticController@getBasicAnalytics']);
+        $router->get('/analytics', ['uses' => 'Service\AnalyticController@getBasicAnalytics']);
         /**
          * @api {post} /analytics/users/registration Obtener la cantidad de usuario
          * registrados en la base de datos.
@@ -190,6 +190,6 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
          * @apiSuccess (200) {String} analytics.created_at Fecha en que se registraron.
          * @apiSuccess (200) {Number} analytics.users Numero de ususario.
          */
-        $router->get('/analytics/users/registration', ['uses' => 'Api\AnalyticController@getUsersRegistration']);
+        $router->get('/analytics/users/registration', ['uses' => 'Service\AnalyticController@getUsersRegistration']);
     });
 });

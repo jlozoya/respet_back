@@ -18,7 +18,7 @@ use Intervention\Image\ImageManagerStatic as Image;
 
 use Carbon\Carbon;
 
-class PostController extends BaseController
+class WallController extends BaseController
 {
     /**
      * Muestra una lista del recurso.
