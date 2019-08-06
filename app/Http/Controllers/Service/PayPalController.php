@@ -22,20 +22,6 @@ class PayPalController extends BaseController
         $this->provider = new ExpressCheckout();
     }
 
-    public function getIndex(Request $request)
-    {
-        $response = [];
-        if (session()->has('code')) {
-            $response['code'] = session()->get('code');
-            session()->forget('code');
-        }
-        if (session()->has('message')) {
-            $response['message'] = session()->get('message');
-            session()->forget('message');
-        }
-        return view('welcome', compact('response'));
-    }
-
     /**
      * @param \Illuminate\Http\Request $request
      *
@@ -52,9 +38,9 @@ class PayPalController extends BaseController
         try {
             $response = $this->provider->setExpressCheckout($cart, $recurring);
             return redirect($response['paypal_link']);
-        } catch (\Exception $e) {
-            $invoice = $this->createInvoice($cart, 'Invalid');
-            return $e;
+        } catch (\Exception $exception) {
+            $invoice = $this->updateInvoice($invoice, 'Invalid');
+            return response()->json($exception->getMessage(), 400);
         }
     }
     /**
@@ -109,7 +95,9 @@ class PayPalController extends BaseController
                     'primary' => false,
                 ],
             ],
-            'payer'      => 'EACHRECEIVER', // (Optional) Describes who pays PayPal fees. Allowed values are: 'SENDER', 'PRIMARYRECEIVER', 'EACHRECEIVER' (Default), 'SECONDARYONLY'
+            // (Optional) Describe quién paga las tarifas de PayPal.
+            // Los valores permitidos son: 'SENDER', 'PRIMARYRECEIVER', 'EACHRECEIVER' (Predeterminado), 'SECONDARYONLY'
+            'payer'      => 'EACHRECEIVER',
             'return_url' => url('payment/success'),
             'cancel_url' => url('payment/cancel'),
         ];
