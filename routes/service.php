@@ -12,13 +12,8 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-<<<<<<< HEAD:routes/service.php
 $router->get('/webcheckout', ['uses' => 'Service\PayPalController@webcheckout']);
 $router->get('/ipnNotification', ['uses' => 'Service\PayPalController@ipnNotification']);
-=======
-$router->get('/webcheckout', ['uses' => 'Service\MercadoPagoController@generatePaymentGateway']);
-$router->get('/ipnNotification', ['uses' => 'Service\MercadoPagoController@ipnNotification']);
->>>>>>> 776c886008babac419c0858b7b0331f185ce9b09:routes/service.php
 
 /**
  * @api {post} /contact/send Enviar un correo de contacto a administradores.
