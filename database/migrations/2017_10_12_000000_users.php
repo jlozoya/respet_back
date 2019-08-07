@@ -29,7 +29,7 @@ class Users extends Migration
             $table->enum('grant_type',
                 ['password', 'google', 'facebook', 'instagram', 'twitter', 'other']
             )->default('password');
-            $table->enum('role', ['visitor', 'user', 'admin', 'other'])
+            $table->enum('role', ['visitor', 'roundsman', 'supervisor', 'user', 'admin', 'other'])
             ->default('visitor');
             $table->integer('address_id')->unsigned()->nullable();
             $table->integer('permissions_id')->unsigned()->nullable();
