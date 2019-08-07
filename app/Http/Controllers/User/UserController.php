@@ -8,7 +8,7 @@ use App\Models\User\User;
 use App\Models\User\User\EmailConfirm;
 use App\Models\Generic\Address;
 use App\Models\Generic\Media;
-use App\Models\User\User\SocialLink;
+use App\Models\User\SocialLink;
 use App\Models\User\UserPermissions;
 
 use App\Traits\PassportToken;
