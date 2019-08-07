@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Store;
 
 use Illuminate\Database\Eloquent\Model;
 
-class UserArchivement extends Model 
+class OrderProduct extends Model
 {
+    protected $table = 'order_products';
     /**
      * Los atributos que son asignados en masa.
      *
@@ -13,9 +14,10 @@ class UserArchivement extends Model
      */
     protected $fillable = [
         'id',
-        'user_id',
-        'archivement_id',
-        'progress',
+        'order_id',
+        'product_id',
+        'amount',
+        'price',
     ];
     /**
      * Los atributos excluidos del formulario JSON del modelo.

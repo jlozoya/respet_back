@@ -4,8 +4,8 @@ namespace App\Http\Controllers\User;
 
 use Laravel\Lumen\Routing\Controller as BaseController;
 
-use App\Models\User;
-use App\Models\UserPermissions;
+use App\Models\User\User;
+use App\Models\User\UserPermissions;
 
 use Illuminate\Http\Request;
 

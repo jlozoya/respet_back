@@ -4,8 +4,8 @@ namespace App\Http\Controllers\OAuth;
 
 use Laravel\Lumen\Routing\Controller as BaseController;
 
-use App\Models\User;
-use App\Models\SocialLink;
+use App\Models\User\User;
+use App\Models\User\User\SocialLink;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;

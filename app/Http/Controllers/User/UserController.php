@@ -4,12 +4,12 @@ namespace App\Http\Controllers\User;
 
 use Laravel\Lumen\Routing\Controller as BaseController;
 
-use App\Models\User;
-use App\Models\EmailConfirm;
-use App\Models\Address;
-use App\Models\Media;
-use App\Models\SocialLink;
-use App\Models\UserPermissions;
+use App\Models\User\User;
+use App\Models\User\User\EmailConfirm;
+use App\Models\Generic\Address;
+use App\Models\Generic\Media;
+use App\Models\User\User\SocialLink;
+use App\Models\User\UserPermissions;
 
 use App\Traits\PassportToken;
 
@@ -207,7 +207,7 @@ class UserController extends BaseController
      * Guarda un usuario con contraseña.
      * 
      * @param  \Illuminate\Http\Request $request
-     * @return App\Models\User $user
+     * @return App\Models\User\User $user
      */
     private function passwordStore(Request $request) {
         $this->validate($request, [
@@ -244,7 +244,7 @@ class UserController extends BaseController
      * Guarda un usuario sin contraseña.
      * 
      * @param  \Illuminate\Http\Request $request
-     * @return App\Models\User $user
+     * @return App\Models\User\User $user
      */
     private function notPasswordStore(Request $request) {
         $user = User::create([

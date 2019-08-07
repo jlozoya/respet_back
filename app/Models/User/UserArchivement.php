@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\User\User;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Post extends Model
+class UserArchivement extends Model 
 {
     /**
      * Los atributos que son asignados en masa.
@@ -14,13 +14,8 @@ class Post extends Model
     protected $fillable = [
         'id',
         'user_id',
-        'description',
-        // 'found' | 'lost' | 'on_adoption' | 'on_sale' | 'on_hold' | 'other'
-        'state',
-        'direction_id',
-        'direction_accuracy',
-        'updated_at',
-        'created_at',
+        'archivement_id',
+        'progress',
     ];
     /**
      * Los atributos excluidos del formulario JSON del modelo.
@@ -28,5 +23,7 @@ class Post extends Model
      * @var array
      */
     protected $hidden = [
+        'created_at',
+        'updated_at',
     ];
 }

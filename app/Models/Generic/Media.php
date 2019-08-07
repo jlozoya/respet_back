@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Generic;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ProductMedia extends Model
+class Media extends Model 
 {
+    protected $table = 'media';
     /**
      * Los atributos que son asignados en masa.
      *
@@ -13,8 +14,12 @@ class ProductMedia extends Model
      */
     protected $fillable = [
         'id',
-        'product_id',
-        'media_id',
+        // 'img', 'video', 'link', 'other'
+        'type',
+        'url',
+        'alt',
+        'width',
+        'height',
     ];
     /**
      * Los atributos excluidos del formulario JSON del modelo.
@@ -22,7 +27,7 @@ class ProductMedia extends Model
      * @var array
      */
     protected $hidden = [
-        'updated_at',
         'created_at',
+        'updated_at',
     ];
 }

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Service;
 
 use Laravel\Lumen\Routing\Controller as BaseController;
-use App\Models\Invoice;
-use App\Models\IPNStatus;
-use App\Models\Item;
+use App\Models\PayPal\Invoice;
+use App\Models\PayPal\IPNStatus;
+use App\Models\PayPal\Item;
 use Illuminate\Http\Request;
 use Srmklive\PayPal\Services\AdaptivePayments;
 use Srmklive\PayPal\Services\ExpressCheckout;

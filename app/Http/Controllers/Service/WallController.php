@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Service;
 
 use Laravel\Lumen\Routing\Controller as BaseController;
 
-use App\Models\Post;
-use App\Models\Direction;
-use App\Models\User;
-use App\Models\PostMedia;
-use App\Models\Media;
+use App\Models\Service\Post;
+use App\Models\Generic\Direction;
+use App\Models\User\User;
+use App\Models\Service\PostMedia;
+use App\Models\Generic\Media;
 use DB;
 
 use Illuminate\Support\Facades\URL;

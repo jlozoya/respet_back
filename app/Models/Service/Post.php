@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Service;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Media extends Model 
+class Post extends Model
 {
-    protected $table = 'media';
     /**
      * Los atributos que son asignados en masa.
      *
@@ -14,12 +13,14 @@ class Media extends Model
      */
     protected $fillable = [
         'id',
-        // 'img', 'video', 'link', 'other'
-        'type',
-        'url',
-        'alt',
-        'width',
-        'height',
+        'user_id',
+        'description',
+        // 'found' | 'lost' | 'on_adoption' | 'on_sale' | 'on_hold' | 'other'
+        'state',
+        'direction_id',
+        'direction_accuracy',
+        'updated_at',
+        'created_at',
     ];
     /**
      * Los atributos excluidos del formulario JSON del modelo.
@@ -27,7 +28,5 @@ class Media extends Model
      * @var array
      */
     protected $hidden = [
-        'created_at',
-        'updated_at',
     ];
 }

@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\User\User;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Bulletin extends Model 
+class CatPhones extends Model 
 {
+    protected $table = 'cat_phones';
     /**
      * Los atributos que son asignados en masa.
      *
@@ -13,12 +14,8 @@ class Bulletin extends Model
      */
     protected $fillable = [
         'id',
-        'title',
-        'description',
-        'date',
-        'media_id',
-        'created_at',
-        'updated_at',
+        'user_id',
+        'phone',
     ];
     /**
      * Los atributos excluidos del formulario JSON del modelo.
@@ -26,5 +23,7 @@ class Bulletin extends Model
      * @var array
      */
     protected $hidden = [
+        'created_at',
+        'updated_at',
     ];
 }

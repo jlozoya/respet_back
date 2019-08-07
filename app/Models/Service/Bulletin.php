@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Service;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Item extends Model 
+class Bulletin extends Model 
 {
     /**
      * Los atributos que son asignados en masa.
@@ -13,10 +13,10 @@ class Item extends Model
      */
     protected $fillable = [
         'id',
-        'invoice_id',
-        'name',
-        'price',
-        'qty',
+        'title',
+        'description',
+        'date',
+        'media_id',
         'created_at',
         'updated_at',
     ];

@@ -1,16 +1,11 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Generic;
 
 use Illuminate\Database\Eloquent\Model;
 
-use Illuminate\Notifications\Notifiable;
-
-class Support extends Model 
+class Direction extends Model 
 {
-    use Notifiable;
-
-    protected $table = 'support';
     /**
      * Los atributos que son asignados en masa.
      *
@@ -18,11 +13,14 @@ class Support extends Model
      */
     protected $fillable = [
         'id',
-        'name',
-        'phone',
-        'email',
-        'message',
-        'lang',
+        'country',
+        'administrative_area_level_1',
+        'administrative_area_level_2',
+        'route',
+        'street_number',
+        'postal_code',
+        'lat',
+        'lng',
     ];
     /**
      * Los atributos excluidos del formulario JSON del modelo.

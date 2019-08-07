@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-use App\Models\User;
+use App\Models\User\User;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Http\Request;
 use Illuminate\Mail\Message;

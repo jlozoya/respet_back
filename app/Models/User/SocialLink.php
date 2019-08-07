@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\User\User;
 
 use Illuminate\Database\Eloquent\Model;
 
-class IPNStatus extends Model 
+class SocialLink extends Model 
 {
     /**
      * Los atributos que son asignados en masa.
@@ -13,10 +13,10 @@ class IPNStatus extends Model
      */
     protected $fillable = [
         'id',
-        'payload',
-        'status',
-        'created_at',
-        'updated_at',
+        'user_id',
+        'extern_id',
+        // 'google', 'facebook', 'instagram', 'twitter', 'other'
+        'grant_type',
     ];
     /**
      * Los atributos excluidos del formulario JSON del modelo.
@@ -24,5 +24,7 @@ class IPNStatus extends Model
      * @var array
      */
     protected $hidden = [
+        'created_at',
+        'updated_at',
     ];
 }

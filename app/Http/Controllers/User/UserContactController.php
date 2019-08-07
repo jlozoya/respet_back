@@ -4,13 +4,13 @@ namespace App\Http\Controllers\User;
 
 use Laravel\Lumen\Routing\Controller as BaseController;
 
-use App\Models\User;
-use App\Models\EmailConfirm;
-use App\Models\Address;
-use App\Models\Media;
-use App\Models\UserPermissions;
-use App\Models\CatEmails;
-use App\Models\CatPhones;
+use App\Models\User\User;
+use App\Models\User\User\EmailConfirm;
+use App\Models\Generic\Address;
+use App\Models\Generic\Media;
+use App\Models\User\UserPermissions;
+use App\Models\User\User\CatEmails;
+use App\Models\User\User\CatPhones;
 
 use Illuminate\Http\Request;
 

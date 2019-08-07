@@ -1,23 +1,23 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\User\User;
 
 use Illuminate\Database\Eloquent\Model;
 
-class OrderProduct extends Model
+class EmailConfirm extends Model 
 {
-    protected $table = 'order_products';
+    protected $table = 'email_confirm';
+    public $timestamps = false;
     /**
      * Los atributos que son asignados en masa.
      *
      * @var array
      */
     protected $fillable = [
-        'id',
-        'order_id',
-        'product_id',
-        'amount',
-        'price',
+        'user_id',
+        'email',
+        'token',
+        'created_at',
     ];
     /**
      * Los atributos excluidos del formulario JSON del modelo.
@@ -25,7 +25,5 @@ class OrderProduct extends Model
      * @var array
      */
     protected $hidden = [
-        'created_at',
-        'updated_at',
     ];
 }

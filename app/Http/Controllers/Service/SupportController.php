@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Service;
 
 use Laravel\Lumen\Routing\Controller as BaseController;
 
-use App\Models\User;
-use App\Models\Support;
+use App\Models\User\User;
+use App\Models\Service\Support;
 
 use Illuminate\Http\Request;
 

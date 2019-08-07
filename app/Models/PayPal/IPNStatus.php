@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\PayPal;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PostMedia extends Model
+class IPNStatus extends Model 
 {
     /**
      * Los atributos que son asignados en masa.
@@ -13,8 +13,10 @@ class PostMedia extends Model
      */
     protected $fillable = [
         'id',
-        'post_id',
-        'media_id',
+        'payload',
+        'status',
+        'created_at',
+        'updated_at',
     ];
     /**
      * Los atributos excluidos del formulario JSON del modelo.
@@ -22,7 +24,5 @@ class PostMedia extends Model
      * @var array
      */
     protected $hidden = [
-        'updated_at',
-        'created_at',
     ];
 }

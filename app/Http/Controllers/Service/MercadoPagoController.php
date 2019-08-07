@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use Laravel\Lumen\Routing\Controller as BaseController;
-use App\Models\User;
+use App\Models\User\User;
 use Illuminate\Http\Request;
 use MercadoPago;
 

@@ -1,11 +1,12 @@
 <?php
 
-namespace App;
+namespace App\Models\Generic;
 
 use Illuminate\Database\Eloquent\Model;
 
-class HealthStat extends Model
+class Address extends Model 
 {
+    protected $table = 'addresses';
     /**
      * Los atributos que son asignados en masa.
      *
@@ -13,9 +14,14 @@ class HealthStat extends Model
      */
     protected $fillable = [
         'id',
-        'pet_id',
-        'name',
-        'description',
+        'country',
+        'administrative_area_level_1',
+        'administrative_area_level_2',
+        'route',
+        'street_number',
+        'postal_code',
+        'lat',
+        'lng',
     ];
     /**
      * Los atributos excluidos del formulario JSON del modelo.
@@ -23,7 +29,7 @@ class HealthStat extends Model
      * @var array
      */
     protected $hidden = [
-        'updated_at',
         'created_at',
+        'updated_at',
     ];
 }

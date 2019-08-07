@@ -1,12 +1,16 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Service;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Warehouse extends Model
+use Illuminate\Notifications\Notifiable;
+
+class Support extends Model 
 {
-    protected $table = 'warehouses';
+    use Notifiable;
+
+    protected $table = 'support';
     /**
      * Los atributos que son asignados en masa.
      *
@@ -15,8 +19,10 @@ class Warehouse extends Model
     protected $fillable = [
         'id',
         'name',
-        'direction_id',
-        'media_id',
+        'phone',
+        'email',
+        'message',
+        'lang',
     ];
     /**
      * Los atributos excluidos del formulario JSON del modelo.

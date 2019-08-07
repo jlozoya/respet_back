@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Service;
 
 use Laravel\Lumen\Routing\Controller as BaseController;
 
-use App\Models\Bulletin;
-use App\Models\Media;
+use App\Models\Service\Bulletin;
+use App\Models\Generic\Media;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;

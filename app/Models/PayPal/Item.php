@@ -1,23 +1,24 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\PayPal;
 
 use Illuminate\Database\Eloquent\Model;
 
-class EmailConfirm extends Model 
+class Item extends Model 
 {
-    protected $table = 'email_confirm';
-    public $timestamps = false;
     /**
      * Los atributos que son asignados en masa.
      *
      * @var array
      */
     protected $fillable = [
-        'user_id',
-        'email',
-        'token',
+        'id',
+        'invoice_id',
+        'name',
+        'price',
+        'qty',
         'created_at',
+        'updated_at',
     ];
     /**
      * Los atributos excluidos del formulario JSON del modelo.

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Store;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Archivement extends Model 
+class ProductMedia extends Model
 {
     /**
      * Los atributos que son asignados en masa.
@@ -13,9 +13,8 @@ class Archivement extends Model
      */
     protected $fillable = [
         'id',
-        'value',
-        'goal',
-        'about',
+        'product_id',
+        'media_id',
     ];
     /**
      * Los atributos excluidos del formulario JSON del modelo.
@@ -23,7 +22,7 @@ class Archivement extends Model
      * @var array
      */
     protected $hidden = [
-        'created_at',
         'updated_at',
+        'created_at',
     ];
 }

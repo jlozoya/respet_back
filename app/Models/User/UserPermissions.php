@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\User\User;
 
 use Illuminate\Database\Eloquent\Model;
 
-class CatPhones extends Model 
+class UserPermissions extends Model 
 {
-    protected $table = 'cat_phones';
     /**
      * Los atributos que son asignados en masa.
      *
@@ -14,8 +13,12 @@ class CatPhones extends Model
      */
     protected $fillable = [
         'id',
-        'user_id',
-        'phone',
+        'show_main_email',
+        'show_alternative_emails',
+        'show_main_phone',
+        'show_alternative_phones',
+        'show_direction',
+        'receive_mail_adds',
     ];
     /**
      * Los atributos excluidos del formulario JSON del modelo.

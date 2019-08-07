@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Store;
 
 use Illuminate\Database\Eloquent\Model;
 
-class UserPermissions extends Model 
+class Warehouse extends Model
 {
+    protected $table = 'warehouses';
     /**
      * Los atributos que son asignados en masa.
      *
@@ -13,12 +14,9 @@ class UserPermissions extends Model
      */
     protected $fillable = [
         'id',
-        'show_main_email',
-        'show_alternative_emails',
-        'show_main_phone',
-        'show_alternative_phones',
-        'show_direction',
-        'receive_mail_adds',
+        'name',
+        'direction_id',
+        'media_id',
     ];
     /**
      * Los atributos excluidos del formulario JSON del modelo.

@@ -4,13 +4,13 @@ namespace App\Http\Controllers\Store;
 
 use Laravel\Lumen\Routing\Controller as BaseController;
 
-use App\Models\Order;
-use App\Models\OrderProduct;
-use App\Models\Product;
-use App\Models\Warehouse;
-use App\Models\Direction;
-use App\Models\ProductMedia;
-use App\Models\Media;
+use App\Models\Store\Order;
+use App\Models\Store\OrderProduct;
+use App\Models\Store\Product;
+use App\Models\Store\Warehouse;
+use App\Models\Generic\Direction;
+use App\Models\Store\ProductMedia;
+use App\Models\Generic\Media;
 use DB;
 
 use Illuminate\Support\Facades\URL;

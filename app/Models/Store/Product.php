@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Store;
 
 use Illuminate\Database\Eloquent\Model;
 
-class SocialLink extends Model 
+class Product extends Model
 {
     /**
      * Los atributos que son asignados en masa.
@@ -13,10 +13,13 @@ class SocialLink extends Model
      */
     protected $fillable = [
         'id',
-        'user_id',
-        'extern_id',
-        // 'google', 'facebook', 'instagram', 'twitter', 'other'
-        'grant_type',
+        'name',
+        'description',
+        'amount',
+        'price',
+        'warehouse_id',
+        'created_at',
+        'updated_at',
     ];
     /**
      * Los atributos excluidos del formulario JSON del modelo.
@@ -24,7 +27,5 @@ class SocialLink extends Model
      * @var array
      */
     protected $hidden = [
-        'created_at',
-        'updated_at',
     ];
 }

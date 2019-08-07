@@ -4,9 +4,9 @@ namespace App\Http\Controllers\User;
 
 use Laravel\Lumen\Routing\Controller as BaseController;
 
-use App\Models\User;
-use App\Models\CatEmails;
-use App\Models\CatPhones;
+use App\Models\User\User;
+use App\Models\User\User\CatEmails;
+use App\Models\User\User\CatPhones;
 
 use App\Traits\PassportToken;
 

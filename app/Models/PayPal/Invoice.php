@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\PayPal;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Direction extends Model 
+class Invoice extends Model 
 {
     /**
      * Los atributos que son asignados en masa.
@@ -13,14 +13,11 @@ class Direction extends Model
      */
     protected $fillable = [
         'id',
-        'country',
-        'administrative_area_level_1',
-        'administrative_area_level_2',
-        'route',
-        'street_number',
-        'postal_code',
-        'lat',
-        'lng',
+        'title',
+        'price',
+        'paid',
+        'created_at',
+        'updated_at',
     ];
     /**
      * Los atributos excluidos del formulario JSON del modelo.
@@ -28,7 +25,5 @@ class Direction extends Model
      * @var array
      */
     protected $hidden = [
-        'created_at',
-        'updated_at',
     ];
 }
