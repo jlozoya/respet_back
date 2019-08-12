@@ -16,6 +16,7 @@ class Warehouses extends Migration
         Schema::create('warehouses', function (Blueprint $table) {
             $table->increments('id')->unique();
             $table->string('name', 60)->index();
+            $table->text('description')->nullable();
             $table->integer('direction_id')->unsigned()->nullable();
             $table->integer('media_id')->unsigned()->nullable();
             $table->timestamps();

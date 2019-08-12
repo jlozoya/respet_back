@@ -114,6 +114,7 @@ class WarehouseController extends BaseController {
         ]);
         $warehouse = Warehouse::create([
             'name' => $request->get('name'),
+            'description' => $request->get('description'),
             'direction_id' => $request->get('direction_id'),
         ]);
         if ($request->get('direction')) {
@@ -214,6 +215,10 @@ class WarehouseController extends BaseController {
             if ($request->get('name')) {
                 $this->validate($request, ['name' => 'string',]);
                 $warehouse['name'] = $request->get('name');
+            }
+            if ($request->get('description')) {
+                $this->validate($request, ['description' => 'string',]);
+                $warehouse['description'] = $request->get('description');
             }
             $direction;
             if ($warehouse['direction_id']) {
