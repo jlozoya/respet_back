@@ -264,7 +264,7 @@ class OrderController extends BaseController
      * @return \Illuminate\Http\Response
      */
     public function show($id) {
-        $orser = Order::find($id);
+        $order = Order::find($id);
         if ($order) {
             $order = $this->fillOrderData($order);
             return response()->json($order, 200);
