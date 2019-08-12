@@ -240,7 +240,7 @@ class OrderController extends BaseController
         if ($order['destination_id']) {
             $order['destination'] = Direction::find($order['destination_id']);
         }
-        $order['products'] = OrderProduct::where('order_id', $id)->get();
+        $order['products'] = OrderProduct::where('order_id', $order['id'])->get();
         foreach ($order['products'] as &$orderProduct) {
             $orderProduct['product'] = Product::find($orderProduct['product_id']);
             if ($orderProduct['product']['warehouse_id']) {
