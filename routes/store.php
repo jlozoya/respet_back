@@ -37,10 +37,6 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
         $router->put('/order/{id}', ['uses' => 'Store\OrderController@update']);
         $router->delete('/order/{id}', ['uses' => 'Store\OrderController@destroy']);
 
-        $router->post('/order/product', ['uses' => 'Store\ProductController@store']);
-        $router->put('/order/product/{id}', ['uses' => 'Store\ProductController@update']);
-        $router->delete('/order/product/{id}', ['uses' => 'Store\ProductController@destroy']);
-
     });
 
     $router->group(['middleware' => ['hasRole:admin']], function () use ($router) {
