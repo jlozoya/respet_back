@@ -215,14 +215,7 @@ class OrderController extends BaseController
         return response()->json($order, 201);
     }
 
-    /**
-     * Mostrar el recurso especificado.
-     *
-     * @param  number  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id) {
-        $order = Order::find($id);
+    private function fillOrderData($order) {
         $order['user'] = User::select(
             'id',
             'name',
@@ -262,9 +255,39 @@ class OrderController extends BaseController
             $orderProduct['product']['media'] = ProductMedia::select('media.*')->where('product_media.product_id', $orderProduct['product']['id'])
             ->join('media', 'product_media.media_id', 'media.id')->get();
         }
-        return response()->json($order, 200);
+        return $order;
     }
-
+    /**
+     * Mostrar el recurso especificado.
+     *
+     * @param  number  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id) {
+        $orser = Order::find($id);
+        if ($order) {
+            $order = $this->fillOrderData($order);
+            return response()->json($order, 200);
+        } else {
+            return response()->json('ORDER_NOT_FOUND', 404);
+        }
+    }
+    /**
+     * Mostrar el recurso especificado.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function showLastOrder(Request $request) {
+        $user = $request->user();
+        $order = Order::where(['user_id' => $user['id'], 'state' => 'on_create'])->orderBy('id', 'DESC')->first();
+        if ($order) {
+            $order = $this->fillOrderData($order);
+            return response()->json($order, 200);
+        } else {
+            return response()->json('ORDER_NOT_FOUND', 404);
+        }
+    }
     /**
      * Actualizar el recurso especificado en el almacenamiento.
      *

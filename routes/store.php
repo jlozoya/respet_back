@@ -6,19 +6,20 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
     $router->put('/order/product/{id}', ['uses' => 'Store\OrderProductController@update']);
     $router->delete('/order/product/{id}', ['uses' => 'Store\OrderProductController@destroy']);
 
+    $router->get('/order', ['uses' => 'Store\OrderController@showLastOrder']);
+    $router->get('/order/{id}', ['uses' => 'Store\OrderController@show']);
+    $router->get('/order/product/{id}', ['uses' => 'Store\ProductController@show']);
+
+    $router->get('/warehouses', ['uses' => 'Store\WarehouseController@index']);
+    $router->get('/warehouse/{id}', ['uses' => 'Store\WarehouseController@show']);
+    
+    $router->get('/products', ['uses' => 'Store\ProductController@index']);
+    $router->get('/product/{id}', ['uses' => 'Store\ProductController@show']);
+    
     $router->group(['middleware' => ['hasRole:roundsman,supervisor,admin']], function () use ($router) {
 
-        $router->get('/warehouses', ['uses' => 'Store\WarehouseController@index']);
-        $router->get('/warehouse/{id}', ['uses' => 'Store\WarehouseController@show']);
-        
-        $router->get('/products', ['uses' => 'Store\ProductController@index']);
-        $router->get('/product/{id}', ['uses' => 'Store\ProductController@show']);
-
         $router->get('/orders', ['uses' => 'Store\OrderController@index']);
-        $router->get('/order/{id}', ['uses' => 'Store\OrderController@show']);
         $router->put('/order/state/{id}', ['uses' => 'Store\OrderController@updateState']);
-
-        $router->get('/order/product/{id}', ['uses' => 'Store\ProductController@show']);
 
     });
 
