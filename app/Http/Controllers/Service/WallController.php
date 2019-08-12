@@ -353,7 +353,8 @@ class WallController extends BaseController
      */
     public function destroy(Request $request, $id) {
         $post = Post::find($id);
-        if ($post['user_id'] == $request->user()['id']) {
+        $user = $request->user();
+        if ($post['user_id'] == $user['id'] || $user['role'] == 'admin') {
             if ($post['direction_id']) {
                 Direction::find($post['direction_id'])->delete();
             }
@@ -368,7 +369,7 @@ class WallController extends BaseController
             $post->delete();
             return response()->json(null, 204);
         } else {
-            return response()->json('SERVER.WRONG_USER', 404);
+            return response()->json('SERVER.WRONG_USER', 403);
         }
     }
 }
