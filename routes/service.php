@@ -12,9 +12,6 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->get('/webcheckout', ['uses' => 'Service\PayPalController@webcheckout']);
-$router->get('/ipnNotification', ['uses' => 'Service\PayPalController@ipnNotification']);
-
 /**
  * @api {post} /contact/send Enviar un correo de contacto a administradores.
  * @apiVersion 0.0.1
@@ -60,11 +57,6 @@ $router->get('/bulletin/{id}', ['uses' => 'Service\BulletinController@show']);
 
 $router->get('/posts', ['uses' => 'Service\WallController@index']);
 $router->get('/post/{id}', ['uses' => 'Service\WallController@show']);
-
-$router->get('/paypal/checkout', 'Service\PayPalController@getExpressCheckout');
-$router->get('/paypal/checkout-success', 'Service\PayPalController@getExpressCheckoutSuccess');
-$router->get('/paypal/adaptive-pay', 'Service\PayPalController@getAdaptivePay');
-$router->post('/paypal/notify', 'Service\PayPalController@notify');
 
 $router->group(['middleware' => ['auth:api']], function () use ($router) {
 

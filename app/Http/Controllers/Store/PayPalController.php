@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Service;
+namespace App\Http\Controllers\Store;
 
 use Laravel\Lumen\Routing\Controller as BaseController;
 use App\Models\PayPal\Invoice;
@@ -27,11 +27,11 @@ class PayPalController extends BaseController
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function getExpressCheckout(Request $request)
+    public function getExpressCheckoutByOrderId(Request $request, $id)
     {
         $recurring = ($request->get('mode') === 'recurring') ? true : false;
 
-        $cart = $this->geCartData($recurring);
+        $cart = $this->geCartData($id, $recurring);
         $invoice = $this->createInvoice($cart, 'Registered');
         $cart['invoice_id'] = $invoice['id'];
         
@@ -42,6 +42,78 @@ class PayPalController extends BaseController
             $invoice = $this->updateInvoice($invoice, 'Invalid');
             return response()->json($exception->getMessage(), 400);
         }
+    }
+    
+    /**
+     * Configure los datos del carrito para procesar el pago en PayPal.
+     *
+     * @param bool $recurring
+     *
+     * @return array
+     */
+    protected function geCartData($id, $recurring = false)
+    {
+        $order = app(\App\Http\Controllers\Store\OrderController::class)->show($id);
+        $cart = [];
+        $cart['invoice_description'] = "Paypal";
+        if ($recurring === true) {
+            $item = [
+                'name' => 'Monthly Subscription',
+                'price' => 1,
+                'qty' => 1,
+            ];
+            $cart['items'] = [$item];
+            $cart['return_url'] = url('/paypal/checkout-success?mode=recurring');
+            $cart['subscription_desc'] = 'Monthly Subscription';
+        } else {
+            $cart['items'] = [];
+            $item = [
+                'name' => 'Product 1',
+                'price' => 1,
+                'qty' => 1,
+            ];
+            array_push($cart['items'], $item);
+            $cart['return_url'] = url('/paypal/checkout-success');
+        }
+        $cart['cancel_url'] = url('/');
+        $total = 0;
+        foreach ($cart['items'] as $item) {
+            $total += $item['price'] * $item['qty'];
+        }
+        $cart['total'] = $total;
+        return $cart;
+    }
+    
+    /**
+     * Crear factura.
+     *
+     * @param array  $cart
+     * @param string $status
+     *
+     * @return \App\Invoice
+     */
+    protected function createInvoice($cart, $status)
+    {
+        $invoice = Invoice::create([
+            'title' => $cart['invoice_description'],
+            'price' => $cart['total'],
+            'paid' => (!strcasecmp($status, 'Completed') || !strcasecmp($status, 'Processed')) ? 1 : 0,
+        ]);
+        collect($cart['items'])->each(function ($product) use ($invoice) {
+            Item::create([
+                'invoice_id' => $invoice['id'],
+                'name' => $product['name'],
+                'price' => $product['price'],
+                'qty' => $product['qty'],
+            ]);
+        });
+        return $invoice;
+    }
+    
+    protected function updateInvoice($invoice, $status) {
+        $invoice['paid'] = (!strcasecmp($status, 'Completed') || !strcasecmp($status, 'Processed')) ? 1 : 0;
+        $invoice->save();
+        return $invoice;
     }
     /**
      * Procesar el pago en PayPal.
@@ -127,44 +199,6 @@ class PayPalController extends BaseController
         $ipn->status = $response;
         $ipn->save();
     }
-    /**
-     * Configure los datos del carrito para procesar el pago en PayPal.
-     *
-     * @param bool $recurring
-     *
-     * @return array
-     */
-    protected function geCartData($recurring = false)
-    {
-        $cart = [];
-        $cart['invoice_description'] = "Paypal";
-        if ($recurring === true) {
-            $item = [
-                'name' => 'Monthly Subscription',
-                'price' => 1,
-                'qty' => 1,
-            ];
-            $cart['items'] = [$item];
-            $cart['return_url'] = url('/paypal/checkout-success?mode=recurring');
-            $cart['subscription_desc'] = 'Monthly Subscription';
-        } else {
-            $cart['items'] = [];
-            $item = [
-                'name' => 'Product 1',
-                'price' => 1,
-                'qty' => 1,
-            ];
-            array_push($cart['items'], $item);
-            $cart['return_url'] = url('/paypal/checkout-success');
-        }
-        $cart['cancel_url'] = url('/');
-        $total = 0;
-        foreach ($cart['items'] as $item) {
-            $total += $item['price'] * $item['qty'];
-        }
-        $cart['total'] = $total;
-        return $cart;
-    }
 
     protected function getCheckoutData($invoice)
     {
@@ -178,36 +212,5 @@ class PayPalController extends BaseController
         }
         $cart['total'] = $total;
         return $cart;
-    }
-    /**
-     * Crear factura.
-     *
-     * @param array  $cart
-     * @param string $status
-     *
-     * @return \App\Invoice
-     */
-    protected function createInvoice($cart, $status)
-    {
-        $invoice = Invoice::create([
-            'title' => $cart['invoice_description'],
-            'price' => $cart['total'],
-            'paid' => (!strcasecmp($status, 'Completed') || !strcasecmp($status, 'Processed')) ? 1 : 0,
-        ]);
-        collect($cart['items'])->each(function ($product) use ($invoice) {
-            Item::create([
-                'invoice_id' => $invoice['id'],
-                'name' => $product['name'],
-                'price' => $product['price'],
-                'qty' => $product['qty'],
-            ]);
-        });
-        return $invoice;
-    }
-
-    protected function updateInvoice($invoice, $status) {
-        $invoice['paid'] = (!strcasecmp($status, 'Completed') || !strcasecmp($status, 'Processed')) ? 1 : 0;
-        $invoice->save();
-        return $invoice;
     }
 }
