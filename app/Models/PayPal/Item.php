@@ -16,7 +16,7 @@ class Item extends Model
         'invoice_id',
         'name',
         'price',
-        'qty',
+        'amount',
         'created_at',
         'updated_at',
     ];

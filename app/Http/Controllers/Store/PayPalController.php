@@ -53,37 +53,89 @@ class PayPalController extends BaseController
      */
     protected function geCartData($id, $recurring = false)
     {
-        $order = app(\App\Http\Controllers\Store\OrderController::class)->show($id);
+        $order = Order::find($id);
+        if ($order) {
+            $order = $this->fillOrderData($order);
+        } else {
+            return response()->json('ORDER_NOT_FOUND', 404);
+        }
         $cart = [];
         $cart['invoice_description'] = "Paypal";
         if ($recurring === true) {
-            $item = [
-                'name' => 'Monthly Subscription',
-                'price' => 1,
-                'qty' => 1,
-            ];
-            $cart['items'] = [$item];
+            $cart['items'] = [];
+            foreach ($product as &$order['products']) {
+                $item = Item::create([
+                    'name' => $product['name'],
+                    'price' => $product['price'],
+                    'amount' => $product['amount'],
+                ]);
+                array_push($cart['items'], $item);
+            }
             $cart['return_url'] = url('/paypal/checkout-success?mode=recurring');
             $cart['subscription_desc'] = 'Monthly Subscription';
         } else {
             $cart['items'] = [];
-            $item = [
-                'name' => 'Product 1',
-                'price' => 1,
-                'qty' => 1,
-            ];
-            array_push($cart['items'], $item);
-            $cart['return_url'] = url('/paypal/checkout-success');
+            foreach ($product as &$order['products']) {
+                $item = Item::create([
+                    'name' => $product['name'],
+                    'price' => $product['price'],
+                    'amount' => $product['amount'],
+                ]);
+                array_push($cart['items'], $item);
+            }
+            $cart['return_url'] = url(env('PAYPAL_RETURN_URL', '/'));
         }
-        $cart['cancel_url'] = url('/');
+        $cart['cancel_url'] = url(env('PAYPAL_CANCEL_URL', '/'));
         $total = 0;
         foreach ($cart['items'] as $item) {
-            $total += $item['price'] * $item['qty'];
+            $total += $item['price'] * $item['amount'];
         }
         $cart['total'] = $total;
         return $cart;
     }
-    
+
+    private function fillOrderData($order) {
+        $order['user'] = User::select(
+            'id',
+            'name',
+            'media_id'
+        )->find($order['user_id']);
+        if ($order['user']['media_id']) {
+            $order['user']['media'] = Media::find($order['user']['media_id']);
+        }
+        if ($order['roundsman_id']) {
+            $order['roundsman'] = User::select(
+                'id',
+                'name',
+                'media_id'
+            )->find($order['roundsman_id']);
+            if ($order['roundsman']['media_id']) {
+                $order['roundsman']['media'] = Media::find($order['roundsman']['media_id']);
+            }
+        }
+        if ($order['location_id']) {
+            $order['location'] = Direction::find($order['location_id']);
+        }
+        if ($order['destination_id']) {
+            $order['destination'] = Direction::find($order['destination_id']);
+        }
+        $order['products'] = OrderProduct::where('order_id', $order['id'])->get();
+        foreach ($order['products'] as &$orderProduct) {
+            $orderProduct['product'] = Product::find($orderProduct['product_id']);
+            if ($orderProduct['product']['warehouse_id']) {
+                $orderProduct['product']['warehouse'] = Warehouse::find($orderProduct['product']['warehouse_id']);
+                if ($orderProduct['product']['warehouse']['direction_id']) {
+                    $orderProduct['product']['warehouse']['direction'] = Direction::find($orderProduct['product']['warehouse']['direction_id']);
+                }
+                if ($orderProduct['product']['warehouse']['media_id']) {
+                    $orderProduct['product']['warehouse']['media'] = Media::find($orderProduct['product']['warehouse']['media_id']);
+                }
+            }
+            $orderProduct['product']['media'] = ProductMedia::select('media.*')->where('product_media.product_id', $orderProduct['product']['id'])
+            ->join('media', 'product_media.media_id', 'media.id')->get();
+        }
+        return $order;
+    }
     /**
      * Crear factura.
      *
@@ -104,7 +156,7 @@ class PayPalController extends BaseController
                 'invoice_id' => $invoice['id'],
                 'name' => $product['name'],
                 'price' => $product['price'],
-                'qty' => $product['qty'],
+                'amount' => $product['amount'],
             ]);
         });
         return $invoice;
@@ -208,7 +260,7 @@ class PayPalController extends BaseController
         $cart['items'] = Item::where('invoice_id', $invoice['id'])->get();
         $total = 0;
         foreach ($cart['items'] as $item) {
-            $total += $item['price'] * $item['qty'];
+            $total += $item['price'] * $item['amount'];
         }
         $cart['total'] = $total;
         return $cart;
