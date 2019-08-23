@@ -6,6 +6,7 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 use App\Models\PayPal\Invoice;
 use App\Models\PayPal\IPNStatus;
 use App\Models\PayPal\Item;
+use App\Models\Store\Order;
 use Illuminate\Http\Request;
 use Srmklive\PayPal\Services\AdaptivePayments;
 use Srmklive\PayPal\Services\ExpressCheckout;
