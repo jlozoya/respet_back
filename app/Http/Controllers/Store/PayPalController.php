@@ -6,7 +6,14 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 use App\Models\PayPal\Invoice;
 use App\Models\PayPal\IPNStatus;
 use App\Models\PayPal\Item;
+use App\Models\Store\Warehouse;
 use App\Models\Store\Order;
+use App\Models\Store\Product;
+use App\Models\Store\OrderProduct;
+use App\Models\Store\ProductMedia;
+use App\Models\Generic\Media;
+use App\Models\Generic\Direction;
+use App\Models\User\User;
 use Illuminate\Http\Request;
 use Srmklive\PayPal\Services\AdaptivePayments;
 use Srmklive\PayPal\Services\ExpressCheckout;
@@ -31,17 +38,21 @@ class PayPalController extends BaseController
     public function getExpressCheckoutByOrderId(Request $request, $id)
     {
         $recurring = ($request->get('mode') === 'recurring') ? true : false;
-
-        $cart = $this->geCartData($id, $recurring);
-        $invoice = $this->createInvoice($cart, 'Registered');
-        $cart['invoice_id'] = $invoice['id'];
-        
-        try {
-            $response = $this->provider->setExpressCheckout($cart, $recurring);
-            return redirect($response['paypal_link']);
-        } catch (\Exception $exception) {
-            $invoice = $this->updateInvoice($invoice, 'Invalid');
-            return response()->json($exception->getMessage(), 400);
+        $cart = $this->getCartData($id, $recurring);
+        if ($cart) {
+            try {
+                $response = $this->provider->setExpressCheckout($cart, $recurring);
+                if ($response['paypal_link']) {
+                    return response()->json($response['paypal_link'], 200);
+                } else {
+                    return response()->json('PAYPAL_ERROR', 500);
+                }
+            } catch (\Exception $exception) {
+                $invoice = $this->updateInvoice($invoice, 'Invalid');
+                return response()->json($exception->getMessage(), 400);
+            }
+        } else {
+            return response()->json('CART_NOT_FOUND', 404);
         }
     }
     
@@ -52,47 +63,53 @@ class PayPalController extends BaseController
      *
      * @return array
      */
-    protected function geCartData($id, $recurring = false)
+    protected function getCartData($id, $recurring = false)
     {
         $order = Order::find($id);
         if ($order) {
             $order = $this->fillOrderData($order);
-        } else {
-            return response()->json('ORDER_NOT_FOUND', 404);
-        }
-        $cart = [];
-        $cart['invoice_description'] = "Paypal";
-        if ($recurring === true) {
-            $cart['items'] = [];
-            foreach ($product as &$order['products']) {
-                $item = Item::create([
-                    'name' => $product['name'],
-                    'price' => $product['price'],
-                    'amount' => $product['amount'],
-                ]);
-                array_push($cart['items'], $item);
+            $cart = [];
+            $cart['invoice_description'] = "Paypal";
+            $invoice = $this->createInvoice($cart, 'Registered');
+            $cart['invoice_id'] = $invoice['id'];
+            if ($recurring === true) {
+                $cart['items'] = [];
+                foreach ($order['products'] as &$orderProduct) {
+                    $item = Item::create([
+                        'invoice_id' => $cart['invoice_id'],
+                        'name' => $orderProduct['product']['name'],
+                        'price' => $orderProduct['product']['price'],
+                        'qty' => $orderProduct['amount'],
+                    ]);
+                    array_push($cart['items'], $item);
+                }
+                $cart['return_url'] = url('/paypal/checkout-success?mode=recurring');
+                $cart['subscription_desc'] = 'Monthly Subscription';
+            } else {
+                $cart['items'] = [];
+                foreach ($order['products'] as &$orderProduct) {
+                    $item = Item::create([
+                        'invoice_id' => $cart['invoice_id'],
+                        'name' => $orderProduct['product']['name'],
+                        'price' => $orderProduct['product']['price'],
+                        'qty' => $orderProduct['amount'],
+                    ]);
+                    array_push($cart['items'], $item);
+                }
+                $cart['return_url'] = url(env('PAYPAL_RETURN_URL', '/'));
             }
-            $cart['return_url'] = url('/paypal/checkout-success?mode=recurring');
-            $cart['subscription_desc'] = 'Monthly Subscription';
-        } else {
-            $cart['items'] = [];
-            foreach ($product as &$order['products']) {
-                $item = Item::create([
-                    'name' => $product['name'],
-                    'price' => $product['price'],
-                    'amount' => $product['amount'],
-                ]);
-                array_push($cart['items'], $item);
+            $cart['cancel_url'] = url(env('PAYPAL_CANCEL_URL', '/'));
+            $total = 0;
+            foreach ($cart['items'] as $item) {
+                $total += $item['price'] * $item['qty'];
             }
-            $cart['return_url'] = url(env('PAYPAL_RETURN_URL', '/'));
+            $cart['total'] = $total;
+            $invoice['total'] = $total;
+            $invoice->save();
+            return $cart;
+        } else {
+            return null;
         }
-        $cart['cancel_url'] = url(env('PAYPAL_CANCEL_URL', '/'));
-        $total = 0;
-        foreach ($cart['items'] as $item) {
-            $total += $item['price'] * $item['amount'];
-        }
-        $cart['total'] = $total;
-        return $cart;
     }
 
     private function fillOrderData($order) {
@@ -149,17 +166,9 @@ class PayPalController extends BaseController
     {
         $invoice = Invoice::create([
             'title' => $cart['invoice_description'],
-            'price' => $cart['total'],
+            'total' => 0,
             'paid' => (!strcasecmp($status, 'Completed') || !strcasecmp($status, 'Processed')) ? 1 : 0,
         ]);
-        collect($cart['items'])->each(function ($product) use ($invoice) {
-            Item::create([
-                'invoice_id' => $invoice['id'],
-                'name' => $product['name'],
-                'price' => $product['price'],
-                'amount' => $product['amount'],
-            ]);
-        });
         return $invoice;
     }
     

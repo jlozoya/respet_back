@@ -18,7 +18,7 @@ class Items extends Migration
             $table->integer('invoice_id')->unsigned();
             $table->string('name');
             $table->double('price', 8, 2);
-            $table->integer('amount');
+            $table->integer('qty');
             $table->timestamps();
             $table->foreign('invoice_id')->references('id')->on('invoices')
             ->onUpdate('cascade')->onDelete('cascade');
