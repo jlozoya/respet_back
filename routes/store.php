@@ -1,4 +1,7 @@
 <?php
+
+$router->get('/paypal/checkout-success', 'Store\PayPalController@getExpressCheckoutSuccess');
+
 $router->group(['middleware' => ['auth:api']], function () use ($router) {
 
     $router->post('/order', ['uses' => 'Store\OrderController@store']);
@@ -15,7 +18,6 @@ $router->group(['middleware' => ['auth:api']], function () use ($router) {
     $router->get('/order/product/{id}', ['uses' => 'Store\ProductController@show']);
 
     $router->get('/paypal/checkout/order/{id}', 'Store\PayPalController@getExpressCheckoutByOrderId');
-    $router->get('/paypal/checkout-success', 'Store\PayPalController@getExpressCheckoutSuccess');
     $router->get('/paypal/adaptive-pay', 'Store\PayPalController@getAdaptivePay');
     $router->post('/paypal/notify', 'Store\PayPalController@notify');
 

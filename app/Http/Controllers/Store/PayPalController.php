@@ -270,7 +270,7 @@ class PayPalController extends BaseController
         $cart['items'] = Item::where('invoice_id', $invoice['id'])->get();
         $total = 0;
         foreach ($cart['items'] as $item) {
-            $total += $item['price'] * $item['amount'];
+            $total += $item['price'] * $item['qty'];
         }
         $cart['total'] = $total;
         return $cart;
