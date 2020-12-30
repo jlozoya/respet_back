@@ -49,10 +49,14 @@ class BulletinController extends BaseController
      */
     function show($id) {
         $bulletin = Bulletin::find($id);
-        if ($bulletin['media_id']) {
-            $bulletin['media'] = Media::find($bulletin['media_id']);
+        if ($bulletin) {
+            if ($bulletin['media_id']) {
+                $bulletin['media'] = Media::find($bulletin['media_id']);
+            }
+            return response()->json($bulletin, 200);
+        } else {
+            return response()->json('SERVER.BULLETIN_NOT_FOUND', 404);
         }
-        return response()->json($bulletin, 200);
     }
     /**
      * Recupera Un registro.
@@ -164,6 +168,9 @@ class BulletinController extends BaseController
             $bulletin->save();
             $bulletin['media'] = $media;
         }
-        return response()->json($bulletin, 202);
+        if ($bulletin) {
+            return response()->json($bulletin, 202);
+        }
+        return response()->json('SERVER.BULLETIN_NOT_FOUND', 404);
     }
 }
